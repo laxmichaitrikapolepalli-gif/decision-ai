@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
-import { RiskMeter, ConfidenceMeter } from '../../components/ui/RiskMeter';
-import { Sliders, RefreshCw, Sparkles, TrendingUp, DollarSign, Clock, Users, ShieldAlert } from 'lucide-react';
+import { Sliders, RefreshCw, DollarSign, Clock, Users, ShieldAlert } from 'lucide-react';
 import {
   AreaChart,
   Area,
@@ -12,8 +11,8 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts';
-import { apiService } from '../../services/api';
 
+// TODO: Backend endpoint POST /api/simulator is missing. Preserving UI with client-side simulator calculation.
 export const ScenarioSimulatorPage = () => {
   const [sliders, setSliders] = useState({
     budget: 2500000,
@@ -39,13 +38,29 @@ export const ScenarioSimulatorPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const updateSim = async () => {
+    const updateSim = () => {
       setLoading(true);
-      const res = await apiService.getSimulatorData(sliders);
-      setSimResults(res.data);
+      const { budget, timeline, risk, teamSize } = sliders;
+      const calculatedRoi = Math.round(budget * 0.000012 + (100 - risk) * 0.15 + teamSize * 0.5);
+      const calculatedConfidence = Math.round(85 + (timeline * 0.5) - (risk * 0.2));
+
+      setSimResults({
+        projectedRoi: `+${calculatedRoi}%`,
+        confidenceScore: `${Math.min(99, Math.max(60, calculatedConfidence))}%`,
+        riskLevel: risk > 60 ? 'High Risk' : risk > 35 ? 'Moderate Risk' : 'Optimal Low Risk',
+        chartData: [
+          { month: 'Month 1', conservative: budget * 0.1, expected: budget * 0.15, aggressive: budget * 0.2 },
+          { month: 'Month 2', conservative: budget * 0.3, expected: budget * 0.42, aggressive: budget * 0.55 },
+          { month: 'Month 3', conservative: budget * 0.55, expected: budget * 0.78, aggressive: budget * 0.95 },
+          { month: 'Month 4', conservative: budget * 0.85, expected: budget * 1.15, aggressive: budget * 1.45 },
+          { month: 'Month 5', conservative: budget * 1.1, expected: budget * 1.5, aggressive: budget * 1.95 },
+          { month: 'Month 6', conservative: budget * 1.4, expected: budget * 1.95, aggressive: budget * 2.5 },
+        ]
+      });
       setLoading(false);
     };
-    const timer = setTimeout(updateSim, 200);
+
+    const timer = setTimeout(updateSim, 150);
     return () => clearTimeout(timer);
   }, [sliders]);
 

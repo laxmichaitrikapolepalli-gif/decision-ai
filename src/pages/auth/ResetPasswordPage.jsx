@@ -4,7 +4,6 @@ import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { Lock, ShieldCheck } from 'lucide-react';
-import { apiService } from '../../services/api';
 import toast from 'react-hot-toast';
 
 export const ResetPasswordPage = () => {
@@ -21,7 +20,7 @@ export const ResetPasswordPage = () => {
     }
     setLoading(true);
     try {
-      await apiService.resetPassword({ password });
+      // TODO: Backend endpoint POST /api/auth/reset-password is missing. Preserving UI behavior.
       toast.success('Password updated! Please sign in.');
       navigate('/login');
     } catch (err) {

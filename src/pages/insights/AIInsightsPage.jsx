@@ -4,15 +4,11 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import {
   Sparkles,
-  TrendingUp,
-  AlertTriangle,
   Lightbulb,
-  ShieldAlert,
-  ArrowRight,
-  Filter,
-  CheckCircle2
+  ArrowRight
 } from 'lucide-react';
 
+// TODO: Backend endpoint GET /api/insights is missing. Preserving UI with mock insights data.
 export const AIInsightsPage = () => {
   const [filter, setFilter] = useState('all');
 

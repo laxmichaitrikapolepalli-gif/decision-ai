@@ -2,17 +2,7 @@ import React, { useState } from 'react';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import {
-  Swords,
-  Award,
-  TrendingUp,
-  ShieldCheck,
-  Zap,
-  Sparkles,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowRight
-} from 'lucide-react';
+import { Swords, Award } from 'lucide-react';
 import {
   RadarChart,
   PolarGrid,
@@ -24,6 +14,7 @@ import {
   Tooltip
 } from 'recharts';
 
+// TODO: Backend endpoint POST /api/decisions/battle is missing. Preserving UI with side-by-side battle simulation data.
 export const DecisionBattlePage = () => {
   const [optionA, setOptionA] = useState('Open Store in Hyderabad (Hitec City)');
   const [optionB, setOptionB] = useState('Open Store in Bangalore (Whitefield)');

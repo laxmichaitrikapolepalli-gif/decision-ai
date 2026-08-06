@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { DashboardLayout } from '../layouts/DashboardLayout';
+import { ProtectedRoute } from '../components/common/ProtectedRoute';
 
 import { LandingPage } from '../pages/landing/LandingPage';
 import { LoginPage } from '../pages/auth/LoginPage';
@@ -37,18 +38,20 @@ export const AppRoutes = () => {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
       </Route>
 
-      {/* Dashboard App Pages */}
-      <Route element={<DashboardLayout />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/decisions/new" element={<NewDecisionPage />} />
-        <Route path="/decisions/result/:id" element={<DecisionResultPage />} />
-        <Route path="/decisions/battle" element={<DecisionBattlePage />} />
-        <Route path="/simulator" element={<ScenarioSimulatorPage />} />
-        <Route path="/insights" element={<AIInsightsPage />} />
-        <Route path="/decisions/history" element={<DecisionHistoryPage />} />
-        <Route path="/reports" element={<ReportsPage />} />
-        <Route path="/analytics" element={<AnalyticsPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
+      {/* Protected Dashboard App Pages */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<DashboardLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/decisions/new" element={<NewDecisionPage />} />
+          <Route path="/decisions/result/:id" element={<DecisionResultPage />} />
+          <Route path="/decisions/battle" element={<DecisionBattlePage />} />
+          <Route path="/simulator" element={<ScenarioSimulatorPage />} />
+          <Route path="/insights" element={<AIInsightsPage />} />
+          <Route path="/decisions/history" element={<DecisionHistoryPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
       </Route>
 
       {/* Fallback 404 */}

@@ -4,25 +4,30 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import { Mail, Lock, Sparkles, LogIn, ArrowRight } from 'lucide-react';
+import { Mail, Lock, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const LoginPage = () => {
   const { login, loading } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('sarah.vance@enterprise-ai.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email || !password) {
+      toast.error('Please enter work email and password.');
+      return;
+    }
     const success = await login(email, password);
-    if (success) navigate('/dashboard');
+    if (success) {
+      navigate('/dashboard');
+    }
   };
 
   const handleGoogleLogin = () => {
-    toast.success('Simulated Google OAuth authentication success!');
-    login('sarah.vance@enterprise-ai.com', 'google_auth').then(() => navigate('/dashboard'));
+    toast.error('Google SSO requires additional backend provider configuration.');
   };
 
   return (

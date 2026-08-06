@@ -2,15 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { FileText, Download, Share2, Sparkles, FileCheck, CheckCircle2 } from 'lucide-react';
-import { apiService } from '../../services/api';
+import { FileText, Download, FileCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+// TODO: Backend endpoint GET /api/reports is missing. Preserving UI with mock reports data.
+const MOCK_REPORTS = [
+  { id: 'REP-01', title: 'Q3 Enterprise AI Strategy Review', date: '2026-08-01', format: 'PDF', size: '2.4 MB' },
+  { id: 'REP-02', title: 'Global APAC Spatial Expansion Audit', date: '2026-07-28', format: 'PDF', size: '4.1 MB' },
+  { id: 'REP-03', title: 'Supply Chain Resilience & Risk Matrix', date: '2026-07-15', format: 'PDF', size: '1.8 MB' },
+];
+
 export const ReportsPage = () => {
-  const [reports, setReports] = useState([]);
+  const [reports, setReports] = useState(MOCK_REPORTS);
 
   useEffect(() => {
-    apiService.getReports().then((res) => setReports(res.data));
+    // Retaining mock data because backend endpoint GET /api/reports does not exist.
+    setReports(MOCK_REPORTS);
   }, []);
 
   const handleExport = (title) => {

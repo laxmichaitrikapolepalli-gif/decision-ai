@@ -1,11 +1,20 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDecision } from '../../contexts/DecisionContext';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Calendar, ArrowUpRight } from 'lucide-react';
 
 export const DecisionCard = ({ decision }) => {
   const navigate = useNavigate();
+  const { setCurrentDecision } = useDecision();
+
+  const handleCardClick = () => {
+    if (decision) {
+      setCurrentDecision(decision);
+      navigate(`/decisions/result/${decision.id || decision._id || 'REC'}`);
+    }
+  };
 
   const getRiskVariant = (risk) => {
     if (risk === 'Low') return 'success';
@@ -15,8 +24,8 @@ export const DecisionCard = ({ decision }) => {
 
   return (
     <Card
-      onClick={() => navigate(`/decisions/result/${decision.id}`)}
-      className="group glass-card border-purple-500/25 p-5 hover:border-purple-400"
+      onClick={handleCardClick}
+      className="group glass-card border-purple-500/25 p-5 hover:border-purple-400 cursor-pointer"
       glow={decision.impact === 'Critical' || decision.confidence > 95}
     >
       <div className="flex items-start justify-between gap-3 mb-3">

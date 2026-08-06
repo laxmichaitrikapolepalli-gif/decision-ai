@@ -20,7 +20,7 @@ export const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await signup(formData);
-    if (success) navigate('/otp-verify');
+    if (success) navigate('/dashboard');
   };
 
   return (

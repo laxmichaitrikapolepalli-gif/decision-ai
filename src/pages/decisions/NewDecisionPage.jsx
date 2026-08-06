@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDecision } from '../../contexts/DecisionContext';
+import { useRecommendation } from '../../hooks/useRecommendation';
 import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
@@ -10,25 +11,23 @@ import {
   Sparkles,
   Upload,
   Mic,
-  FileText,
-  CheckCircle2,
   ArrowRight,
   ArrowLeft,
   DollarSign,
   Clock,
-  ShieldAlert,
-  Paperclip,
-  Check
+  Paperclip
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const NewDecisionPage = () => {
-  const { addNewDecision, loadingDecision } = useDecision();
+  const { addNewDecision, setCurrentDecision } = useDecision();
+  const { execute: requestRecommend, loading: recommendLoading } = useRecommendation();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
     title: 'Commercial Expansion: Hyderabad Flagship Node',
+    destination: 'Hyderabad Tech Hub',
     description: 'Evaluating spatial-economic indicators, tech talent acquisition cost, real estate lease tax credits, and supply chain fulfillment latency.',
     industry: 'Retail Tech & Enterprise Hardware',
     budget: '$2,500,000',
@@ -72,10 +71,20 @@ export const NewDecisionPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await addNewDecision(formData);
-      navigate(`/decisions/result/${result.id}`);
+      // Call POST /api/ai/recommend endpoint
+      const result = await requestRecommend(formData);
+      const resData = result?.data || result || {};
+      const decisionObj = {
+        id: resData.id || resData._id || `DEC-${Date.now()}`,
+        ...resData,
+        ...formData
+      };
+      await addNewDecision(decisionObj);
+      setCurrentDecision(decisionObj);
+      toast.success('AI Recommendation Generated!');
+      navigate(`/decisions/result/${decisionObj.id}`);
     } catch (err) {
-      toast.error('Simulation error.');
+      toast.error(err.response?.data?.error || err.message || 'Error running decision recommendation.');
     }
   };
 
@@ -89,7 +98,7 @@ export const NewDecisionPage = () => {
             <Badge variant="primary" size="sm">Step {step} of 4</Badge>
           </div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
-            New Strategic AI Decision
+            New Strategic AI Decision / Trip Recommendation
           </h1>
         </div>
       </div>
@@ -124,22 +133,29 @@ export const NewDecisionPage = () => {
           {step === 1 && (
             <div className="space-y-4">
               <Input
-                label="Decision Title"
+                label="Decision / Trip Destination Title"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="e.g. Store Launch: Hyderabad vs Bangalore"
                 required
               />
 
+              <Input
+                label="Target Destination / Region"
+                value={formData.destination}
+                onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
+                placeholder="e.g. Hyderabad Hitec City"
+              />
+
               <div className="space-y-1.5">
                 <label className="text-xs font-black uppercase tracking-wider text-slate-800">
-                  Comprehensive Description
+                  Comprehensive Description & Preferences
                 </label>
                 <textarea
                   rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Detail the background context, business objective, and key hypotheses..."
+                  placeholder="Detail the background context, business objective, travel preferences..."
                   className="w-full rounded-2xl bg-white border border-purple-500/25 text-slate-900 placeholder-slate-400 p-4 text-sm font-bold transition-all focus:border-purple-500 focus:bg-white focus:ring-2 focus:ring-purple-500/20 focus:outline-none shadow-sm"
                   required
                 />
@@ -164,7 +180,7 @@ export const NewDecisionPage = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
-                  label="Capital Budget Allocation"
+                  label="Capital Budget / Estimated Allocation"
                   icon={DollarSign}
                   value={formData.budget}
                   onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
@@ -237,7 +253,7 @@ export const NewDecisionPage = () => {
                   </div>
                   <div>
                     <h5 className="text-sm font-black text-slate-900">Dictate Voice Memo</h5>
-                    <p className="text-xs font-semibold text-slate-700">Record natural speech for AI automatic text parameter extraction</p>
+                    <p className="text-xs font-semibold text-slate-700">Record natural speech for AI automatic parameter extraction</p>
                   </div>
                 </div>
                 <Button onClick={handleVoiceRecord} variant={isRecording ? 'danger' : 'accent'} size="sm">
@@ -259,7 +275,7 @@ export const NewDecisionPage = () => {
                 />
                 <Upload className="w-10 h-10 text-purple-600 mx-auto mb-3" />
                 <h5 className="text-sm font-black text-slate-900">Drag & drop files or click to browse</h5>
-                <p className="text-xs font-semibold text-slate-700 mt-1">Supports PDF, XLSX, DOCX, PNG, MP3 voice memos up to 50MB</p>
+                <p className="text-xs font-semibold text-slate-700 mt-1">Supports PDF, XLSX, DOCX, PNG, MP3 up to 50MB</p>
               </div>
 
               {/* Attached Files List */}
@@ -267,7 +283,7 @@ export const NewDecisionPage = () => {
                 <div className="space-y-2">
                   <span className="text-xs font-black text-slate-800 uppercase">Attached Documents</span>
                   {formData.attachments.map((file, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 rounded.xl bg-white border border-purple-500/25 text-xs shadow-sm">
+                    <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white border border-purple-500/25 text-xs shadow-sm">
                       <div className="flex items-center gap-2">
                         <Paperclip className="w-4 h-4 text-purple-600" />
                         <span className="font-black text-slate-900">{file.name}</span>
@@ -281,11 +297,11 @@ export const NewDecisionPage = () => {
               {/* Final Summary Card */}
               <div className="p-4 rounded-2xl bg-purple-50/80 border border-purple-500/30 space-y-2 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-purple-800 uppercase">10,000 Monte Carlo Iteration Setup</span>
-                  <Badge variant="success" size="sm">Ready to Simulate</Badge>
+                  <span className="text-xs font-black text-purple-800 uppercase">POST /api/ai/recommend Integration</span>
+                  <Badge variant="success" size="sm">Ready to Send</Badge>
                 </div>
                 <p className="text-xs font-semibold text-slate-800">
-                  Submitting will launch parallel neural tensor processing across spatial economic indices.
+                  Submitting will send parameters to backend endpoint POST /api/ai/recommend.
                 </p>
               </div>
             </div>
@@ -304,8 +320,8 @@ export const NewDecisionPage = () => {
                 Continue to Step {step + 1}
               </Button>
             ) : (
-              <Button type="submit" variant="primary" size="lg" loading={loadingDecision} icon={Sparkles}>
-                Run AI Decision Simulation
+              <Button type="submit" variant="primary" size="lg" loading={recommendLoading} icon={Sparkles}>
+                Run AI Decision Recommendation
               </Button>
             )}
           </div>

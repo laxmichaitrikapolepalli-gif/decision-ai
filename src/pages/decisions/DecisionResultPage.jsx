@@ -13,26 +13,35 @@ import {
   Share2,
   CheckCircle2,
   XCircle,
-  TrendingUp,
-  FileText,
   Award,
-  Layers,
   ArrowLeft,
-  Copy
+  Info,
+  Navigation,
+  Clock,
+  DollarSign,
+  Lightbulb,
+  Zap,
+  Fuel
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const DecisionResultPage = () => {
   const { id } = useParams();
-  const { currentDecision } = useDecision();
+  const { currentDecision, decisions } = useDecision();
   const [downloading, setDownloading] = useState(false);
+
+  // Find decision by id, or fallback to currentDecision, or first item in decisions list
+  const dec =
+    decisions?.find((d) => String(d.id || d._id) === String(id)) ||
+    currentDecision ||
+    (decisions && decisions.length > 0 ? decisions[0] : {});
 
   const handleDownloadPdf = () => {
     setDownloading(true);
     toast.success('Generating Executive PDF Report...');
     setTimeout(() => {
       setDownloading(false);
-      toast.success(`Report DecisionSphere_${currentDecision.id || 'DEC-2026-089'}.pdf downloaded!`);
+      toast.success(`Report DecisionSphere_${dec.id || id || 'REC'}.pdf downloaded!`);
     }, 1500);
   };
 
@@ -41,7 +50,44 @@ export const DecisionResultPage = () => {
     toast.success('Shareable decision report link copied to clipboard!');
   };
 
-  const dec = currentDecision;
+  // Helper to format key names nicely (e.g. estimated_cost -> Estimated Cost)
+  const formatKeyName = (key) => {
+    return key
+      .replace(/_/g, ' ')
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, (str) => str.toUpperCase())
+      .trim();
+  };
+
+  // Known dynamic fields returned by Gemini / Backend APIs
+  const destination = dec.destination || dec.title || dec.name;
+  const bestRoute = dec.bestRoute || dec.route || dec.category;
+  const alternativeRoute = dec.alternativeRoute;
+  const estimatedCost = dec.travelCost || dec.estimated_cost || dec.estimatedCost || dec.cost || dec.budget;
+  const estimatedTime = dec.estimatedTime || dec.travel_time || dec.travelTime || dec.timeline;
+  const trafficLevel = dec.trafficLevel;
+  const bestDepartureTime = dec.bestDepartureTime;
+  const fuelEfficiency = dec.fuelEfficiency;
+  const riskLevel = dec.risk_level || dec.riskLevel || dec.risk || 'Low';
+  const confidence = dec.confidenceScore || dec.confidence || dec.ai_confidence || dec.score || 96;
+  const recommendation = dec.recommendation || dec.aiRecommendation || dec.explanation;
+  const reason = dec.reason || dec.description;
+  const tips = dec.tips || dec.recommendedActions || dec.recommendations;
+
+  // Filter out internal / explicitly rendered keys so any future added fields render dynamically
+  const handledKeys = new Set([
+    'id', '_id', 'title', 'destination', 'route', 'bestRoute', 'alternativeRoute',
+    'estimated_cost', 'estimatedCost', 'travelCost', 'cost', 'budget', 'estimatedTime',
+    'travel_time', 'travelTime', 'timeline', 'trafficLevel', 'bestDepartureTime',
+    'fuelEfficiency', 'risk_level', 'riskLevel', 'risk', 'confidence', 'ai_confidence',
+    'confidenceScore', 'score', 'recommendation', 'aiRecommendation', 'explanation',
+    'reason', 'description', 'tips', 'recommendedActions', 'recommendations',
+    'pros', 'cons', 'swot', 'actionPlan', 'alternatives', 'created_at', 'updated_at', 'status'
+  ]);
+
+  const additionalFields = Object.keys(dec).filter(
+    (key) => !handledKeys.has(key) && dec[key] !== null && dec[key] !== undefined
+  );
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
@@ -49,15 +95,15 @@ export const DecisionResultPage = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <Link to="/decisions/history" className="inline-flex items-center gap-1.5 text-xs text-purple-700 hover:underline font-extrabold mb-2">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Decisions History
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to Decisions & Trips History
           </Link>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-black text-purple-700">{dec.id}</span>
-            <Badge variant="primary" size="sm">{dec.industry}</Badge>
-            <Badge variant="success" size="sm">Approved Strategy</Badge>
+            <span className="text-xs font-mono font-black text-purple-700">{dec.id || id || 'AI-REC'}</span>
+            {bestRoute && <Badge variant="primary" size="sm">{String(bestRoute)}</Badge>}
+            <Badge variant="success" size="sm">AI Recommendation Complete</Badge>
           </div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
-            {dec.title}
+            {destination || 'Strategic AI Recommendation Result'}
           </h1>
         </div>
 
@@ -73,102 +119,231 @@ export const DecisionResultPage = () => {
 
       {/* Main Scorecard Banner */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {/* Overall Score */}
+        {/* Overall Confidence Score */}
         <Card glow className="p-6 border-purple-500/30 glass-card flex flex-col justify-between items-center text-center">
-          <span className="text-xs font-black uppercase tracking-wider text-purple-700">Decision Score</span>
+          <span className="text-xs font-black uppercase tracking-wider text-purple-700">AI Confidence Score</span>
           <div className="relative my-3 flex items-center justify-center">
             <div className="w-24 h-24 rounded-full border-4 border-purple-500/20 flex items-center justify-center">
               <span className="text-4xl font-black text-slate-900 font-['Space_Grotesk'] text-gradient-master">
-                {dec.score || 92}
+                {typeof confidence === 'number' ? confidence : 96}%
               </span>
             </div>
           </div>
-          <Badge variant="success" size="sm" icon={Award}>Optimal Strategy</Badge>
+          <Badge variant="success" size="sm" icon={Award}>Optimal Precision</Badge>
         </Card>
 
         {/* Meters */}
         <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <ConfidenceMeter score={dec.confidenceMeter || 96} />
-          <RiskMeter score={dec.riskMeter || 28} />
+          <ConfidenceMeter score={typeof confidence === 'number' ? confidence : 96} />
+          <RiskMeter score={riskLevel === 'High' ? 75 : riskLevel === 'Medium' ? 45 : 24} label={`Risk Level (${riskLevel})`} />
         </div>
       </div>
 
-      {/* AI Recommendation Card */}
-      <Card glow className="p-6 border-purple-500/40 glass-card bg-purple-50/70 space-y-3">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-purple-600" />
-          <h3 className="text-base font-black text-slate-900 uppercase tracking-wider">Executive AI Recommendation</h3>
-        </div>
-        <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-bold">
-          {dec.aiRecommendation}
-        </p>
-      </Card>
+      {/* Dynamic Key Parameter Metrics Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {estimatedCost && (
+          <Card className="p-4 border-purple-500/25 glass-card flex items-center gap-3">
+            <div className="p-3 rounded-2xl bg-emerald-500/15 text-emerald-700 shrink-0">
+              <DollarSign className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] text-purple-700 font-black uppercase tracking-wider block">Travel / Est. Cost</span>
+              <p className="text-lg font-black text-slate-900 font-['Space_Grotesk']">{String(estimatedCost)}</p>
+            </div>
+          </Card>
+        )}
 
-      {/* Pros & Cons Comparison */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Pros */}
-        <Card className="border-purple-500/25 glass-card space-y-3">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-            <h4 className="text-base font-black text-slate-900">Strategic Pros & Advantages</h4>
-          </div>
-          <ul className="space-y-2">
-            {dec.pros?.map((pro, i) => (
-              <li key={i} className="text-xs text-slate-800 font-bold flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                <span>{pro}</span>
-              </li>
-            ))}
-          </ul>
-        </Card>
+        {estimatedTime && (
+          <Card className="p-4 border-purple-500/25 glass-card flex items-center gap-3">
+            <div className="p-3 rounded-2xl bg-blue-500/15 text-blue-700 shrink-0">
+              <Clock className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] text-purple-700 font-black uppercase tracking-wider block">Estimated Time</span>
+              <p className="text-lg font-black text-slate-900 font-['Space_Grotesk']">{String(estimatedTime)}</p>
+            </div>
+          </Card>
+        )}
 
-        {/* Cons */}
-        <Card className="border-purple-500/25 glass-card space-y-3">
-          <div className="flex items-center gap-2">
-            <XCircle className="w-5 h-5 text-rose-500" />
-            <h4 className="text-base font-black text-slate-900">Friction Points & Mitigations</h4>
-          </div>
-          <ul className="space-y-2">
-            {dec.cons?.map((con, i) => (
-              <li key={i} className="text-xs text-slate-800 font-bold flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
-                <span>{con}</span>
-              </li>
-            ))}
-          </ul>
-        </Card>
+        {trafficLevel && (
+          <Card className="p-4 border-purple-500/25 glass-card flex items-center gap-3">
+            <div className="p-3 rounded-2xl bg-amber-500/15 text-amber-700 shrink-0">
+              <Zap className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] text-purple-700 font-black uppercase tracking-wider block">Traffic Level</span>
+              <p className="text-lg font-black text-slate-900 font-['Space_Grotesk']">{String(trafficLevel)}</p>
+            </div>
+          </Card>
+        )}
+
+        {fuelEfficiency && (
+          <Card className="p-4 border-purple-500/25 glass-card flex items-center gap-3">
+            <div className="p-3 rounded-2xl bg-pink-500/15 text-pink-700 shrink-0">
+              <Fuel className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] text-purple-700 font-black uppercase tracking-wider block">Fuel Efficiency</span>
+              <p className="text-lg font-black text-slate-900 font-['Space_Grotesk']">{String(fuelEfficiency)}</p>
+            </div>
+          </Card>
+        )}
       </div>
 
-      {/* SWOT Matrix */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-black text-slate-900">Comprehensive SWOT Analysis Matrix</h3>
-        <SWOTCard swot={dec.swot} />
-      </div>
-
-      {/* Action Plan Roadmap */}
-      <Card className="border-purple-500/30 glass-card space-y-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-black text-slate-900">Recommended Execution Roadmap</h3>
-          <Badge variant="primary" size="sm">4 Execution Phases</Badge>
-        </div>
-        <ActionPlanTimeline plan={dec.actionPlan} />
-      </Card>
-
-      {/* Alternative Options Scorecard */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-black text-slate-900">Evaluated Strategic Alternatives</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {dec.alternatives?.map((alt, idx) => (
-            <Card key={idx} className="border-purple-500/25 glass-card space-y-2">
-              <div className="flex items-center justify-between">
-                <h5 className="text-sm font-black text-slate-900">{alt.name}</h5>
-                <Badge variant="neutral" size="sm">Score: {alt.score}/100</Badge>
+      {/* Routes Breakdown Card */}
+      {(bestRoute || alternativeRoute || bestDepartureTime) && (
+        <Card className="p-6 border-purple-500/30 glass-card space-y-4">
+          <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+            <Navigation className="w-5 h-5 text-purple-600" /> Route & Schedule Analysis
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {bestRoute && (
+              <div className="p-4 rounded-2xl bg-purple-50/80 border border-purple-500/30 space-y-1">
+                <span className="text-[10px] font-black text-purple-800 uppercase tracking-widest block">Best Route</span>
+                <p className="text-sm font-black text-slate-900">{String(bestRoute)}</p>
               </div>
-              <p className="text-xs font-bold text-slate-700">{alt.recommendation}</p>
-            </Card>
-          ))}
+            )}
+            {alternativeRoute && (
+              <div className="p-4 rounded-2xl bg-slate-100/80 border border-slate-300 space-y-1">
+                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest block">Alternative Route</span>
+                <p className="text-sm font-black text-slate-900">{String(alternativeRoute)}</p>
+              </div>
+            )}
+            {bestDepartureTime && (
+              <div className="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-500/30 space-y-1">
+                <span className="text-[10px] font-black text-emerald-800 uppercase tracking-widest block">Best Departure Time</span>
+                <p className="text-sm font-black text-slate-900">{String(bestDepartureTime)}</p>
+              </div>
+            )}
+          </div>
+        </Card>
+      )}
+
+      {/* Executive AI Recommendation / Explanation Card */}
+      {(recommendation || reason) && (
+        <Card glow className="p-6 border-purple-500/40 glass-card bg-purple-50/70 space-y-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-purple-600" />
+            <h3 className="text-base font-black text-slate-900 uppercase tracking-wider">Executive AI Recommendation & Reason</h3>
+          </div>
+          {recommendation && (
+            <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-bold">
+              {typeof recommendation === 'object' ? JSON.stringify(recommendation, null, 2) : recommendation}
+            </p>
+          )}
+          {reason && reason !== recommendation && (
+            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-semibold pt-2 border-t border-purple-500/20">
+              {typeof reason === 'object' ? JSON.stringify(reason, null, 2) : reason}
+            </p>
+          )}
+        </Card>
+      )}
+
+      {/* Tips / Recommended Actions */}
+      {tips && Array.isArray(tips) && tips.length > 0 && (
+        <Card className="p-6 border-purple-500/30 glass-card space-y-3">
+          <div className="flex items-center gap-2">
+            <Lightbulb className="w-5 h-5 text-amber-500" />
+            <h4 className="text-base font-black text-slate-900">Recommended Tips & Actionable Insights</h4>
+          </div>
+          <ul className="space-y-2">
+            {tips.map((tip, i) => (
+              <li key={i} className="text-xs text-slate-800 font-bold flex items-start gap-2.5 bg-white p-3 rounded-xl border border-purple-500/20 shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-purple-600 mt-1 shrink-0" />
+                <span>{typeof tip === 'object' ? JSON.stringify(tip) : tip}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
+      {/* Dynamic Render of Future / Additional Unhandled Fields */}
+      {additionalFields.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+            <Info className="w-5 h-5 text-purple-600" /> Additional Model Telemetry & Data
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {additionalFields.map((fieldKey) => {
+              const val = dec[fieldKey];
+              return (
+                <Card key={fieldKey} className="p-4 border-purple-500/25 glass-card space-y-1">
+                  <span className="text-[10px] font-black text-purple-800 uppercase tracking-widest">
+                    {formatKeyName(fieldKey)}
+                  </span>
+                  <div className="text-xs font-extrabold text-slate-900 leading-relaxed">
+                    {typeof val === 'object' ? (
+                      <pre className="text-[11px] font-mono whitespace-pre-wrap bg-white/60 p-2 rounded-xl border border-purple-500/20">
+                        {JSON.stringify(val, null, 2)}
+                      </pre>
+                    ) : (
+                      String(val)
+                    )}
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Pros & Cons Comparison (If returned or present) */}
+      {(dec.pros || dec.cons) && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {dec.pros && (
+            <Card className="border-purple-500/25 glass-card space-y-3">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                <h4 className="text-base font-black text-slate-900">Strategic Pros & Advantages</h4>
+              </div>
+              <ul className="space-y-2">
+                {dec.pros?.map((pro, i) => (
+                  <li key={i} className="text-xs text-slate-800 font-bold flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                    <span>{typeof pro === 'object' ? JSON.stringify(pro) : pro}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+
+          {dec.cons && (
+            <Card className="border-purple-500/25 glass-card space-y-3">
+              <div className="flex items-center gap-2">
+                <XCircle className="w-5 h-5 text-rose-500" />
+                <h4 className="text-base font-black text-slate-900">Friction Points & Mitigations</h4>
+              </div>
+              <ul className="space-y-2">
+                {dec.cons?.map((con, i) => (
+                  <li key={i} className="text-xs text-slate-800 font-bold flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                    <span>{typeof con === 'object' ? JSON.stringify(con) : con}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+        </div>
+      )}
+
+      {/* SWOT Matrix (If present) */}
+      {dec.swot && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-black text-slate-900">Comprehensive SWOT Analysis Matrix</h3>
+          <SWOTCard swot={dec.swot} />
+        </div>
+      )}
+
+      {/* Action Plan Roadmap (If present) */}
+      {dec.actionPlan && (
+        <Card className="border-purple-500/30 glass-card space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-black text-slate-900">Recommended Execution Roadmap</h3>
+            <Badge variant="primary" size="sm">Execution Phases</Badge>
+          </div>
+          <ActionPlanTimeline plan={dec.actionPlan} />
+        </Card>
+      )}
     </div>
   );
 };

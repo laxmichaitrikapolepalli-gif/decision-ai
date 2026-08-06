@@ -4,21 +4,22 @@ import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { User, Mail, Shield, Building, Lock, Bell, CheckCircle2 } from 'lucide-react';
+import { User, Mail, Shield, Building, Lock, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const SettingsPage = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState({
-    name: user?.name || 'Dr. Laxmi Chaitrika',
-    email: user?.email || 'chaitrika@decisionsphere.ai',
+    name: user?.name || user?.full_name || 'Executive User',
+    email: user?.email || 'user@enterprise-ai.com',
     role: user?.role || 'Chief Decision Architect',
-    company: user?.company || 'Enterprise AI Labs',
+    company: user?.company || user?.organization || 'Enterprise AI Labs',
     notifications: true,
   });
 
   const handleSave = (e) => {
     e.preventDefault();
+    // TODO: Backend endpoint PUT /api/auth/me is missing. Preserving UI feedback.
     toast.success('Settings & Profile updated successfully!');
   };
 

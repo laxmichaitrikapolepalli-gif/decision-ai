@@ -1,12 +1,10 @@
 import React from 'react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
-import { LineChart as LineIcon, PieChart as PieIcon, Activity, TrendingUp, ShieldCheck } from 'lucide-react';
+import { LineChart as LineIcon } from 'lucide-react';
 import {
   AreaChart,
   Area,
-  BarChart,
-  Bar,
   PieChart,
   Pie,
   Cell,
@@ -22,6 +20,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
+// TODO: Backend endpoint GET /api/analytics is missing. Preserving UI with mock chart data.
 export const AnalyticsPage = () => {
   const radarData = [
     { subject: 'Cost Efficiency', A: 120, B: 110, fullMark: 150 },

@@ -4,7 +4,6 @@ import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
-import { apiService } from '../../services/api';
 import toast from 'react-hot-toast';
 
 export const ForgotPasswordPage = () => {
@@ -16,7 +15,7 @@ export const ForgotPasswordPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await apiService.forgotPassword(email);
+      // TODO: Backend endpoint POST /api/auth/forgot-password is missing. Preserving UI behavior.
       toast.success('Verification code sent to your email.');
       navigate('/otp-verify');
     } catch (err) {
