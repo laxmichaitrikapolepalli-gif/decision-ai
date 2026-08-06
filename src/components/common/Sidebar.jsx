@@ -9,11 +9,8 @@ import {
   FileText,
   LineChart,
   Settings,
-  Zap,
-  ChevronRight,
   Swords
 } from 'lucide-react';
-import { Badge } from '../ui/Badge';
 
 export const Sidebar = ({ collapsed = false }) => {
   const location = useLocation();
@@ -21,9 +18,9 @@ export const Sidebar = ({ collapsed = false }) => {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, color: 'text-[#6C63FF]' },
     { name: 'New Decision', path: '/decisions/new', icon: PlusCircle, color: 'text-[#FF2DAA]' },
-    { name: 'Decision Battle', path: '/decisions/battle', icon: Swords, badge: 'HOT', badgeVariant: 'danger', color: 'text-[#4F7DFF]' },
+    { name: 'Decision Battle', path: '/decisions/battle', icon: Swords, badge: 'HOT', color: 'text-[#4F7DFF]' },
     { name: 'Scenario Simulator', path: '/simulator', icon: Sliders, color: 'text-[#10B981]' },
-    { name: 'AI Insights', path: '/insights', icon: Sparkles, badge: 'AI', badgeVariant: 'primary', color: 'text-[#F59E0B]' },
+    { name: 'AI Insights', path: '/insights', icon: Sparkles, badge: 'AI', color: 'text-[#F59E0B]' },
     { name: 'Decision History', path: '/decisions/history', icon: History, color: 'text-[#8B5CF6]' },
     { name: 'Reports', path: '/reports', icon: FileText, color: 'text-[#10B981]' },
     { name: 'Analytics', path: '/analytics', icon: LineChart, color: 'text-[#EC4899]' },
@@ -79,23 +76,6 @@ export const Sidebar = ({ collapsed = false }) => {
           );
         })}
       </div>
-
-      {/* Quantum Engine Bottom Card exact matching screenshot 1 */}
-      {!collapsed && (
-        <div className="p-4 m-3 rounded-2xl bg-gradient-to-br from-[#FF2DAA]/10 via-[#6C63FF]/10 to-[#4F7DFF]/10 border border-[#6C63FF]/20 relative overflow-hidden shadow-sm">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Zap className="w-3.5 h-3.5 text-[#FF2DAA]" />
-            <span className="text-xs font-black text-[#0F172A]">Quantum Engine v4.2</span>
-          </div>
-          <p className="text-[10px] text-[#64748B] font-medium leading-snug mb-2">
-            Monte Carlo simulation capacity: 10,000 iterations/sec
-          </p>
-          <div className="flex items-center justify-between text-[9px] font-black text-[#6C63FF] uppercase tracking-wider">
-            <span>ENTERPRISE NODE</span>
-            <ChevronRight className="w-3 h-3 text-[#6C63FF]" />
-          </div>
-        </div>
-      )}
     </aside>
   );
 };
