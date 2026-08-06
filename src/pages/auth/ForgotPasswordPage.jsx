@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import { Mail, ArrowLeft, Send } from 'lucide-react';
+import { Mail, ArrowLeft, Send, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const ForgotPasswordPage = () => {
@@ -26,12 +26,15 @@ export const ForgotPasswordPage = () => {
   };
 
   return (
-    <Card glow className="p-8 border-indigo-500/30 shadow-2xl">
+    <Card glow className="p-8 border-[#6C63FF]/20 shadow-2xl bg-white/95 rounded-[32px]">
       <div className="text-center space-y-2 mb-6">
-        <h2 className="text-2xl font-extrabold text-white tracking-tight font-['Space_Grotesk']">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-[#FF2DAA]/25">
+          <Sparkles className="w-6 h-6 text-white" />
+        </div>
+        <h2 className="text-3xl font-black text-[#0F172A] tracking-tight font-['Space_Grotesk']">
           Reset Password
         </h2>
-        <p className="text-xs text-slate-400">
+        <p className="text-sm text-[#64748B] font-semibold">
           Enter your registered work email to receive a 6-digit OTP code
         </p>
       </div>
@@ -43,7 +46,7 @@ export const ForgotPasswordPage = () => {
           icon={Mail}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="sarah@company.com"
+          placeholder="sarah@decisionsphere.ai"
           required
         />
 
@@ -53,14 +56,14 @@ export const ForgotPasswordPage = () => {
           size="lg"
           loading={loading}
           icon={Send}
-          className="w-full mt-2"
+          className="w-full mt-2 bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white border-none font-bold shadow-lg"
         >
           Send Verification OTP
         </Button>
       </form>
 
       <div className="text-center mt-6">
-        <Link to="/login" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+        <Link to="/login" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#64748B] hover:text-[#6C63FF] transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Sign In
         </Link>
       </div>

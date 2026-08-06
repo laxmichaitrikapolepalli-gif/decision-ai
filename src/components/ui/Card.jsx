@@ -11,15 +11,15 @@ export const Card = ({
 }) => {
   return (
     <motion.div
-      whileHover={hoverEffect ? { y: -3, transition: { duration: 0.2 } } : {}}
+      whileHover={hoverEffect ? { y: -4, transition: { duration: 0.25, ease: 'easeOut' } } : {}}
       onClick={onClick}
-      className={`glass-card rounded-2xl p-6 relative overflow-hidden transition-all duration-300 ${
-        glow ? 'border-indigo-500/30 shadow-[0_0_25px_-5px_rgba(99,102,241,0.2)]' : 'border-slate-800/80'
-      } ${onClick ? 'cursor-pointer hover:border-indigo-500/40' : ''} ${className}`}
+      className={`glass-card rounded-[28px] p-6 relative overflow-hidden transition-all duration-300 bg-white/95 border border-[#6C63FF]/15 ${
+        glow ? 'border-[#FF2DAA]/30 shadow-xl shadow-[#FF2DAA]/10' : 'shadow-md shadow-[#6C63FF]/05'
+      } ${onClick ? 'cursor-pointer hover:border-[#6C63FF]/40 hover:shadow-xl' : ''} ${className}`}
       {...props}
     >
       {glow && (
-        <div className="absolute -top-12 -right-12 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-32 h-32 bg-[#FF2DAA]/10 rounded-full blur-2xl pointer-events-none" />
       )}
       {children}
     </motion.div>

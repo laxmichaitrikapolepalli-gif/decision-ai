@@ -24,15 +24,15 @@ export const SignupPage = () => {
   };
 
   return (
-    <Card glow className="p-8 border-purple-500/30 shadow-2xl bg-slate-900/90">
+    <Card glow className="p-8 border-[#6C63FF]/20 shadow-2xl bg-white/95 rounded-[32px]">
       <div className="text-center space-y-2 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-purple-500/30">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-[#FF2DAA]/25">
           <Sparkles className="w-6 h-6 text-white" />
         </div>
-        <h2 className="text-2xl font-extrabold text-white tracking-tight font-['Space_Grotesk']">
+        <h2 className="text-3xl font-black text-[#0F172A] tracking-tight font-['Space_Grotesk']">
           Create Your Account
         </h2>
-        <p className="text-xs text-slate-300 font-medium">
+        <p className="text-sm text-[#64748B] font-semibold">
           Get Started with DecisionSphere AI Platform
         </p>
       </div>
@@ -78,15 +78,15 @@ export const SignupPage = () => {
           required
         />
 
-        <div className="flex items-start gap-2 pt-1 text-xs text-slate-300 font-medium">
+        <div className="flex items-start gap-2 pt-1 text-xs text-[#64748B] font-semibold">
           <input
             type="checkbox"
             checked={formData.agreeTerms}
             onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })}
-            className="rounded border-slate-700 bg-slate-950 text-purple-600 focus:ring-purple-500 mt-0.5"
+            className="rounded border-slate-300 bg-white text-[#6C63FF] focus:ring-[#6C63FF] mt-0.5"
             required
           />
-          <span>I agree to the <a href="#" className="text-purple-400 font-bold hover:underline">Terms of Service</a> and <a href="#" className="text-purple-400 font-bold hover:underline">Privacy Policy</a></span>
+          <span>I agree to the <a href="#" className="text-[#6C63FF] font-bold hover:underline">Terms of Service</a> and <a href="#" className="text-[#6C63FF] font-bold hover:underline">Privacy Policy</a></span>
         </div>
 
         <Button
@@ -95,15 +95,15 @@ export const SignupPage = () => {
           size="lg"
           loading={loading}
           icon={Sparkles}
-          className="w-full mt-2"
+          className="w-full mt-2 bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white border-none font-bold shadow-lg"
         >
           Register for DecisionSphere AI
         </Button>
       </form>
 
-      <p className="text-center text-xs text-slate-400 font-medium mt-6">
+      <p className="text-center text-xs text-[#64748B] font-semibold mt-6">
         Already have an account?{' '}
-        <Link to="/login" className="text-purple-400 font-bold hover:underline">
+        <Link to="/login" className="text-[#6C63FF] font-bold hover:underline">
           Sign In
         </Link>
       </p>

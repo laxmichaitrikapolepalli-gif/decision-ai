@@ -53,24 +53,24 @@ export const CommandPalette = () => {
 
   return (
     <Modal isOpen={isOpen} onClose={closeCommandPalette} maxWidth="max-w-xl">
-      <div className="-m-6 p-4 bg-slate-950 border-b border-purple-500/25 flex items-center gap-3">
-        <Search className="w-5 h-5 text-purple-400 shrink-0" />
+      <div className="-m-6 p-4 bg-white border-b border-slate-100 flex items-center gap-3">
+        <Search className="w-5 h-5 text-[#6C63FF] shrink-0" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Type a command or search platform features..."
-          className="w-full bg-transparent text-white placeholder-slate-500 text-sm font-bold focus:outline-none"
+          className="w-full bg-transparent text-[#0F172A] placeholder-slate-400 text-sm font-bold focus:outline-none"
           autoFocus
         />
-        <kbd className="px-2 py-0.5 text-[10px] font-mono text-purple-300 bg-purple-500/15 rounded border border-purple-500/30 font-black">
+        <kbd className="px-2 py-0.5 text-[10px] font-mono text-[#6C63FF] bg-[#6C63FF]/10 rounded border border-[#6C63FF]/20 font-black">
           ESC
         </kbd>
       </div>
 
       <div className="mt-4 max-h-80 overflow-y-auto space-y-1 pr-1">
         {filteredCommands.length === 0 ? (
-          <div className="py-8 text-center text-xs font-bold text-slate-400">
+          <div className="py-8 text-center text-xs font-bold text-[#64748B]">
             No commands match "{query}"
           </div>
         ) : (
@@ -80,28 +80,28 @@ export const CommandPalette = () => {
               <button
                 key={cmd.id}
                 onClick={() => handleSelect(cmd)}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left hover:bg-purple-500/15 hover:border-purple-500/30 border border-transparent transition-all group cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left hover:bg-slate-100 border border-transparent transition-all group cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-slate-900 border border-purple-500/20 text-purple-400 group-hover:bg-purple-600 group-hover:text-white">
+                  <div className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-[#6C63FF] group-hover:bg-gradient-to-r group-hover:from-[#FF2DAA] group-hover:to-[#6C63FF] group-hover:text-white">
                     <Icon className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-xs font-black text-white">{cmd.title}</p>
-                    <span className="text-[10px] font-extrabold text-slate-400">{cmd.category}</span>
+                    <p className="text-xs font-black text-[#0F172A]">{cmd.title}</p>
+                    <span className="text-[10px] font-bold text-[#64748B]">{cmd.category}</span>
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors" />
+                <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#6C63FF] transition-colors" />
               </button>
             );
           })
         )}
       </div>
 
-      <div className="-mx-6 -mb-6 mt-4 p-3 bg-slate-950 border-t border-purple-500/20 flex items-center justify-between text-[11px] text-slate-400 font-bold">
-        <span>Navigation Tip: Use <kbd className="px-1 text-slate-200 bg-slate-900 rounded border border-slate-700 font-mono">↑</kbd> <kbd className="px-1 text-slate-200 bg-slate-900 rounded border border-slate-700 font-mono">↓</kbd> to navigate</span>
-        <span className="text-purple-400 font-black flex items-center gap-1">
-          <Zap className="w-3 h-3 text-purple-400" /> DecisionSphere Command Engine
+      <div className="-mx-6 -mb-6 mt-4 p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-[#64748B] font-bold">
+        <span>Navigation Tip: Use <kbd className="px-1 text-[#0F172A] bg-white rounded border border-slate-200 font-mono">↑</kbd> <kbd className="px-1 text-[#0F172A] bg-white rounded border border-slate-200 font-mono">↓</kbd> to navigate</span>
+        <span className="text-[#6C63FF] font-black flex items-center gap-1">
+          <Zap className="w-3 h-3 text-[#FF2DAA]" /> DecisionSphere Command Engine
         </span>
       </div>
     </Modal>

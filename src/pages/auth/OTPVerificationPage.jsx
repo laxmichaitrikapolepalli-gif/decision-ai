@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const OTPVerificationPage = () => {
@@ -32,15 +32,15 @@ export const OTPVerificationPage = () => {
   };
 
   return (
-    <Card glow className="p-8 border-indigo-500/30 shadow-2xl">
+    <Card glow className="p-8 border-[#6C63FF]/20 shadow-2xl bg-white/95 rounded-[32px]">
       <div className="text-center space-y-2 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center justify-center mx-auto mb-3">
-          <ShieldCheck className="w-6 h-6" />
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-[#FF2DAA]/25">
+          <ShieldCheck className="w-6 h-6 text-white" />
         </div>
-        <h2 className="text-2xl font-extrabold text-white tracking-tight font-['Space_Grotesk']">
+        <h2 className="text-3xl font-black text-[#0F172A] tracking-tight font-['Space_Grotesk']">
           OTP Security Code
         </h2>
-        <p className="text-xs text-slate-400">
+        <p className="text-sm text-[#64748B] font-semibold">
           Enter the 6-digit authentication token sent to your device
         </p>
       </div>
@@ -54,7 +54,7 @@ export const OTPVerificationPage = () => {
               maxLength={1}
               value={digit}
               onChange={(e) => handleChange(idx, e.target.value)}
-              className="w-10 h-12 text-center text-lg font-bold font-mono rounded-xl bg-slate-900 border border-slate-800 text-indigo-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+              className="w-10 h-12 text-center text-lg font-bold font-mono rounded-xl bg-slate-50 border border-slate-200 text-[#6C63FF] focus:border-[#6C63FF] focus:outline-none"
             />
           ))}
         </div>
@@ -65,15 +65,15 @@ export const OTPVerificationPage = () => {
           size="lg"
           loading={loading}
           icon={CheckCircle2}
-          className="w-full"
+          className="w-full bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white font-bold border-none shadow-lg"
         >
           Verify OTP Code
         </Button>
       </form>
 
-      <p className="text-center text-xs text-slate-400 mt-6">
+      <p className="text-center text-xs text-[#64748B] font-semibold mt-6">
         Didn't receive the code?{' '}
-        <button onClick={() => toast.success('New OTP code dispatched.')} className="text-indigo-400 font-bold hover:underline">
+        <button onClick={() => toast.success('New OTP code dispatched.')} className="text-[#6C63FF] font-bold hover:underline">
           Resend Token
         </button>
       </p>

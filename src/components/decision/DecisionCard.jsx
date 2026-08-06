@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDecision } from '../../contexts/DecisionContext';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
-import { Calendar, ArrowUpRight, Sparkles } from 'lucide-react';
+import { Calendar, ArrowUpRight } from 'lucide-react';
 
 export const DecisionCard = ({ decision }) => {
   const navigate = useNavigate();
@@ -32,42 +32,42 @@ export const DecisionCard = ({ decision }) => {
   return (
     <Card
       onClick={handleCardClick}
-      className="group glass-card border-purple-500/25 p-5 hover:border-purple-400 cursor-pointer rounded-3xl bg-slate-900/80"
+      className="group glass-card border-[#6C63FF]/15 p-5 hover:border-[#6C63FF]/40 cursor-pointer rounded-3xl bg-white/95 shadow-sm hover:shadow-xl transition-all"
       glow={confidenceScore > 95}
     >
       <div className="flex items-start justify-between gap-3 mb-3">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-[11px] font-mono text-purple-400 font-black">{decision.id || 'DEC-101'}</span>
-            <Badge variant="primary" size="sm">Decision AI</Badge>
+            <span className="text-[11px] font-mono text-[#6C63FF] font-black">{decision.id || 'DEC-101'}</span>
+            <Badge variant="primary" size="sm" className="bg-[#6C63FF]/10 text-[#6C63FF]">Decision AI</Badge>
           </div>
-          <h4 className="text-base font-black text-white group-hover:text-purple-300 transition-colors line-clamp-1">
+          <h4 className="text-base font-black text-[#0F172A] group-hover:text-[#6C63FF] transition-colors line-clamp-1">
             {decisionTitle}
           </h4>
         </div>
-        <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 group-hover:text-white group-hover:bg-purple-600 transition-all shrink-0">
+        <div className="p-2 rounded-xl bg-[#6C63FF]/10 border border-[#6C63FF]/20 text-[#6C63FF] group-hover:text-white group-hover:bg-gradient-to-r group-hover:from-[#FF2DAA] group-hover:to-[#6C63FF] transition-all shrink-0">
           <ArrowUpRight className="w-4 h-4" />
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 py-3 my-2 border-y border-purple-500/20 text-xs">
+      <div className="grid grid-cols-3 gap-2 py-3 my-2 border-y border-slate-100 text-xs">
         <div>
-          <span className="text-[10px] text-slate-400 uppercase font-black block">Confidence</span>
-          <span className="font-black text-purple-400 text-sm">{confidenceScore}%</span>
+          <span className="text-[10px] text-[#64748B] uppercase font-black block">Confidence</span>
+          <span className="font-black text-[#6C63FF] text-sm">{confidenceScore}%</span>
         </div>
         <div>
-          <span className="text-[10px] text-slate-400 uppercase font-black block">Risk</span>
+          <span className="text-[10px] text-[#64748B] uppercase font-black block">Risk</span>
           <Badge variant={getRiskVariant(riskLevel)} size="sm">{riskLevel}</Badge>
         </div>
         <div>
-          <span className="text-[10px] text-slate-400 uppercase font-black block">Est. ROI</span>
-          <span className="font-black text-emerald-400 text-sm">{decision.roi || decision.fuelEfficiency || '+38%'}</span>
+          <span className="text-[10px] text-[#64748B] uppercase font-black block">Est. ROI</span>
+          <span className="font-black text-[#10B981] text-sm">{decision.roi || decision.fuelEfficiency || '+38%'}</span>
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-slate-300 pt-1 font-bold">
+      <div className="flex items-center justify-between text-xs text-[#64748B] pt-1 font-bold">
         <div className="flex items-center gap-1.5">
-          <Calendar className="w-3.5 h-3.5 text-purple-400" />
+          <Calendar className="w-3.5 h-3.5 text-[#6C63FF]" />
           <span>{decisionDate}</span>
         </div>
         <Badge variant={statusLabel === 'Approved' || statusLabel === 'Completed' ? 'success' : 'neutral'} size="sm">

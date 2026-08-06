@@ -19,7 +19,6 @@ import {
   Activity,
   ThumbsUp,
   ThumbsDown,
-  HelpCircle,
   Brain
 } from 'lucide-react';
 
@@ -88,16 +87,16 @@ export const DecisionResultPage = () => {
       
       {/* Header */}
       <div className="space-y-3">
-        <Link to="/decisions/history" className="inline-flex items-center gap-1.5 text-xs text-purple-400 hover:underline font-bold mb-2">
+        <Link to="/decisions/history" className="inline-flex items-center gap-1.5 text-xs text-[#6C63FF] hover:underline font-bold mb-2">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Decision History
         </Link>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-black text-purple-400 uppercase tracking-widest">DECISION RESULT</span>
+              <span className="text-xs font-mono font-black text-[#6C63FF] uppercase tracking-widest">DECISION RESULT</span>
               <Badge variant="success" size="sm" icon={Award}>Optimal Strategic Recommendation</Badge>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
+            <h1 className="text-3xl sm:text-4xl font-black text-[#0F172A] tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
               {decision.title || 'AI Strategic Decision Recommendation'}
             </h1>
           </div>
@@ -105,52 +104,52 @@ export const DecisionResultPage = () => {
       </div>
 
       {/* Primary Hero Recommendation Card */}
-      <Card glow className="p-8 border-purple-500/40 glass-card space-y-6 rounded-3xl bg-slate-900">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-purple-500/20">
+      <Card glow className="p-8 border-[#6C63FF]/30 glass-card bg-white/95 space-y-6 rounded-3xl shadow-lg">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
           <div className="space-y-2 flex-1">
-            <span className="text-xs font-black text-purple-400 uppercase tracking-wider block">PRIMARY AI RECOMMENDATION</span>
-            <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight">
+            <span className="text-xs font-black text-[#6C63FF] uppercase tracking-wider block">PRIMARY AI RECOMMENDATION</span>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] leading-tight">
               {recommendationText}
             </h2>
           </div>
 
           <div className="flex items-center gap-4 shrink-0">
-            <div className="p-4 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-center">
-              <span className="text-[10px] text-slate-400 uppercase font-black block">Confidence Score</span>
-              <span className="text-3xl font-black text-purple-400 font-['Space_Grotesk']">{confidenceScore}%</span>
+            <div className="p-4 rounded-2xl bg-[#6C63FF]/10 border border-[#6C63FF]/20 text-center">
+              <span className="text-[10px] text-[#64748B] uppercase font-black block">Confidence Score</span>
+              <span className="text-3xl font-black text-[#6C63FF] font-['Space_Grotesk']">{confidenceScore}%</span>
             </div>
 
-            <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-center">
-              <span className="text-[10px] text-slate-400 uppercase font-black block">Expected Outcome</span>
-              <span className="text-xl font-black text-emerald-400 font-['Space_Grotesk']">{expectedOutcome}</span>
+            <div className="p-4 rounded-2xl bg-[#10B981]/10 border border-[#10B981]/20 text-center">
+              <span className="text-[10px] text-[#64748B] uppercase font-black block">Expected Outcome</span>
+              <span className="text-xl font-black text-[#10B981] font-['Space_Grotesk']">{expectedOutcome}</span>
             </div>
           </div>
         </div>
 
         {/* AI Explanation Box */}
-        <div className="p-5 rounded-2xl bg-purple-500/10 border border-purple-500/30 space-y-2">
+        <div className="p-5 rounded-2xl bg-[#6C63FF]/08 border border-[#6C63FF]/20 space-y-2">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-purple-400" />
-            <h4 className="text-xs font-black text-purple-300 uppercase tracking-wider">AI Explanation</h4>
+            <Sparkles className="w-4 h-4 text-[#6C63FF]" />
+            <h4 className="text-xs font-black text-[#6C63FF] uppercase tracking-wider">AI Explanation</h4>
           </div>
-          <p className="text-sm text-slate-200 leading-relaxed font-semibold">{aiExplanation}</p>
+          <p className="text-sm text-[#0F172A] leading-relaxed font-semibold">{aiExplanation}</p>
         </div>
       </Card>
 
       {/* Grid: Advantages vs Disadvantages */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Advantages */}
-        <Card glow className="p-6 border-emerald-500/30 glass-card space-y-4 rounded-3xl bg-slate-900/80">
+        <Card glow className="p-6 border-[#10B981]/20 glass-card bg-white/95 space-y-4 rounded-3xl shadow-sm">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
+            <div className="p-2 rounded-xl bg-[#10B981]/15 text-[#10B981]">
               <ThumbsUp className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-black text-white">Strategic Advantages</h3>
+            <h3 className="text-lg font-black text-[#0F172A]">Strategic Advantages</h3>
           </div>
           <ul className="space-y-3">
             {advantages.map((adv, idx) => (
-              <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-200 font-semibold">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <li key={idx} className="flex items-start gap-2.5 text-xs text-[#0F172A] font-semibold">
+                <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0 mt-0.5" />
                 <span>{adv}</span>
               </li>
             ))}
@@ -158,17 +157,17 @@ export const DecisionResultPage = () => {
         </Card>
 
         {/* Disadvantages */}
-        <Card className="p-6 border-rose-500/30 glass-card space-y-4 rounded-3xl bg-slate-900/80">
+        <Card className="p-6 border-[#EF4444]/20 glass-card bg-white/95 space-y-4 rounded-3xl shadow-sm">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-rose-500/20 text-rose-400">
+            <div className="p-2 rounded-xl bg-[#EF4444]/15 text-[#EF4444]">
               <ThumbsDown className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-black text-white">Tradeoffs & Friction Points</h3>
+            <h3 className="text-lg font-black text-[#0F172A]">Tradeoffs & Friction Points</h3>
           </div>
           <ul className="space-y-3">
             {disadvantages.map((dis, idx) => (
-              <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-200 font-semibold">
-                <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <li key={idx} className="flex items-start gap-2.5 text-xs text-[#0F172A] font-semibold">
+                <AlertTriangle className="w-4 h-4 text-[#EF4444] shrink-0 mt-0.5" />
                 <span>{dis}</span>
               </li>
             ))}
@@ -179,16 +178,16 @@ export const DecisionResultPage = () => {
       {/* Alternative Options & Recommended Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Alternative Options */}
-        <Card className="p-6 border-indigo-500/30 glass-card space-y-4 rounded-3xl bg-slate-900/80">
+        <Card className="p-6 border-[#4F7DFF]/20 glass-card bg-white/95 space-y-4 rounded-3xl shadow-sm">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-indigo-500/20 text-indigo-400">
+            <div className="p-2 rounded-xl bg-[#4F7DFF]/15 text-[#4F7DFF]">
               <Layers className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-black text-white">Alternative Decisions Evaluated</h3>
+            <h3 className="text-lg font-black text-[#0F172A]">Alternative Decisions Evaluated</h3>
           </div>
           <div className="space-y-2">
             {alternativeOptions.map((alt, idx) => (
-              <div key={idx} className="p-3.5 rounded-2xl bg-slate-950 border border-purple-500/20 text-xs font-bold text-slate-200">
+              <div key={idx} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-bold text-[#0F172A]">
                 {alt}
               </div>
             ))}
@@ -196,17 +195,17 @@ export const DecisionResultPage = () => {
         </Card>
 
         {/* Recommended Actions */}
-        <Card glow className="p-6 border-purple-500/30 glass-card space-y-4 rounded-3xl bg-slate-900/80">
+        <Card glow className="p-6 border-[#6C63FF]/20 glass-card bg-white/95 space-y-4 rounded-3xl shadow-sm">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-purple-500/20 text-purple-400">
+            <div className="p-2 rounded-xl bg-[#6C63FF]/15 text-[#6C63FF]">
               <Lightbulb className="w-5 h-5" />
             </div>
-            <h3 className="text-lg font-black text-white">Recommended Actions</h3>
+            <h3 className="text-lg font-black text-[#0F172A]">Recommended Actions</h3>
           </div>
           <div className="space-y-2.5">
             {recommendedActions.map((act, idx) => (
-              <div key={idx} className="p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-xs font-bold text-slate-200 flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-purple-500 text-white flex items-center justify-center text-[10px] font-black shrink-0">{idx + 1}</span>
+              <div key={idx} className="p-3 rounded-2xl bg-[#6C63FF]/10 border border-[#6C63FF]/20 text-xs font-bold text-[#0F172A] flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-[#6C63FF] text-white flex items-center justify-center text-[10px] font-black shrink-0">{idx + 1}</span>
                 <span>{act}</span>
               </div>
             ))}
@@ -215,23 +214,23 @@ export const DecisionResultPage = () => {
       </div>
 
       {/* Strategic Reasoning Section */}
-      <Card glow className="p-6 border-purple-500/30 glass-card space-y-3 rounded-3xl bg-slate-900/80">
+      <Card glow className="p-6 border-[#6C63FF]/20 glass-card bg-white/95 space-y-3 rounded-3xl shadow-sm">
         <div className="flex items-center gap-2">
-          <Brain className="w-5 h-5 text-purple-400" />
-          <h3 className="text-lg font-black text-white">Strategic AI Reasoning</h3>
+          <Brain className="w-5 h-5 text-[#6C63FF]" />
+          <h3 className="text-lg font-black text-[#0F172A]">Strategic AI Reasoning</h3>
         </div>
-        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-semibold">{reasoningText}</p>
+        <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed font-semibold">{reasoningText}</p>
       </Card>
 
       {/* Dynamic Fields rendering */}
       {dynamicFields.length > 0 && (
-        <Card className="p-6 border-purple-500/30 glass-card space-y-4 rounded-3xl bg-slate-900/80">
-          <h3 className="text-lg font-black text-white">Dynamic AI Parameters</h3>
+        <Card className="p-6 border-[#6C63FF]/20 glass-card bg-white/95 space-y-4 rounded-3xl shadow-sm">
+          <h3 className="text-lg font-black text-[#0F172A]">Dynamic AI Parameters</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {dynamicFields.map(([k, v]) => (
-              <div key={k} className="p-3.5 rounded-2xl bg-slate-950 border border-purple-500/20 text-xs">
-                <span className="text-[10px] text-purple-400 uppercase font-mono font-black block">{k.replace(/_/g, ' ')}</span>
-                <span className="font-extrabold text-white mt-1 block">{String(v)}</span>
+              <div key={k} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs">
+                <span className="text-[10px] text-[#6C63FF] uppercase font-mono font-black block">{k.replace(/_/g, ' ')}</span>
+                <span className="font-bold text-[#0F172A] mt-1 block">{String(v)}</span>
               </div>
             ))}
           </div>

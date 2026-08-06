@@ -2,122 +2,105 @@
 
 @layer base {
   :root {
-    --primary: #a855f7;
-    --secondary: #ec4899;
-    --accent: #3b82f6;
-    --light-lavender: #f5f3ff;
-    --light-pink: #fdf2f8;
-    --text-primary: #0f172a;
-    --text-secondary: #334155;
+    --bg-main: #F8F7FC;
+    --card-bg: #FFFFFF;
+    --primary-gradient: linear-gradient(135deg, #FF2DAA 0%, #6C63FF 100%);
+    --accent-blue: #4F7DFF;
+    --accent-purple: #8B5CF6;
+    --accent-pink: #EC4899;
+    --text-primary: #0F172A;
+    --text-secondary: #64748B;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
   }
 
   body {
-    background: radial-gradient(at 0% 0%, #fce7f3 0px, transparent 50%),
-                radial-gradient(at 100% 0%, #e0e7ff 0px, transparent 50%),
-                radial-gradient(at 100% 100%, #ccfbf1 0px, transparent 50%),
-                radial-gradient(at 0% 100%, #f3e8ff 0px, transparent 50%),
-                linear-gradient(135deg, #ffffff 0%, #f5f3ff 50%, #fdf2f8 100%);
+    background-color: #F8F7FC;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(255, 45, 170, 0.06) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(108, 99, 255, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(79, 125, 255, 0.06) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.06) 0px, transparent 50%),
+      linear-gradient(180deg, #F8F7FC 0%, #F1F0F9 100%);
     background-attachment: fixed;
-    color: #0f172a;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    color: #0F172A;
+    font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
   }
 }
 
-/* Light Cloud Glassmorphism Cards */
+/* Linear & Vercel Inspired Glassmorphism */
 .glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(168, 85, 247, 0.25);
-  border-radius: 24px;
-  box-shadow: 0 15px 35px -10px rgba(168, 85, 247, 0.15), 0 0 15px 0 rgba(236, 72, 153, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(108, 99, 255, 0.12);
+  border-radius: 28px;
+  box-shadow: 0 20px 40px -15px rgba(108, 99, 255, 0.07), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
 }
 
 .glass-card-hover {
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card-hover:hover {
-  background: rgba(255, 255, 255, 0.98);
-  border-color: rgba(168, 85, 247, 0.5);
-  box-shadow: 0 25px 50px -12px rgba(168, 85, 247, 0.25), 0 0 30px 0 rgba(236, 72, 153, 0.2);
-  transform: translateY(-6px) scale(1.015);
+  background: #FFFFFF;
+  border-color: rgba(255, 45, 170, 0.3);
+  box-shadow: 0 30px 60px -15px rgba(108, 99, 255, 0.15), 0 0 25px 0 rgba(255, 45, 170, 0.12);
+  transform: translateY(-6px) scale(1.01);
 }
 
 .glass-panel {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(168, 85, 247, 0.25);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(108, 99, 255, 0.14);
   border-radius: 24px;
-  box-shadow: 0 15px 35px -10px rgba(168, 85, 247, 0.12);
+  box-shadow: 0 15px 35px -10px rgba(108, 99, 255, 0.08);
 }
 
 .glass-dropdown {
-  background: rgba(255, 255, 255, 0.98);
+  background: #FFFFFF;
   backdrop-filter: blur(32px);
-  border: 1px solid rgba(168, 85, 247, 0.35);
+  border: 1px solid rgba(108, 99, 255, 0.2);
   border-radius: 24px;
-  box-shadow: 0 30px 60px -15px rgba(168, 85, 247, 0.2);
-}
-
-/* Universal Text Contrast Guarantee */
-h1, h2, h3, h4, h5, h6 {
-  color: #0f172a !important;
-}
-
-p, span, li, label {
-  color: #1e293b;
-}
-
-.text-white {
-  color: #0f172a !important;
-}
-
-.text-slate-100,
-.text-slate-200,
-.text-slate-300 {
-  color: #1e293b !important;
-}
-
-.text-slate-400,
-.text-slate-500 {
-  color: #475569 !important;
+  box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.15);
 }
 
 /* Master Gradient Text */
 .text-gradient-master {
-  background: linear-gradient(135deg, #db2777 0%, #9333ea 50%, #2563eb 100%);
+  background: linear-gradient(135deg, #FF2DAA 0%, #6C63FF 50%, #4F7DFF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Section Ambient Mesh Variants */
-.bg-mesh-hero {
-  background: radial-gradient(circle at 50% 20%, rgba(236, 72, 153, 0.15) 0%, rgba(168, 85, 247, 0.12) 40%, rgba(59, 130, 246, 0.1) 70%, transparent 100%);
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #FF2DAA 0%, #6C63FF 100%);
 }
 
-.bg-mesh-features {
-  background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.12) 0%, rgba(168, 85, 247, 0.12) 50%, transparent 100%);
+/* Glow Effect */
+.glow-primary {
+  box-shadow: 0 10px 30px -10px rgba(255, 45, 170, 0.4);
 }
 
-.bg-mesh-pricing {
-  background: radial-gradient(circle at 50% 50%, rgba(245, 243, 255, 0.9) 0%, rgba(168, 85, 247, 0.12) 60%, transparent 100%);
+.glow-purple {
+  box-shadow: 0 10px 30px -10px rgba(108, 99, 255, 0.4);
 }
 
-/* Recharts Light Styling */
+/* Recharts Custom Tooltip Styling */
 .recharts-default-tooltip {
   background-color: rgba(255, 255, 255, 0.98) !important;
-  border: 1px solid rgba(168, 85, 247, 0.35) !important;
-  border-radius: 1rem !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15) !important;
-  color: #0f172a !important;
+  border: 1px solid rgba(108, 99, 255, 0.2) !important;
+  border-radius: 1.25rem !important;
+  box-shadow: 0 20px 35px -5px rgba(15, 23, 42, 0.12) !important;
+  color: #0F172A !important;
+  font-weight: 700 !important;
 }
 
 .recharts-tooltip-item {
-  color: #0f172a !important;
+  color: #0F172A !important;
 }
 
 /* Custom Scrollbars */
@@ -127,10 +110,10 @@ p, span, li, label {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #F1F0F9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #ec4899, #a855f7, #3b82f6);
+  background: linear-gradient(to bottom, #FF2DAA, #6C63FF, #4F7DFF);
   border-radius: 9999px;
 }

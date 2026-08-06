@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
-import { Sliders, RefreshCw, DollarSign, Clock, Users, ShieldAlert } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
+import { Sliders, RefreshCw, DollarSign, Clock, Users, ShieldAlert, TrendingUp, Percent } from 'lucide-react';
 import {
   AreaChart,
   Area,
@@ -18,13 +19,16 @@ export const ScenarioSimulatorPage = () => {
     budget: 2500000,
     timeline: 6,
     risk: 30,
-    teamSize: 12,
+    market: 75,
+    inflation: 4,
+    growth: 25,
   });
 
   const [simResults, setSimResults] = useState({
     projectedRoi: '+38%',
     confidenceScore: '96%',
     riskLevel: 'Optimal Low Risk',
+    recommendation: 'Proceed with $2.5M allocation across Tier-1 tech hubs for maximum expected yield under P95 confidence limits.',
     chartData: [
       { month: 'Month 1', conservative: 250000, expected: 375000, aggressive: 500000 },
       { month: 'Month 2', conservative: 750000, expected: 1050000, aggressive: 1375000 },
@@ -40,14 +44,15 @@ export const ScenarioSimulatorPage = () => {
   useEffect(() => {
     const updateSim = () => {
       setLoading(true);
-      const { budget, timeline, risk, teamSize } = sliders;
-      const calculatedRoi = Math.round(budget * 0.000012 + (100 - risk) * 0.15 + teamSize * 0.5);
-      const calculatedConfidence = Math.round(85 + (timeline * 0.5) - (risk * 0.2));
+      const { budget, timeline, risk, market, inflation, growth } = sliders;
+      const calculatedRoi = Math.round((budget * 0.000012) + (market * 0.2) + (growth * 0.3) - (inflation * 0.8) - (risk * 0.1));
+      const calculatedConfidence = Math.round(85 + (timeline * 0.5) - (risk * 0.15) + (market * 0.05));
 
       setSimResults({
-        projectedRoi: `+${calculatedRoi}%`,
+        projectedRoi: `+${Math.max(5, calculatedRoi)}%`,
         confidenceScore: `${Math.min(99, Math.max(60, calculatedConfidence))}%`,
         riskLevel: risk > 60 ? 'High Risk' : risk > 35 ? 'Moderate Risk' : 'Optimal Low Risk',
+        recommendation: `Recommended strategy: Allocate $${(budget/1000000).toFixed(1)}M over ${timeline} months with ${growth}% growth target to capture +${calculatedRoi}% ROI under ${risk}% risk variance.`,
         chartData: [
           { month: 'Month 1', conservative: budget * 0.1, expected: budget * 0.15, aggressive: budget * 0.2 },
           { month: 'Month 2', conservative: budget * 0.3, expected: budget * 0.42, aggressive: budget * 0.55 },
@@ -70,36 +75,36 @@ export const ScenarioSimulatorPage = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-black text-purple-400 uppercase tracking-widest">STOCHASTIC ENGINE</span>
-            <Badge variant="accent" size="sm" icon={Sliders}>Live "What If" Simulation</Badge>
+            <span className="text-xs font-mono font-black text-[#6C63FF] uppercase tracking-widest">STOCHASTIC ENGINE</span>
+            <Badge variant="accent" size="sm" icon={Sliders} className="bg-[#FF2DAA]/10 text-[#FF2DAA] border-[#FF2DAA]/30">Live "What If" Simulation</Badge>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
+          <h1 className="text-3xl sm:text-4xl font-black text-[#0F172A] tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
             Scenario Simulator
           </h1>
-          <p className="text-xs font-semibold text-slate-300 mt-1">
-            Stress-test budget allocations, execution timelines, and risk limits in real-time
+          <p className="text-xs font-semibold text-[#64748B] mt-1">
+            Stress-test budget allocations, execution timelines, inflation rates, and growth targets in real-time
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
-          <RefreshCw className={`w-4 h-4 text-purple-400 ${loading ? 'animate-spin' : ''}`} />
+        <div className="flex items-center gap-2 text-xs font-bold text-[#64748B]">
+          <RefreshCw className={`w-4 h-4 text-[#6C63FF] ${loading ? 'animate-spin' : ''}`} />
           <span>Real-time recalculation</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Sliders Control Panel */}
-        <Card glow className="lg:col-span-1 p-6 space-y-6 border-purple-500/30 glass-card bg-slate-900/80 rounded-3xl">
-          <h3 className="text-base font-black text-white uppercase tracking-wider flex items-center gap-2">
-            <Sliders className="w-4.5 h-4.5 text-purple-400" /> Variable Sliders
+        <Card glow className="lg:col-span-1 p-6 space-y-5 border-[#6C63FF]/20 glass-card bg-white/95 rounded-3xl">
+          <h3 className="text-base font-black text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
+            <Sliders className="w-4.5 h-4.5 text-[#6C63FF]" /> Variable Sliders
           </h3>
 
           {/* Budget Slider */}
           <div className="space-y-2">
-            <div className="flex justify-between text-xs font-black">
-              <span className="text-slate-300 flex items-center gap-1.5">
-                <DollarSign className="w-3.5 h-3.5 text-emerald-400" /> Budget Allocation
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-[#0F172A] flex items-center gap-1.5">
+                <DollarSign className="w-3.5 h-3.5 text-[#10B981]" /> Budget Allocation
               </span>
-              <span className="text-emerald-400 font-mono">${(sliders.budget / 1000000).toFixed(2)}M</span>
+              <span className="text-[#10B981] font-mono font-black">${(sliders.budget / 1000000).toFixed(2)}M</span>
             </div>
             <input
               type="range"
@@ -108,17 +113,17 @@ export const ScenarioSimulatorPage = () => {
               step={100000}
               value={sliders.budget}
               onChange={(e) => setSliders({ ...sliders, budget: Number(e.target.value) })}
-              className="w-full accent-purple-500 bg-slate-950 h-2 rounded-lg cursor-pointer"
+              className="w-full accent-[#6C63FF] bg-slate-100 h-2 rounded-lg cursor-pointer"
             />
           </div>
 
           {/* Timeline Slider */}
           <div className="space-y-2">
-            <div className="flex justify-between text-xs font-black">
-              <span className="text-slate-300 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-purple-400" /> Execution Timeline
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-[#0F172A] flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-[#6C63FF]" /> Execution Timeline
               </span>
-              <span className="text-purple-400 font-mono">{sliders.timeline} Months</span>
+              <span className="text-[#6C63FF] font-mono font-black">{sliders.timeline} Months</span>
             </div>
             <input
               type="range"
@@ -127,17 +132,17 @@ export const ScenarioSimulatorPage = () => {
               step={1}
               value={sliders.timeline}
               onChange={(e) => setSliders({ ...sliders, timeline: Number(e.target.value) })}
-              className="w-full accent-purple-500 bg-slate-950 h-2 rounded-lg cursor-pointer"
+              className="w-full accent-[#6C63FF] bg-slate-100 h-2 rounded-lg cursor-pointer"
             />
           </div>
 
           {/* Risk Tolerance Slider */}
           <div className="space-y-2">
-            <div className="flex justify-between text-xs font-black">
-              <span className="text-slate-300 flex items-center gap-1.5">
-                <ShieldAlert className="w-3.5 h-3.5 text-amber-400" /> Risk Tolerance
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-[#0F172A] flex items-center gap-1.5">
+                <ShieldAlert className="w-3.5 h-3.5 text-[#F59E0B]" /> Risk Tolerance
               </span>
-              <span className="text-amber-400 font-mono">{sliders.risk}% Index</span>
+              <span className="text-[#F59E0B] font-mono font-black">{sliders.risk}% Index</span>
             </div>
             <input
               type="range"
@@ -146,26 +151,64 @@ export const ScenarioSimulatorPage = () => {
               step={5}
               value={sliders.risk}
               onChange={(e) => setSliders({ ...sliders, risk: Number(e.target.value) })}
-              className="w-full accent-amber-500 bg-slate-950 h-2 rounded-lg cursor-pointer"
+              className="w-full accent-[#F59E0B] bg-slate-100 h-2 rounded-lg cursor-pointer"
             />
           </div>
 
-          {/* Team Size Slider */}
+          {/* Market Sentiment Slider */}
           <div className="space-y-2">
-            <div className="flex justify-between text-xs font-black">
-              <span className="text-slate-300 flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5 text-pink-400" /> Dedicated Team Size
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-[#0F172A] flex items-center gap-1.5">
+                <TrendingUp className="w-3.5 h-3.5 text-[#4F7DFF]" /> Market Sentiment
               </span>
-              <span className="text-pink-400 font-mono">{sliders.teamSize} Headcount</span>
+              <span className="text-[#4F7DFF] font-mono font-black">{sliders.market}% Bullish</span>
             </div>
             <input
               type="range"
-              min={2}
-              max={50}
+              min={10}
+              max={100}
+              step={5}
+              value={sliders.market}
+              onChange={(e) => setSliders({ ...sliders, market: Number(e.target.value) })}
+              className="w-full accent-[#4F7DFF] bg-slate-100 h-2 rounded-lg cursor-pointer"
+            />
+          </div>
+
+          {/* Inflation Rate Slider */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-[#0F172A] flex items-center gap-1.5">
+                <Percent className="w-3.5 h-3.5 text-[#EF4444]" /> Inflation Rate
+              </span>
+              <span className="text-[#EF4444] font-mono font-black">{sliders.inflation}% YoY</span>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={15}
               step={1}
-              value={sliders.teamSize}
-              onChange={(e) => setSliders({ ...sliders, teamSize: Number(e.target.value) })}
-              className="w-full accent-pink-500 bg-slate-950 h-2 rounded-lg cursor-pointer"
+              value={sliders.inflation}
+              onChange={(e) => setSliders({ ...sliders, inflation: Number(e.target.value) })}
+              className="w-full accent-[#EF4444] bg-slate-100 h-2 rounded-lg cursor-pointer"
+            />
+          </div>
+
+          {/* Growth Target Slider */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-[#0F172A] flex items-center gap-1.5">
+                <TrendingUp className="w-3.5 h-3.5 text-[#FF2DAA]" /> Growth Target
+              </span>
+              <span className="text-[#FF2DAA] font-mono font-black">{sliders.growth}% Target</span>
+            </div>
+            <input
+              type="range"
+              min={5}
+              max={60}
+              step={5}
+              value={sliders.growth}
+              onChange={(e) => setSliders({ ...sliders, growth: Number(e.target.value) })}
+              className="w-full accent-[#FF2DAA] bg-slate-100 h-2 rounded-lg cursor-pointer"
             />
           </div>
         </Card>
@@ -174,28 +217,34 @@ export const ScenarioSimulatorPage = () => {
         <div className="lg:col-span-2 space-y-6">
           {/* Key Metrics Row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Card className="p-4 border-purple-500/25 glass-card bg-slate-900/80 text-center rounded-3xl">
-              <span className="text-[10px] text-slate-400 uppercase font-black">Projected ROI</span>
-              <p className="text-3xl font-black text-emerald-400 font-['Space_Grotesk'] mt-1">{simResults.projectedRoi}</p>
+            <Card className="p-4 border-[#6C63FF]/20 glass-card bg-white/95 text-center rounded-3xl">
+              <span className="text-[10px] text-[#64748B] uppercase font-black">Projected ROI</span>
+              <p className="text-3xl font-black text-[#10B981] font-['Space_Grotesk'] mt-1">{simResults.projectedRoi}</p>
             </Card>
 
-            <Card className="p-4 border-purple-500/25 glass-card bg-slate-900/80 text-center rounded-3xl">
-              <span className="text-[10px] text-slate-400 uppercase font-black">Model Confidence</span>
-              <p className="text-3xl font-black text-purple-400 font-['Space_Grotesk'] mt-1">{simResults.confidenceScore}</p>
+            <Card className="p-4 border-[#6C63FF]/20 glass-card bg-white/95 text-center rounded-3xl">
+              <span className="text-[10px] text-[#64748B] uppercase font-black">Model Confidence</span>
+              <p className="text-3xl font-black text-[#6C63FF] font-['Space_Grotesk'] mt-1">{simResults.confidenceScore}</p>
             </Card>
 
-            <Card className="p-4 border-purple-500/25 glass-card bg-slate-900/80 text-center rounded-3xl">
-              <span className="text-[10px] text-slate-400 uppercase font-black">Risk Classification</span>
-              <p className="text-sm font-black text-white mt-2">{simResults.riskLevel}</p>
+            <Card className="p-4 border-[#6C63FF]/20 glass-card bg-white/95 text-center rounded-3xl">
+              <span className="text-[10px] text-[#64748B] uppercase font-black">Risk Classification</span>
+              <p className="text-sm font-black text-[#0F172A] mt-2">{simResults.riskLevel}</p>
             </Card>
           </div>
 
+          {/* AI Recommendation Teaser Callout */}
+          <Card glow className="p-5 border-[#10B981]/30 glass-card bg-white/95 rounded-3xl space-y-2">
+            <span className="text-[10px] font-black text-[#10B981] uppercase tracking-wider block">LIVE SIMULATOR RECOMMENDATION</span>
+            <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-relaxed">{simResults.recommendation}</p>
+          </Card>
+
           {/* Dynamic Area Chart */}
-          <Card className="p-6 border-purple-500/30 glass-card bg-slate-900/80 space-y-4 rounded-3xl">
+          <Card className="p-6 border-[#6C63FF]/20 glass-card bg-white/95 space-y-4 rounded-3xl">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-black text-white">Stochastic Revenue Trajectory</h3>
-                <p className="text-xs text-slate-300 font-semibold">Monte Carlo 10,000 bounds: Conservative vs Expected vs Aggressive</p>
+                <h3 className="text-base font-black text-[#0F172A]">Stochastic Revenue Trajectory</h3>
+                <p className="text-xs text-[#64748B] font-semibold">Monte Carlo 10,000 bounds: Conservative vs Expected vs Aggressive</p>
               </div>
               <Badge variant="primary" size="sm">Live Graph</Badge>
             </div>
@@ -205,20 +254,20 @@ export const ScenarioSimulatorPage = () => {
                 <AreaChart data={simResults.chartData}>
                   <defs>
                     <linearGradient id="colorExp" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#A855F7" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#A855F7" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#6C63FF" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#6C63FF" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorAgg" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#10B981" stopOpacity={0.4} />
                       <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.5} />
-                  <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} fontWeight={700} />
-                  <YAxis stroke="#94a3b8" fontSize={11} fontWeight={700} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.6} />
+                  <XAxis dataKey="month" stroke="#64748b" fontSize={11} fontWeight={700} />
+                  <YAxis stroke="#64748b" fontSize={11} fontWeight={700} />
                   <Tooltip />
                   <Area type="monotone" dataKey="conservative" stroke="#f59e0b" strokeWidth={2.5} fill="transparent" name="Conservative ($)" />
-                  <Area type="monotone" dataKey="expected" stroke="#A855F7" strokeWidth={2.5} fill="url(#colorExp)" name="Expected ($)" />
+                  <Area type="monotone" dataKey="expected" stroke="#6C63FF" strokeWidth={2.5} fill="url(#colorExp)" name="Expected ($)" />
                   <Area type="monotone" dataKey="aggressive" stroke="#10B981" strokeWidth={2.5} fill="url(#colorAgg)" name="Aggressive ($)" />
                 </AreaChart>
               </ResponsiveContainer>
