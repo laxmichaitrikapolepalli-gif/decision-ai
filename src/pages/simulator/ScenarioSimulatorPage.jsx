@@ -13,7 +13,6 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
-// TODO: Backend endpoint POST /api/simulator is missing. Preserving UI with client-side simulator calculation.
 export const ScenarioSimulatorPage = () => {
   const [sliders, setSliders] = useState({
     budget: 2500000,
@@ -69,6 +68,9 @@ export const ScenarioSimulatorPage = () => {
     return () => clearTimeout(timer);
   }, [sliders]);
 
+  // Track percentage calculation helper for gradient tracks
+  const getPct = (val, min, max) => ((val - min) / (max - min)) * 100;
+
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
       {/* Header */}
@@ -93,7 +95,7 @@ export const ScenarioSimulatorPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Sliders Control Panel */}
-        <Card glow className="lg:col-span-1 p-6 space-y-5 border-[#6C63FF]/20 glass-card bg-white/95 rounded-3xl">
+        <Card glow className="lg:col-span-1 p-6 space-y-6 border-[#6C63FF]/20 glass-card bg-white/95 rounded-3xl">
           <h3 className="text-base font-black text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
             <Sliders className="w-4.5 h-4.5 text-[#6C63FF]" /> Variable Sliders
           </h3>
@@ -113,7 +115,11 @@ export const ScenarioSimulatorPage = () => {
               step={100000}
               value={sliders.budget}
               onChange={(e) => setSliders({ ...sliders, budget: Number(e.target.value) })}
-              className="w-full accent-[#6C63FF] bg-slate-100 h-2 rounded-lg cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #6C63FF ${getPct(sliders.budget, 500000, 10000000)}%, #E2E8F0 ${getPct(sliders.budget, 500000, 10000000)}%)`,
+                color: '#6C63FF'
+              }}
+              className="w-full h-2 rounded-lg cursor-pointer"
             />
           </div>
 
@@ -132,7 +138,11 @@ export const ScenarioSimulatorPage = () => {
               step={1}
               value={sliders.timeline}
               onChange={(e) => setSliders({ ...sliders, timeline: Number(e.target.value) })}
-              className="w-full accent-[#6C63FF] bg-slate-100 h-2 rounded-lg cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #6C63FF ${getPct(sliders.timeline, 1, 24)}%, #E2E8F0 ${getPct(sliders.timeline, 1, 24)}%)`,
+                color: '#6C63FF'
+              }}
+              className="w-full h-2 rounded-lg cursor-pointer"
             />
           </div>
 
@@ -151,7 +161,11 @@ export const ScenarioSimulatorPage = () => {
               step={5}
               value={sliders.risk}
               onChange={(e) => setSliders({ ...sliders, risk: Number(e.target.value) })}
-              className="w-full accent-[#F59E0B] bg-slate-100 h-2 rounded-lg cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #F59E0B ${getPct(sliders.risk, 5, 95)}%, #E2E8F0 ${getPct(sliders.risk, 5, 95)}%)`,
+                color: '#F59E0B'
+              }}
+              className="w-full h-2 rounded-lg cursor-pointer"
             />
           </div>
 
@@ -170,7 +184,11 @@ export const ScenarioSimulatorPage = () => {
               step={5}
               value={sliders.market}
               onChange={(e) => setSliders({ ...sliders, market: Number(e.target.value) })}
-              className="w-full accent-[#4F7DFF] bg-slate-100 h-2 rounded-lg cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #4F7DFF ${getPct(sliders.market, 10, 100)}%, #E2E8F0 ${getPct(sliders.market, 10, 100)}%)`,
+                color: '#4F7DFF'
+              }}
+              className="w-full h-2 rounded-lg cursor-pointer"
             />
           </div>
 
@@ -189,7 +207,11 @@ export const ScenarioSimulatorPage = () => {
               step={1}
               value={sliders.inflation}
               onChange={(e) => setSliders({ ...sliders, inflation: Number(e.target.value) })}
-              className="w-full accent-[#EF4444] bg-slate-100 h-2 rounded-lg cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #EF4444 ${getPct(sliders.inflation, 1, 15)}%, #E2E8F0 ${getPct(sliders.inflation, 1, 15)}%)`,
+                color: '#EF4444'
+              }}
+              className="w-full h-2 rounded-lg cursor-pointer"
             />
           </div>
 
@@ -208,7 +230,11 @@ export const ScenarioSimulatorPage = () => {
               step={5}
               value={sliders.growth}
               onChange={(e) => setSliders({ ...sliders, growth: Number(e.target.value) })}
-              className="w-full accent-[#FF2DAA] bg-slate-100 h-2 rounded-lg cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, #FF2DAA ${getPct(sliders.growth, 5, 60)}%, #E2E8F0 ${getPct(sliders.growth, 5, 60)}%)`,
+                color: '#FF2DAA'
+              }}
+              className="w-full h-2 rounded-lg cursor-pointer"
             />
           </div>
         </Card>
