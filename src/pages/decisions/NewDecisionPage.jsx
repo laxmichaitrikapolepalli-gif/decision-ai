@@ -13,12 +13,13 @@ import {
   Mic,
   ArrowRight,
   ArrowLeft,
-  Navigation,
-  MapPin,
+  Building,
+  Target,
   Clock,
-  Car,
+  Layers,
   Paperclip,
-  Route
+  CheckCircle2,
+  BrainCircuit
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -29,19 +30,19 @@ export const NewDecisionPage = () => {
   const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
-    title: 'Hyderabad → Bangalore Commute',
-    source: 'Hyderabad Hitec City Phase II',
-    destination: 'Bangalore Electronic City',
-    departureTime: '08:30 AM IST',
-    transportMode: 'Car',
-    description: 'Avoid peak morning bottlenecks, optimize fuel efficiency, and identify green wave signal corridors.',
-    budget: '$45.00',
-    timeline: 'Within Today',
-    riskTolerance: 'Low',
-    constraints: 'Must arrive before 02:00 PM conference call; avoid unpaved rural bypass roads.',
+    title: 'Hyderabad Hitec City Flagship Expansion',
+    source: 'Expand Store in Hyderabad Hitec City',
+    destination: 'Expand Store in Bangalore Whitefield',
+    departureTime: 'Q3 2026 Fiscal Target',
+    transportMode: 'Capital Investment',
+    description: 'Evaluate strategic real estate arbitrage, talent density, tax subsidies, and CapEx payback timelines between Tier-1 tech hubs.',
+    budget: '$2,500,000',
+    timeline: '6 Months',
+    riskTolerance: 'Low Risk (12%)',
+    constraints: 'CapEx payback must occur within 18 months; municipal tax subsidies required.',
     attachments: [
-      { name: 'Route_Map_Corridor.png', size: '1.2 MB' },
-      { name: 'Toll_Gate_Pass.pdf', size: '540 KB' }
+      { name: 'Hyderabad_Lease_Subsidy_TermSheet.pdf', size: '1.4 MB' },
+      { name: 'APAC_Talent_Density_Model.xlsx', size: '820 KB' }
     ]
   });
 
@@ -50,13 +51,13 @@ export const NewDecisionPage = () => {
   const handleVoiceRecord = () => {
     if (!isRecording) {
       setIsRecording(true);
-      toast.success('Voice memo recording started... Speak your trip preferences.');
+      toast.success('Voice memo recording started... Dictate strategic parameters.');
       setTimeout(() => {
         setIsRecording(false);
         toast.success('Voice memo transcribed using AI NLP engine!');
         setFormData(prev => ({
           ...prev,
-          constraints: prev.constraints + ' [Voice Memo Added: Prefer highway toll flyovers over city center intersections]'
+          constraints: prev.constraints + ' [Voice Memo Added: Prioritize municipal tax credits over short-term CapEx discounts]'
         }));
       }, 3000);
     }
@@ -67,7 +68,7 @@ export const NewDecisionPage = () => {
     if (files && files.length > 0) {
       const newFiles = Array.from(files).map(f => ({ name: f.name, size: `${(f.size / 1024 / 1024).toFixed(1)} MB` }));
       setFormData(prev => ({ ...prev, attachments: [...prev.attachments, ...newFiles] }));
-      toast.success(`Attached ${files.length} file(s)`);
+      toast.success(`Attached ${files.length} document(s)`);
     }
   };
 
@@ -76,10 +77,10 @@ export const NewDecisionPage = () => {
 
     // Map exact backend expected fields: source, destination, departureTime, transportMode
     const recommendationPayload = {
-      source: formData.source || 'Hyderabad',
-      destination: formData.destination || 'Bangalore',
-      departureTime: formData.departureTime || '08:30 AM',
-      transportMode: formData.transportMode || 'Car',
+      source: formData.source || 'Hyderabad Option A',
+      destination: formData.destination || 'Bangalore Option B',
+      departureTime: formData.departureTime || 'Q3 2026 Target',
+      transportMode: formData.transportMode || 'Capital Investment',
     };
 
     let resData = {};
@@ -89,38 +90,44 @@ export const NewDecisionPage = () => {
       resData = result?.data || result || {};
     } catch (err) {
       // Fallback AI recommendation if Gemini API rate limits (429/502) or backend fails
-      toast.error('Backend Gemini API rate limited - generating AI Smart Mobility route.');
+      toast.error('AI Recommendation Engine fallback active.');
       resData = {
-        bestRoute: `${formData.source} → ${formData.destination} Outer Ring Expressway`,
-        alternativeRoute: `${formData.source} via Old Highway Bypass`,
-        estimatedTime: '24 mins',
-        trafficLevel: 'Smooth Flow (Green Wave)',
-        bestDepartureTime: formData.departureTime || '08:30 AM',
-        travelCost: formData.budget || '$45.00',
-        fuelEfficiency: '28 mpg (Optimal High Efficiency)',
+        bestRoute: `Primary Strategic Recommendation: ${formData.source}`,
+        alternativeRoute: `Secondary Option: ${formData.destination}`,
+        estimatedTime: '14.2 Months Payback',
+        trafficLevel: 'Low Risk (P95)',
+        bestDepartureTime: formData.departureTime || 'Q3 2026 Target',
+        travelCost: formData.budget || '$2,500,000',
+        fuelEfficiency: '+38% Projected ROI',
         confidenceScore: 96,
-        reason: `SmartRoute AI identified Outer Ring Expressway as the optimal route for ${formData.source} to ${formData.destination}, avoiding city center bottlenecks and saving 18 mins in transit.`,
+        reason: `DecisionSphere AI neural model identified ${formData.source} as the optimal strategic path, delivering superior payback velocity, municipal tax credits, and lower risk exposure compared to ${formData.destination}.`,
         tips: [
-          'Maintain 75-80 km/h cruise speed across tollway section',
-          'Depart before 08:45 AM to catch synchronized signal green wave',
-          'Use fast-tag express lane at main toll plaza'
+          'Finalize municipal tax exemption LOI prior to Q3 fiscal deadline',
+          'Allocate $1.8M CapEx for initial hardware node deployment',
+          'Establish regional R&D hub to capture senior talent density'
         ]
       };
     }
 
     const decisionObj = {
-      id: resData.id || resData._id || `TRIP-${Date.now()}`,
+      id: resData.id || resData._id || `DEC-${Date.now()}`,
       ...resData,
       ...formData,
       source: recommendationPayload.source,
       destination: recommendationPayload.destination,
       departureTime: recommendationPayload.departureTime,
       transportMode: recommendationPayload.transportMode,
+      recommendation: resData.bestRoute || `Proceed with ${formData.source}`,
+      confidence: resData.confidenceScore || 96,
+      risk: resData.trafficLevel || 'Low Risk',
+      roi: resData.fuelEfficiency || '+38% ROI',
+      status: 'Approved',
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     };
 
     await addNewDecision(decisionObj);
     setCurrentDecision(decisionObj);
-    toast.success('AI Route Recommendation Generated!');
+    toast.success('AI Strategic Recommendation Generated!');
     navigate(`/decisions/result/${decisionObj.id}`);
   };
 
@@ -130,24 +137,24 @@ export const NewDecisionPage = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black font-mono text-blue-600 uppercase tracking-widest">SMARTROUTE AI OPTIMIZER</span>
+            <span className="text-xs font-black font-mono text-purple-400 uppercase tracking-widest">DECISION ENGINE</span>
             <Badge variant="primary" size="sm">Step {step} of 4</Badge>
           </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
-            AI Route Optimizer & Trip Planner
+          <h1 className="text-3xl font-black text-white tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
+            Create AI Decision & Strategy
           </h1>
-          <p className="text-xs font-bold text-slate-700 mt-1">
-            Generate optimal routes with real-time AI traffic intelligence
+          <p className="text-xs font-semibold text-slate-300 mt-1">
+            Input business parameters for neural analysis, risk modeling, and strategic recommendations
           </p>
         </div>
       </div>
 
       {/* Progress Steps Header */}
-      <div className="grid grid-cols-4 gap-2 p-2 rounded-2xl bg-white/90 backdrop-blur-md border border-blue-500/25 shadow-sm">
+      <div className="grid grid-cols-4 gap-2 p-2 rounded-2xl bg-slate-900/80 border border-purple-500/25 shadow-sm">
         {[
-          { id: 1, label: '1. Origin & Dest' },
-          { id: 2, label: '2. Timing & Mode' },
-          { id: 3, label: '3. Preferences' },
+          { id: 1, label: '1. Options & Objectives' },
+          { id: 2, label: '2. Financials & Timing' },
+          { id: 3, label: '3. Risk & Constraints' },
           { id: 4, label: '4. Documents & Run' },
         ].map((s) => (
           <button
@@ -156,10 +163,10 @@ export const NewDecisionPage = () => {
             onClick={() => setStep(s.id)}
             className={`py-2.5 px-3 rounded-xl text-xs font-black transition-all text-center cursor-pointer ${
               step === s.id
-                ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md shadow-blue-500/20'
+                ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-md shadow-purple-500/20'
                 : step > s.id
-                ? 'bg-blue-500/10 text-blue-700 border border-blue-500/20'
-                : 'text-slate-700 hover:text-blue-700 hover:bg-white'
+                ? 'bg-purple-500/10 text-purple-300 border border-purple-500/20'
+                : 'text-slate-400 hover:text-purple-300 hover:bg-slate-900'
             }`}
           >
             {s.label}
@@ -168,48 +175,48 @@ export const NewDecisionPage = () => {
       </div>
 
       {/* Form Card */}
-      <Card glow className="p-8 border-blue-500/30 glass-card">
+      <Card glow className="p-8 border-purple-500/30 glass-card bg-slate-900/80">
         <form onSubmit={handleSubmit} className="space-y-6">
           {step === 1 && (
             <div className="space-y-4">
               <Input
-                label="Trip Title / Route Identifier"
+                label="Strategic Decision Title"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="e.g. Hyderabad to Bangalore Commute"
+                placeholder="e.g. Hyderabad Flagship R&D Expansion"
                 required
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
-                  label="From Location (Source)"
-                  icon={Navigation}
+                  label="Option A (Primary Contender)"
+                  icon={Building}
                   value={formData.source}
                   onChange={(e) => setFormData({ ...formData, source: e.target.value })}
-                  placeholder="e.g. Hyderabad Hitec City"
+                  placeholder="e.g. Expand Store in Hyderabad Hitec City"
                   required
                 />
 
                 <Input
-                  label="Destination"
-                  icon={MapPin}
+                  label="Option B (Challenger Option)"
+                  icon={Target}
                   value={formData.destination}
                   onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                  placeholder="e.g. Bangalore Electronic City"
+                  placeholder="e.g. Expand Store in Bangalore Whitefield"
                   required
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-black uppercase tracking-wider text-slate-800">
-                  Trip Objectives & Commute Description
+                <label className="text-xs font-black uppercase tracking-wider text-slate-300">
+                  Decision Context & Business Objectives
                 </label>
                 <textarea
                   rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Describe your commute preferences, bottleneck priorities, and stopovers..."
-                  className="w-full rounded-2xl bg-white border border-blue-500/25 text-slate-900 placeholder-slate-400 p-4 text-sm font-bold transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:outline-none shadow-sm"
+                  placeholder="Describe your strategic objectives, risk boundaries, and core evaluation parameters..."
+                  className="w-full rounded-2xl bg-slate-950 border border-purple-500/25 text-white placeholder-slate-500 p-4 text-sm font-bold transition-all focus:border-purple-500 focus:outline-none shadow-sm"
                   required
                 />
               </div>
@@ -220,25 +227,25 @@ export const NewDecisionPage = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
-                  label="Departure Time"
+                  label="Target Execution Horizon"
                   icon={Clock}
                   value={formData.departureTime}
                   onChange={(e) => setFormData({ ...formData, departureTime: e.target.value })}
-                  placeholder="08:30 AM IST"
+                  placeholder="Q3 2026 Fiscal Target"
                   required
                 />
 
                 <Select
-                  label="Transport Mode"
-                  icon={Car}
+                  label="Decision Category"
+                  icon={Layers}
                   value={formData.transportMode}
                   onChange={(e) => setFormData({ ...formData, transportMode: e.target.value })}
                   options={[
-                    { value: 'Car', label: 'Car / Road Express' },
-                    { value: 'Bus', label: 'Bus / Shuttle' },
-                    { value: 'Train', label: 'Train / High-Speed Rail' },
-                    { value: 'Flight', label: 'Flight / Air Transit' },
-                    { value: 'Bike', label: 'Bike / Motor Two-Wheeler' },
+                    { value: 'Capital Investment', label: 'Capital Investment & CapEx' },
+                    { value: 'Market Expansion', label: 'Market Expansion & Real Estate' },
+                    { value: 'Talent & Hiring', label: 'Talent Acquisition & R&D' },
+                    { value: 'IT Infrastructure', label: 'IT & Cloud Infrastructure' },
+                    { value: 'Supply Chain', label: 'Supply Chain & Procurement' },
                   ]}
                   required
                 />
@@ -246,21 +253,21 @@ export const NewDecisionPage = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Select
-                  label="Traffic Risk Tolerance"
+                  label="Risk Classification"
                   value={formData.riskTolerance}
                   onChange={(e) => setFormData({ ...formData, riskTolerance: e.target.value })}
                   options={[
-                    { value: 'Low', label: 'Low Risk (Safest, Smooth Flow)' },
-                    { value: 'Medium', label: 'Medium Risk (Balanced Speed & Tolls)' },
-                    { value: 'High', label: 'High Speed (Aggressive Express Lanes)' },
+                    { value: 'Low Risk (12%)', label: 'Low Risk (High Confidence)' },
+                    { value: 'Moderate Risk (28%)', label: 'Moderate Risk (Balanced Yield)' },
+                    { value: 'High Risk (45%)', label: 'Aggressive High Yield' },
                   ]}
                 />
 
                 <Input
-                  label="Estimated Toll & Fuel Budget"
+                  label="CapEx / Budget Allocation"
                   value={formData.budget}
                   onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                  placeholder="$45.00"
+                  placeholder="$2,500,000"
                 />
               </div>
             </div>
@@ -269,27 +276,27 @@ export const NewDecisionPage = () => {
           {step === 3 && (
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-black uppercase tracking-wider text-slate-800">
-                  Route Constraints & Detour Rules
+                <label className="text-xs font-black uppercase tracking-wider text-slate-300">
+                  Strategic Constraints & Governance Rules
                 </label>
                 <textarea
                   rows={4}
                   value={formData.constraints}
                   onChange={(e) => setFormData({ ...formData, constraints: e.target.value })}
-                  placeholder="Specify arrival deadlines, toll gate preferences, road quality requirements..."
-                  className="w-full rounded-2xl bg-white border border-blue-500/25 text-slate-900 placeholder-slate-400 p-4 text-sm font-bold transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:outline-none shadow-sm"
+                  placeholder="Specify payback deadlines, compliance requirements, tax thresholds..."
+                  className="w-full rounded-2xl bg-slate-950 border border-purple-500/25 text-white placeholder-slate-500 p-4 text-sm font-bold transition-all focus:border-purple-500 focus:outline-none shadow-sm"
                 />
               </div>
 
               {/* Voice Memo Upload Callout Box */}
-              <div className="p-4 rounded-2xl bg-blue-50/80 border border-blue-500/30 flex items-center justify-between gap-4 shadow-sm">
+              <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-between gap-4 shadow-sm">
                 <div className="flex items-center gap-3">
-                  <div className={`p-3 rounded-xl border ${isRecording ? 'bg-rose-500 text-white border-rose-400 animate-ping' : 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-blue-400'}`}>
+                  <div className={`p-3 rounded-xl border ${isRecording ? 'bg-rose-500 text-white border-rose-400 animate-ping' : 'bg-gradient-to-r from-pink-500 to-purple-600 text-white border-purple-400'}`}>
                     <Mic className="w-5 h-5" />
                   </div>
                   <div>
-                    <h5 className="text-sm font-black text-slate-900">Dictate Voice Route Instructions</h5>
-                    <p className="text-xs font-semibold text-slate-700">Record natural speech for AI automatic parameter extraction</p>
+                    <h5 className="text-sm font-black text-white">Dictate Voice Strategic Notes</h5>
+                    <p className="text-xs font-semibold text-slate-300">Record natural speech for AI automatic parameter extraction</p>
                   </div>
                 </div>
                 <Button onClick={handleVoiceRecord} variant={isRecording ? 'danger' : 'accent'} size="sm">
@@ -302,52 +309,38 @@ export const NewDecisionPage = () => {
           {step === 4 && (
             <div className="space-y-6">
               {/* Drag and Drop Zone */}
-              <div className="border-2 border-dashed border-blue-400/60 hover:border-blue-600 rounded-2xl p-8 text-center bg-blue-50/40 transition-colors relative">
+              <div className="border-2 border-dashed border-purple-400/40 hover:border-purple-500 rounded-2xl p-8 text-center bg-purple-500/5 transition-colors relative">
                 <input
                   type="file"
                   multiple
                   onChange={handleFileUpload}
                   className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                 />
-                <Upload className="w-10 h-10 text-blue-600 mx-auto mb-3" />
-                <h5 className="text-sm font-black text-slate-900">Drag & drop route files or click to browse</h5>
-                <p className="text-xs font-semibold text-slate-700 mt-1">Supports GPX, KML, PDF, PNG up to 50MB</p>
+                <Upload className="w-10 h-10 text-purple-400 mx-auto mb-3" />
+                <h5 className="text-sm font-black text-white">Drag & drop executive reports or click to browse</h5>
+                <p className="text-xs font-semibold text-slate-400 mt-1">Supports PDF, XLSX, DOCX, PNG up to 50MB</p>
               </div>
 
               {/* Attached Files List */}
               {formData.attachments.length > 0 && (
                 <div className="space-y-2">
-                  <span className="text-xs font-black text-slate-800 uppercase">Attached Route Documents</span>
+                  <span className="text-xs font-black text-slate-300 uppercase">Attached Strategic Documents</span>
                   {formData.attachments.map((file, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white border border-blue-500/25 text-xs shadow-sm">
+                    <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-purple-500/25 text-xs shadow-sm">
                       <div className="flex items-center gap-2">
-                        <Paperclip className="w-4 h-4 text-blue-600" />
-                        <span className="font-black text-slate-900">{file.name}</span>
+                        <Paperclip className="w-4 h-4 text-purple-400" />
+                        <span className="font-black text-white">{file.name}</span>
                       </div>
                       <Badge variant="neutral" size="sm">{file.size}</Badge>
                     </div>
                   ))}
                 </div>
               )}
-
-              {/* Final Summary Card showing payload mapping */}
-              <div className="p-4 rounded-2xl bg-blue-50/80 border border-blue-500/30 space-y-2 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-blue-700 uppercase">Payload Mapping to POST /api/ai/recommend</span>
-                  <Badge variant="success" size="sm">Ready to Send</Badge>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-xs font-mono font-bold text-slate-800 pt-1">
-                  <div>source: "{formData.source}"</div>
-                  <div>destination: "{formData.destination}"</div>
-                  <div>departureTime: "{formData.departureTime}"</div>
-                  <div>transportMode: "{formData.transportMode}"</div>
-                </div>
-              </div>
             </div>
           )}
 
           {/* Form Controls */}
-          <div className="flex items-center justify-between pt-4 border-t border-blue-500/20">
+          <div className="flex items-center justify-between pt-4 border-t border-purple-500/20">
             {step > 1 ? (
               <Button type="button" onClick={() => setStep(step - 1)} variant="ghost" size="md" icon={ArrowLeft}>
                 Back
@@ -360,7 +353,7 @@ export const NewDecisionPage = () => {
               </Button>
             ) : (
               <Button type="submit" variant="primary" size="lg" loading={recommendLoading} icon={Sparkles}>
-                Run AI Route Optimizer
+                Run AI Decision Engine
               </Button>
             )}
           </div>

@@ -1,34 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDecision } from '../../contexts/DecisionContext';
-import { useCommand } from '../../contexts/CommandContext';
-import { useTrips } from '../../hooks/useTrips';
+import { Navbar } from '../../components/common/Navbar';
+import { Sidebar } from '../../components/common/Sidebar';
+import { DecisionCard } from '../../components/decision/DecisionCard';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { Skeleton } from '../../components/ui/Skeleton';
-import { ErrorState } from '../../components/ui/ErrorState';
-import { EmptyState } from '../../components/ui/EmptyState';
-import { RiskMeter, ConfidenceMeter } from '../../components/ui/RiskMeter';
-import { DecisionCard } from '../../components/decision/DecisionCard';
 import {
   Sparkles,
   PlusCircle,
-  Swords,
   TrendingUp,
+  Brain,
+  Layers,
+  Activity,
+  ArrowRight,
   ShieldCheck,
   Zap,
-  Bot,
-  ArrowRight,
-  Activity,
-  Layers,
-  Clock,
-  Car,
-  Fuel,
-  Leaf,
-  Navigation,
-  Route
+  Target,
+  BarChart2,
+  PieChart,
+  LineChart,
+  Bot
 } from 'lucide-react';
 import {
   AreaChart,
@@ -42,336 +36,211 @@ import {
 
 export const DashboardPage = () => {
   const { user } = useAuth();
-  const { toggleAiDrawer } = useDecision();
-  const { openCommandPalette } = useCommand();
-  const { data: trips, loading, error, refetch } = useTrips();
+  const { decisions, loading, fetchTrips, toggleAiDrawer } = useDecision();
 
-  // Dynamic calculations from GET /api/trips
-  const totalTrips = trips?.length || 0;
-  const recentTrips = trips?.slice(0, 4) || [];
-  const lastRecommendation = trips?.[0] || null;
+  useEffect(() => {
+    fetchTrips();
+  }, [fetchTrips]);
 
-  // Calculate Average Travel Time if available
-  const avgTravelTime = React.useMemo(() => {
-    if (!trips || trips.length === 0) return '24 mins';
-    const times = trips.map(t => {
-      const timeStr = t.estimatedTime || t.travelTime || t.travel_time;
-      if (typeof timeStr === 'number') return timeStr;
-      if (typeof timeStr === 'string') {
-        const num = parseFloat(timeStr.replace(/[^0-9.]/g, ''));
-        return isNaN(num) ? 0 : num;
-      }
-      return 0;
-    }).filter(v => v > 0);
+  const kpis = [
+    {
+      label: 'Total Decisions',
+      value: decisions.length > 0 ? `${decisions.length}` : '24',
+      change: '+14% this month',
+      icon: Target,
+      color: 'from-purple-500 to-indigo-600',
+      borderColor: 'border-purple-500/30'
+    },
+    {
+      label: 'AI Recommendations',
+      value: decisions.length > 0 ? `${decisions.length}` : '18',
+      change: '100% neural processed',
+      icon: Sparkles,
+      color: 'from-pink-500 to-rose-600',
+      borderColor: 'border-pink-500/30'
+    },
+    {
+      label: 'Decision Confidence',
+      value: '96.2%',
+      change: 'High-confidence threshold',
+      icon: ShieldCheck,
+      color: 'from-indigo-500 to-blue-600',
+      borderColor: 'border-indigo-500/30'
+    },
+    {
+      label: 'Prediction Accuracy',
+      value: '98.4%',
+      change: '+12.4% vs baseline',
+      icon: TrendingUp,
+      color: 'from-emerald-500 to-teal-600',
+      borderColor: 'border-emerald-500/30'
+    },
+    {
+      label: 'Active Scenarios',
+      value: '12',
+      change: 'Monte Carlo models running',
+      icon: Layers,
+      color: 'from-amber-500 to-orange-600',
+      borderColor: 'border-amber-500/30'
+    },
+    {
+      label: 'Risk Level',
+      value: 'Low (P95)',
+      change: 'Optimal risk distribution',
+      icon: Activity,
+      color: 'from-cyan-500 to-blue-600',
+      borderColor: 'border-cyan-500/30'
+    }
+  ];
 
-    if (times.length === 0) return '24 mins';
-    const sum = times.reduce((a, b) => a + b, 0);
-    const avg = Math.round(sum / times.length);
-    return `${avg} mins`;
-  }, [trips]);
-
-  // Calculate AI Confidence Average if available
-  const avgConfidence = React.useMemo(() => {
-    if (!trips || trips.length === 0) return 98.4;
-    const confs = trips.map(t => {
-      const conf = t.confidence || t.ai_confidence || t.confidenceScore || t.confidenceMeter;
-      return typeof conf === 'number' ? conf : parseFloat(conf);
-    }).filter(val => !isNaN(val) && val > 0);
-
-    if (confs.length === 0) return 98.4;
-    const sum = confs.reduce((a, b) => a + b, 0);
-    return (sum / confs.length).toFixed(1);
-  }, [trips]);
-
-  // Trend Chart Data for Mobility Optimization
   const chartData = [
-    { month: '08:00 AM', accuracy: 91, travelTime: 32, fuelSaved: 12 },
-    { month: '09:00 AM', accuracy: 94, travelTime: 28, fuelSaved: 18 },
-    { month: '10:00 AM', accuracy: 96, travelTime: 24, fuelSaved: 22 },
-    { month: '11:00 AM', accuracy: 98, travelTime: 21, fuelSaved: 28 },
-    { month: '12:00 PM', accuracy: Number(avgConfidence) || 98.4, travelTime: 19, fuelSaved: 35 },
+    { month: 'Jan', decisions: 12, accuracy: 94 },
+    { month: 'Feb', decisions: 15, accuracy: 95 },
+    { month: 'Mar', decisions: 18, accuracy: 96 },
+    { month: 'Apr', decisions: 22, accuracy: 97 },
+    { month: 'May', decisions: 24, accuracy: 98 },
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Top Welcome Banner */}
-      <div className="p-8 rounded-3xl glass-card border border-blue-500/30 relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-6 shadow-xl">
-        <div className="space-y-2.5 relative z-10">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-black font-mono text-blue-600 uppercase tracking-widest">
-              {user?.company || user?.organization || 'Smart Mobility Operations'}
-            </span>
-            <Badge variant="primary" size="sm" icon={ShieldCheck}>SmartRoute AI v4.2</Badge>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight font-['Space_Grotesk'] text-gradient-master">
-            Welcome back, {user?.name?.split(' ')[0] || user?.email?.split('@')[0] || 'User'} 👋
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-800 max-w-xl font-bold leading-relaxed">
-            SmartRoute AI evaluated <span className="text-blue-700 font-black">{totalTrips > 0 ? `${totalTrips} trip recommendation(s)` : 'live traffic corridors'}</span>. Average route precision rate is at <span className="text-blue-700 font-black">{avgConfidence}%</span>.
-          </p>
-        </div>
+    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-purple-500 selection:text-white">
+      <Navbar isDashboard={true} />
 
-        {/* Quick Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3 relative z-10 shrink-0">
-          <Link to="/decisions/new">
-            <Button variant="primary" size="md" icon={PlusCircle}>
-              Route Optimizer
-            </Button>
-          </Link>
-          <Link to="/decisions/battle">
-            <Button variant="accent" size="md" icon={Swords}>
-              Route Comparison
-            </Button>
-          </Link>
-          <Button onClick={openCommandPalette} variant="secondary" size="md" icon={Zap}>
-            Cmd (Ctrl+K)
-          </Button>
-        </div>
-      </div>
+      <div className="flex pt-4">
+        <Sidebar />
 
-      {/* Loading Skeletons */}
-      {loading && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-        </div>
-      )}
-
-      {/* Error State */}
-      {error && !loading && (
-        <ErrorState message={error} onRetry={refetch} />
-      )}
-
-      {/* Rebranded Mobility KPI Cards Row */}
-      {!loading && !error && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {/* 1. Today's Trips */}
-          <Card glow className="glass-card-hover border-blue-500/30 p-6">
-            <div className="flex items-center justify-between text-slate-700 mb-2">
-              <span className="text-xs font-black uppercase tracking-wider text-blue-700">Today's Trips</span>
-              <div className="p-2 rounded-xl bg-blue-500/15 text-blue-700">
-                <Car className="w-5 h-5" />
+        <main className="flex-1 px-4 lg:px-8 pb-16 space-y-8 overflow-x-hidden max-w-7xl">
+          
+          {/* Executive Welcome Banner */}
+          <div className="p-8 rounded-3xl bg-gradient-to-r from-pink-500/15 via-purple-500/15 to-indigo-500/15 border border-purple-500/30 backdrop-blur-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl">
+            <div className="space-y-2 max-w-xl z-10">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-black text-purple-400 uppercase tracking-widest">EXECUTIVE PLATFORM</span>
+                <Badge variant="primary" size="sm">Active Session</Badge>
               </div>
+              <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight font-['Space_Grotesk']">
+                Welcome back, {user?.name?.split(' ')[0] || 'Executive'}
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-300 font-medium">
+                DecisionSphere AI model v4.2 is actively monitoring strategic parameters and scenario bounds.
+              </p>
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-slate-900 font-['Space_Grotesk']">{totalTrips}</span>
-              <span className="text-xs font-black text-emerald-600">Monitored</span>
-            </div>
-            <p className="text-[11px] text-slate-700 mt-1 font-bold">Live transit routes in system</p>
-          </Card>
 
-          {/* 2. AI Recommendations */}
-          <Card glow className="glass-card-hover border-cyan-500/30 p-6">
-            <div className="flex items-center justify-between text-slate-700 mb-2">
-              <span className="text-xs font-black uppercase tracking-wider text-cyan-700">AI Recommendations</span>
-              <div className="p-2 rounded-xl bg-cyan-500/15 text-cyan-700">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
+            <div className="flex items-center gap-3 z-10">
+              <Link to="/decisions/new">
+                <Button variant="primary" size="lg" icon={PlusCircle} className="shadow-lg shadow-purple-500/30">
+                  New AI Decision
+                </Button>
+              </Link>
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-slate-900 font-['Space_Grotesk']">{avgConfidence}%</span>
-              <span className="text-xs font-black text-emerald-600">Optimal</span>
-            </div>
-            <p className="text-[11px] text-slate-700 mt-1 font-bold">Route precision confidence rate</p>
-          </Card>
-
-          {/* 3. Average Travel Time */}
-          <Card glow className="glass-card-hover border-emerald-500/30 p-6">
-            <div className="flex items-center justify-between text-slate-700 mb-2">
-              <span className="text-xs font-black uppercase tracking-wider text-emerald-700">Average Travel Time</span>
-              <div className="p-2 rounded-xl bg-emerald-500/15 text-emerald-700">
-                <Clock className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-slate-900 font-['Space_Grotesk']">{avgTravelTime}</span>
-              <span className="text-xs font-black text-emerald-600">-18% Latency</span>
-            </div>
-            <p className="text-[11px] text-slate-700 mt-1 font-bold">Average duration per trip</p>
-          </Card>
-
-          {/* 4. Traffic Status */}
-          <Card glow className="glass-card-hover border-amber-500/30 p-6">
-            <div className="flex items-center justify-between text-slate-700 mb-2">
-              <span className="text-xs font-black uppercase tracking-wider text-amber-800">Traffic Status</span>
-              <div className="p-2 rounded-xl bg-amber-500/15 text-amber-700">
-                <Activity className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-emerald-600 font-['Space_Grotesk']">Optimal Flow</span>
-              <span className="text-xs font-black text-emerald-600">Green Wave</span>
-            </div>
-            <p className="text-[11px] text-slate-700 mt-1 font-bold">Real-time corridor sync active</p>
-          </Card>
-
-          {/* 5. Fuel Savings */}
-          <Card glow className="glass-card-hover border-indigo-500/30 p-6">
-            <div className="flex items-center justify-between text-slate-700 mb-2">
-              <span className="text-xs font-black uppercase tracking-wider text-indigo-700">Fuel Savings</span>
-              <div className="p-2 rounded-xl bg-indigo-500/15 text-indigo-700">
-                <Fuel className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-slate-900 font-['Space_Grotesk'] text-gradient-master">$4.2M+</span>
-              <span className="text-xs font-black text-emerald-600">+22% Efficiency</span>
-            </div>
-            <p className="text-[11px] text-slate-700 mt-1 font-bold">Estimated aggregate fuel saved</p>
-          </Card>
-
-          {/* 6. Carbon Emissions Saved */}
-          <Card glow className="glass-card-hover border-teal-500/30 p-6">
-            <div className="flex items-center justify-between text-slate-700 mb-2">
-              <span className="text-xs font-black uppercase tracking-wider text-teal-700">Carbon Emissions Saved</span>
-              <div className="p-2 rounded-xl bg-teal-500/15 text-teal-700">
-                <Leaf className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-slate-900 font-['Space_Grotesk']">35.2%</span>
-              <span className="text-xs font-black text-emerald-600">CO2 Reduced</span>
-            </div>
-            <p className="text-[11px] text-slate-700 mt-1 font-bold">Eco-friendly AI routing</p>
-          </Card>
-        </div>
-      )}
-
-      {/* Analytics & Health Gauges */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Trend Chart */}
-        <Card className="lg:col-span-2 space-y-4 border-blue-500/30 p-6 glass-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-black text-slate-900">Traffic Efficiency & Route Precision</h3>
-              <p className="text-xs text-slate-700 font-semibold">Real-time mobility feedback curves</p>
-            </div>
-            <Badge variant="primary" size="sm">Peak Horizon</Badge>
           </div>
 
-          <div className="h-64 w-full pt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData}>
-                <defs>
-                  <linearGradient id="colorAccuracy" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="colorFuel" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" opacity={0.8} />
-                <XAxis dataKey="month" stroke="#334155" fontSize={11} fontWeight={700} />
-                <YAxis stroke="#334155" fontSize={11} fontWeight={700} />
-                <Tooltip />
-                <Area type="monotone" dataKey="accuracy" stroke="#2563EB" strokeWidth={3} fillOpacity={1} fill="url(#colorAccuracy)" name="Model Precision %" />
-                <Area type="monotone" dataKey="fuelSaved" stroke="#10B981" strokeWidth={3} fillOpacity={1} fill="url(#colorFuel)" name="Fuel Saved %" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-
-        {/* Health Gauges Column */}
-        <div className="space-y-6">
-          <Card className="space-y-4 border-blue-500/30 p-6 glass-card">
-            <h3 className="text-xs font-black text-blue-700 uppercase tracking-widest">Mobility Gauges</h3>
-            <RiskMeter score={lastRecommendation?.risk_level === 'High' ? 65 : 24} label="Route Risk Score" />
-            <ConfidenceMeter score={Number(lastRecommendation?.confidence || lastRecommendation?.confidenceScore || avgConfidence) || 96} label="Route Precision" />
-          </Card>
-        </div>
-      </div>
-
-      {/* AI Daily Summary Card / Last Recommendation */}
-      <Card glow className="p-6 border-blue-500/40 glass-card flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/30">
-            <Bot className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h4 className="text-base font-extrabold text-slate-900">Latest AI Route Recommendation</h4>
-              <Badge variant="accent" size="sm">Live Traffic</Badge>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-800 mt-1 leading-relaxed max-w-3xl font-bold">
-              {lastRecommendation?.recommendation || lastRecommendation?.reason || lastRecommendation?.explanation || "AI route optimizer recommends taking the Outer Ring Road express lane. Avoid Outer Bypass between 08:30 AM and 09:15 AM to save 18 minutes in transit."}
-            </p>
-          </div>
-        </div>
-        <Button onClick={() => toggleAiDrawer(true)} variant="primary" size="md" icon={Sparkles} className="shrink-0">
-          Ask Mobility Assistant
-        </Button>
-      </Card>
-
-      {/* Recent Trips Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-extrabold text-slate-900">Recent Trips & AI Recommendations</h3>
-            <Link to="/decisions/history" className="text-xs font-black text-blue-700 hover:underline flex items-center gap-1">
-              View Trip History <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+          {/* New Exact Required KPI Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {kpis.map((kpi, idx) => {
+              const Icon = kpi.icon;
+              return (
+                <Card key={idx} glow className={`p-6 ${kpi.borderColor} glass-card space-y-3 rounded-3xl bg-slate-900/80`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-300 font-bold uppercase tracking-wider">{kpi.label}</span>
+                    <div className={`p-2.5 rounded-2xl bg-gradient-to-r ${kpi.color} text-white shadow-md`}>
+                      <Icon className="w-5 h-5" />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-3xl font-black text-white font-['Space_Grotesk']">{kpi.value}</h3>
+                    <p className="text-xs text-purple-400 font-bold">{kpi.change}</p>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
 
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Skeleton className="h-40 rounded-2xl" />
-              <Skeleton className="h-40 rounded-2xl" />
-            </div>
-          ) : recentTrips.length === 0 ? (
-            <EmptyState title="No trips recorded yet" description="Generate a new route recommendation to populate your trip history." />
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {recentTrips.map((dec, idx) => (
-                <DecisionCard key={dec.id || dec._id || idx} decision={{
-                  id: dec.id || dec._id || `TRIP-${idx + 1}`,
-                  title: `${dec.source || 'Origin'} → ${dec.destination || 'Destination'}`,
-                  category: dec.transportMode || dec.route || 'Express',
-                  impact: dec.trafficLevel || dec.risk_level || 'Smooth',
-                  confidence: dec.confidence || dec.confidenceScore || 96,
-                  risk: dec.trafficLevel === 'Heavy' ? 'High' : 'Low',
-                  status: 'Completed',
-                  date: dec.created_at || dec.date || 'Today',
-                  roi: dec.estimatedTime || dec.travel_time || '24 mins'
-                }} />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Upcoming Departures Queue */}
-        <Card className="space-y-4 border-blue-500/30 p-6 glass-card">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-extrabold text-slate-900">Upcoming Departures</h3>
-            <Badge variant="warning" size="sm">3 Scheduled</Badge>
-          </div>
-
-          <div className="space-y-3">
-            {[
-              { title: 'Hyderabad → Bangalore Freight Route', due: '08:30 AM', priority: 'Optimal Window' },
-              { title: 'Hitec City → Airport Commute', due: '11:15 AM', priority: 'Green Wave' },
-              { title: 'Mumbai Sea Link Fleet Delivery', due: '02:00 PM', priority: 'Smooth' },
-            ].map((item, i) => (
-              <div key={i} className="p-3.5 rounded-2xl bg-white border border-blue-500/20 space-y-1 hover:border-blue-400 transition-colors shadow-sm">
-                <div className="flex items-center justify-between text-xs">
-                  <h5 className="font-black text-slate-900">{item.title}</h5>
-                  <Badge variant="neutral" size="sm">
-                    {item.priority}
-                  </Badge>
+          {/* Analytics Chart & Assistant Teaser Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* Chart Box */}
+            <Card glow className="lg:col-span-2 p-6 border-purple-500/30 glass-card space-y-4 rounded-3xl bg-slate-900/80">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-black text-white">Decision Velocity & Accuracy Trajectory</h3>
+                  <p className="text-xs text-slate-300 font-medium">Historical neural performance trends</p>
                 </div>
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-700 font-bold">
-                  <Clock className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Departure: {item.due}</span>
-                </div>
+                <Badge variant="success" size="sm">Real-time Stream</Badge>
               </div>
-            ))}
+
+              <div className="h-64 w-full pt-4">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData}>
+                    <defs>
+                      <linearGradient id="colorDec" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#A855F7" stopOpacity={0.4} />
+                        <stop offset="95%" stopColor="#A855F7" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.5} />
+                    <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} fontWeight={700} />
+                    <YAxis stroke="#94a3b8" fontSize={11} fontWeight={700} />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="decisions" stroke="#A855F7" strokeWidth={2.5} fill="url(#colorDec)" name="Decisions Evaluated" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+
+            {/* AI Copilot Callout Card */}
+            <Card glow className="p-6 border-pink-500/30 glass-card space-y-4 rounded-3xl bg-slate-900/80 flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-pink-500/20">
+                  <Bot className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-black text-white">Ask Decision AI Assistant</h3>
+                <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                  Query natural language AI models for instant scenario analysis, risk evaluations, and SWOT recommendations.
+                </p>
+              </div>
+              <Button onClick={toggleAiDrawer} variant="primary" size="md" icon={Sparkles} className="w-full">
+                Launch AI Assistant
+              </Button>
+            </Card>
+
           </div>
-        </Card>
+
+          {/* Recent Decisions Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-2xl font-black text-white font-['Space_Grotesk']">Recent AI Decisions</h3>
+                <p className="text-xs text-slate-300 font-medium">Latest evaluated business choices and strategic recommendations</p>
+              </div>
+              <Link to="/decisions/history" className="text-xs font-black text-purple-400 hover:underline flex items-center gap-1">
+                View Decision History <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {loading ? (
+              <div className="py-12 text-center text-xs font-bold text-slate-400">
+                Loading decision records...
+              </div>
+            ) : decisions.length === 0 ? (
+              <Card className="p-8 text-center border-purple-500/20 glass-card space-y-3 rounded-3xl bg-slate-900/80">
+                <p className="text-sm font-black text-white">No AI Decisions Found</p>
+                <p className="text-xs text-slate-400 font-medium">Click below to generate your first strategic recommendation.</p>
+                <Link to="/decisions/new">
+                  <Button variant="primary" size="sm" icon={PlusCircle} className="mt-2">
+                    Create New Decision
+                  </Button>
+                </Link>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {decisions.slice(0, 3).map((dec, idx) => (
+                  <DecisionCard key={dec.id || dec._id || idx} decision={dec} />
+                ))}
+              </div>
+            )}
+          </div>
+
+        </main>
       </div>
     </div>
   );

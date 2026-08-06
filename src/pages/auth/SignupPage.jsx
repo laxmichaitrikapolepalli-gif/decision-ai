@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import { User, Mail, Lock, Building, Sparkles, Route } from 'lucide-react';
+import { User, Mail, Lock, Building, Sparkles } from 'lucide-react';
 
 export const SignupPage = () => {
   const { signup, loading } = useAuth();
@@ -24,16 +24,16 @@ export const SignupPage = () => {
   };
 
   return (
-    <Card glow className="p-8 border-blue-500/30 shadow-2xl">
+    <Card glow className="p-8 border-purple-500/30 shadow-2xl bg-slate-900/90">
       <div className="text-center space-y-2 mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/30">
-          <Route className="w-6 h-6" />
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-purple-500/30">
+          <Sparkles className="w-6 h-6 text-white" />
         </div>
-        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-['Space_Grotesk']">
+        <h2 className="text-2xl font-extrabold text-white tracking-tight font-['Space_Grotesk']">
           Create Your Account
         </h2>
-        <p className="text-xs text-slate-700 font-bold">
-          Get started with SmartRoute AI Platform
+        <p className="text-xs text-slate-300 font-medium">
+          Get Started with DecisionSphere AI Platform
         </p>
       </div>
 
@@ -44,7 +44,7 @@ export const SignupPage = () => {
           icon={User}
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="Sarah Vance"
+          placeholder="Dr. Sarah Vance"
           required
         />
 
@@ -54,17 +54,17 @@ export const SignupPage = () => {
           icon={Mail}
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          placeholder="sarah@smartroute.ai"
+          placeholder="sarah@decisionsphere.ai"
           required
         />
 
         <Input
-          label="Company / Fleet Name"
+          label="Organization / Company"
           type="text"
           icon={Building}
           value={formData.company}
           onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-          placeholder="AeroMobility Logistics"
+          placeholder="AeroTech Dynamics"
           required
         />
 
@@ -78,15 +78,15 @@ export const SignupPage = () => {
           required
         />
 
-        <div className="flex items-start gap-2 pt-1 text-xs text-slate-700 font-semibold">
+        <div className="flex items-start gap-2 pt-1 text-xs text-slate-300 font-medium">
           <input
             type="checkbox"
             checked={formData.agreeTerms}
             onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })}
-            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 mt-0.5"
+            className="rounded border-slate-700 bg-slate-950 text-purple-600 focus:ring-purple-500 mt-0.5"
             required
           />
-          <span>I agree to the <a href="#" className="text-blue-600 font-black hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 font-black hover:underline">Privacy Policy</a></span>
+          <span>I agree to the <a href="#" className="text-purple-400 font-bold hover:underline">Terms of Service</a> and <a href="#" className="text-purple-400 font-bold hover:underline">Privacy Policy</a></span>
         </div>
 
         <Button
@@ -97,13 +97,13 @@ export const SignupPage = () => {
           icon={Sparkles}
           className="w-full mt-2"
         >
-          Register for SmartRoute AI
+          Register for DecisionSphere AI
         </Button>
       </form>
 
-      <p className="text-center text-xs text-slate-700 font-bold mt-6">
+      <p className="text-center text-xs text-slate-400 font-medium mt-6">
         Already have an account?{' '}
-        <Link to="/login" className="text-blue-600 font-black hover:underline">
+        <Link to="/login" className="text-purple-400 font-bold hover:underline">
           Sign In
         </Link>
       </p>

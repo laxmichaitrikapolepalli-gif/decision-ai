@@ -15,8 +15,7 @@ import {
   Settings,
   Bot,
   Zap,
-  ArrowRight,
-  Route
+  ArrowRight
 } from 'lucide-react';
 
 export const CommandPalette = () => {
@@ -26,15 +25,15 @@ export const CommandPalette = () => {
   const [query, setQuery] = useState('');
 
   const commands = [
-    { id: 'c1', title: 'Run AI Route Optimizer', category: 'Actions', path: '/decisions/new', icon: PlusCircle },
-    { id: 'c2', title: 'Launch Route Comparison (Side-by-Side)', category: 'Actions', path: '/decisions/battle', icon: Swords },
-    { id: 'c3', title: 'Run Traffic Scenario Simulator', category: 'Actions', path: '/simulator', icon: Sliders },
-    { id: 'c4', title: 'Ask Smart Mobility Assistant', category: 'AI Tools', action: () => { toggleAiDrawer(true); }, icon: Bot },
-    { id: 'c5', title: 'View Mobility Insights & Traffic Signals', category: 'Analytics', path: '/insights', icon: Sparkles },
-    { id: 'c6', title: 'Explore Trip History', category: 'Navigation', path: '/decisions/history', icon: History },
-    { id: 'c7', title: 'Fleet History Reports', category: 'Navigation', path: '/reports', icon: FileText },
-    { id: 'c8', title: 'Fleet Analytics', category: 'Navigation', path: '/analytics', icon: LineChart },
-    { id: 'c9', title: 'User Preferences', category: 'Navigation', path: '/settings', icon: Settings },
+    { id: 'c1', title: 'Run AI Decision Engine', category: 'Actions', path: '/decisions/new', icon: PlusCircle },
+    { id: 'c2', title: 'Launch Decision Battle Mode', category: 'Actions', path: '/decisions/battle', icon: Swords },
+    { id: 'c3', title: 'Run Scenario Simulator', category: 'Actions', path: '/simulator', icon: Sliders },
+    { id: 'c4', title: 'Ask Decision AI Assistant', category: 'AI Tools', action: () => { toggleAiDrawer(true); }, icon: Bot },
+    { id: 'c5', title: 'View Executive AI Insights', category: 'Analytics', path: '/insights', icon: Sparkles },
+    { id: 'c6', title: 'Explore Decision History', category: 'Navigation', path: '/decisions/history', icon: History },
+    { id: 'c7', title: 'Decision Reports & Audits', category: 'Navigation', path: '/reports', icon: FileText },
+    { id: 'c8', title: 'Executive Analytics Dashboard', category: 'Navigation', path: '/analytics', icon: LineChart },
+    { id: 'c9', title: 'Settings & Preferences', category: 'Navigation', path: '/settings', icon: Settings },
   ];
 
   const filteredCommands = commands.filter((cmd) =>
@@ -54,25 +53,25 @@ export const CommandPalette = () => {
 
   return (
     <Modal isOpen={isOpen} onClose={closeCommandPalette} maxWidth="max-w-xl">
-      <div className="-m-6 p-4 bg-white border-b border-blue-500/25 flex items-center gap-3">
-        <Search className="w-5 h-5 text-blue-600 shrink-0" />
+      <div className="-m-6 p-4 bg-slate-950 border-b border-purple-500/25 flex items-center gap-3">
+        <Search className="w-5 h-5 text-purple-400 shrink-0" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Type a command or search mobility features..."
-          className="w-full bg-transparent text-slate-900 placeholder-slate-400 text-sm font-bold focus:outline-none"
+          placeholder="Type a command or search platform features..."
+          className="w-full bg-transparent text-white placeholder-slate-500 text-sm font-bold focus:outline-none"
           autoFocus
         />
-        <kbd className="px-2 py-0.5 text-[10px] font-mono text-blue-700 bg-blue-500/15 rounded border border-blue-500/30 font-black">
+        <kbd className="px-2 py-0.5 text-[10px] font-mono text-purple-300 bg-purple-500/15 rounded border border-purple-500/30 font-black">
           ESC
         </kbd>
       </div>
 
       <div className="mt-4 max-h-80 overflow-y-auto space-y-1 pr-1">
         {filteredCommands.length === 0 ? (
-          <div className="py-8 text-center text-xs font-bold text-slate-600">
-            No mobility commands match "{query}"
+          <div className="py-8 text-center text-xs font-bold text-slate-400">
+            No commands match "{query}"
           </div>
         ) : (
           filteredCommands.map((cmd) => {
@@ -81,28 +80,28 @@ export const CommandPalette = () => {
               <button
                 key={cmd.id}
                 onClick={() => handleSelect(cmd)}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left hover:bg-blue-500/15 hover:border-blue-500/30 border border-transparent transition-all group cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left hover:bg-purple-500/15 hover:border-purple-500/30 border border-transparent transition-all group cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-blue-50 border border-blue-500/20 text-blue-700 group-hover:bg-blue-600 group-hover:text-white">
+                  <div className="p-2 rounded-lg bg-slate-900 border border-purple-500/20 text-purple-400 group-hover:bg-purple-600 group-hover:text-white">
                     <Icon className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-xs font-black text-slate-900">{cmd.title}</p>
-                    <span className="text-[10px] font-extrabold text-slate-600">{cmd.category}</span>
+                    <p className="text-xs font-black text-white">{cmd.title}</p>
+                    <span className="text-[10px] font-extrabold text-slate-400">{cmd.category}</span>
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-700 transition-colors" />
+                <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 transition-colors" />
               </button>
             );
           })
         )}
       </div>
 
-      <div className="-mx-6 -mb-6 mt-4 p-3 bg-blue-50/60 border-t border-blue-500/20 flex items-center justify-between text-[11px] text-slate-700 font-bold">
-        <span>Navigation Tip: Use <kbd className="px-1 text-slate-800 bg-white rounded border font-mono">↑</kbd> <kbd className="px-1 text-slate-800 bg-white rounded border font-mono">↓</kbd> to navigate</span>
-        <span className="text-blue-700 font-black flex items-center gap-1">
-          <Route className="w-3 h-3 text-blue-600" /> SmartRoute Command Engine
+      <div className="-mx-6 -mb-6 mt-4 p-3 bg-slate-950 border-t border-purple-500/20 flex items-center justify-between text-[11px] text-slate-400 font-bold">
+        <span>Navigation Tip: Use <kbd className="px-1 text-slate-200 bg-slate-900 rounded border border-slate-700 font-mono">↑</kbd> <kbd className="px-1 text-slate-200 bg-slate-900 rounded border border-slate-700 font-mono">↓</kbd> to navigate</span>
+        <span className="text-purple-400 font-black flex items-center gap-1">
+          <Zap className="w-3 h-3 text-purple-400" /> DecisionSphere Command Engine
         </span>
       </div>
     </Modal>

@@ -1,50 +1,45 @@
-import React, { useState } from 'react';
-import { useTrips } from '../../hooks/useTrips';
+import React, { useEffect, useState } from 'react';
+import { useDecision } from '../../contexts/DecisionContext';
+import { DecisionCard } from '../../components/decision/DecisionCard';
 import { Card } from '../../components/ui/Card';
+import { Badge } from '../../components/ui/Badge';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import { Badge } from '../../components/ui/Badge';
-import { Skeleton } from '../../components/ui/Skeleton';
-import { ErrorState } from '../../components/ui/ErrorState';
-import { EmptyState } from '../../components/ui/EmptyState';
-import { DecisionCard } from '../../components/decision/DecisionCard';
 import {
-  Search,
   History,
+  Search,
+  Filter,
   Trash2,
-  Calendar,
+  Sparkles,
+  PlusCircle,
   Clock,
-  Car,
-  Navigation,
-  MapPin,
-  Route,
-  Zap,
-  Shield
+  Layers,
+  ArrowRight
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 export const DecisionHistoryPage = () => {
-  const { data: trips, loading, error, refetch, removeTrip } = useTrips();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedMode, setSelectedMode] = useState('all');
+  const { decisions, loading, fetchTrips, deleteTrip } = useDecision();
+  const [query, setQuery] = useState('');
+  const [filterRisk, setFilterRisk] = useState('all');
 
-  const handleDelete = async (id, e) => {
-    e.stopPropagation();
-    try {
-      await removeTrip(id);
-      toast.success('Trip removed from history.');
-    } catch (err) {
-      toast.error('Failed to delete trip.');
+  useEffect(() => {
+    fetchTrips();
+  }, [fetchTrips]);
+
+  const handleDelete = async (id) => {
+    const success = await deleteTrip(id);
+    if (success) {
+      toast.success('Decision record deleted from history');
     }
   };
 
-  const filteredTrips = (trips || []).filter((t) => {
-    const title = (t.destination || t.title || t.name || '').toLowerCase();
-    const source = (t.source || '').toLowerCase();
-    const mode = (t.transportMode || t.route || '').toLowerCase();
-    const matchesSearch = title.includes(searchTerm.toLowerCase()) || source.includes(searchTerm.toLowerCase());
-    const matchesMode = selectedMode === 'all' || mode.includes(selectedMode.toLowerCase());
-    return matchesSearch && matchesMode;
+  const filteredDecisions = decisions.filter((dec) => {
+    const title = dec.title || dec.bestRoute || dec.recommendation || '';
+    const matchQuery = title.toLowerCase().includes(query.toLowerCase());
+    const matchRisk = filterRisk === 'all' || (dec.risk || dec.trafficLevel || '').toLowerCase().includes(filterRisk.toLowerCase());
+    return matchQuery && matchRisk;
   });
 
   return (
@@ -53,143 +48,91 @@ export const DecisionHistoryPage = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black font-mono text-blue-600 uppercase tracking-widest font-bold">SMARTROUTE TELEMETRY</span>
-            <Badge variant="primary" size="sm" icon={History}>Trip History</Badge>
+            <span className="text-xs font-mono font-black text-purple-400 uppercase tracking-widest">DECISION ARCHIVE</span>
+            <Badge variant="primary" size="sm" icon={History}>Supabase DB Sync</Badge>
           </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
-            Trip History & Saved Routes
+          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
+            Decision History
           </h1>
-          <p className="text-xs font-bold text-slate-700 mt-1">
-            Historical trip logs, travel times, and AI traffic recommendations from backend database
+          <p className="text-xs font-semibold text-slate-300 mt-1">
+            Explore past strategic evaluations, AI recommendations, risk bounds, and outcome scores
           </p>
         </div>
 
-        {/* Filter Controls */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="w-64">
+        <Link to="/decisions/new">
+          <Button variant="primary" size="md" icon={PlusCircle} className="shadow-lg shadow-purple-500/20">
+            Create Decision
+          </Button>
+        </Link>
+      </div>
+
+      {/* Search & Filter Bar */}
+      <Card glow className="p-4 border-purple-500/30 glass-card bg-slate-900/80">
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex-1 w-full relative">
             <Input
-              placeholder="Search source or destination..."
               icon={Search}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search decision history by title or recommendation..."
+              className="bg-slate-950 border-purple-500/25"
             />
           </div>
 
-          <div className="flex items-center gap-1 bg-white p-1 rounded-2xl border border-blue-500/25 shadow-sm">
-            {['all', 'Car', 'Flight', 'Bus', 'Train'].map((mode) => (
-              <button
-                key={mode}
-                onClick={() => setSelectedMode(mode)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                  selectedMode === mode
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-sm'
-                    : 'text-slate-700 hover:text-blue-700'
-                }`}
-              >
-                {mode === 'all' ? 'All Modes' : mode}
-              </button>
-            ))}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Filter className="w-4 h-4 text-purple-400 shrink-0" />
+            <select
+              value={filterRisk}
+              onChange={(e) => setFilterRisk(e.target.value)}
+              className="rounded-2xl bg-slate-950 border border-purple-500/25 text-white px-4 py-3 text-xs font-black transition-all focus:border-purple-500 focus:outline-none cursor-pointer"
+            >
+              <option value="all">All Risk Levels</option>
+              <option value="low">Low Risk</option>
+              <option value="medium">Medium / Moderate Risk</option>
+              <option value="high">High Risk</option>
+            </select>
           </div>
         </div>
-      </div>
+      </Card>
 
-      {/* Loading Skeletons */}
-      {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          <Skeleton className="h-44 rounded-2xl" />
-          <Skeleton className="h-44 rounded-2xl" />
-          <Skeleton className="h-44 rounded-2xl" />
+      {/* Decision Cards List */}
+      {loading ? (
+        <div className="py-16 text-center text-xs font-bold text-slate-400">
+          Loading decision history from database...
         </div>
-      )}
-
-      {/* Error State */}
-      {error && !loading && (
-        <ErrorState message={error} onRetry={refetch} />
-      )}
-
-      {/* Empty State */}
-      {!loading && !error && filteredTrips.length === 0 && (
-        <EmptyState
-          title="No trips found in history"
-          description="Submit a new route recommendation to populate your trip logs."
-        />
-      )}
-
-      {/* Trips Grid displaying Source, Destination, Transport Mode, Travel Time, Traffic Level, Date */}
-      {!loading && !error && filteredTrips.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredTrips.map((dec, idx) => {
-            const id = dec.id || dec._id || `TRIP-${idx + 1}`;
-            const source = dec.source || 'Origin Node';
-            const destination = dec.destination || dec.title || 'Destination Node';
-            const transportMode = dec.transportMode || dec.route || 'Car';
-            const travelTime = dec.estimatedTime || dec.travel_time || dec.travelTime || '24 mins';
-            const trafficLevel = dec.trafficLevel || dec.traffic_level || dec.risk_level || 'Smooth';
-            const dateStr = dec.created_at ? new Date(dec.created_at).toLocaleDateString() : dec.date || 'Today';
-
-            return (
-              <Card
-                key={id}
-                className="group glass-card border-blue-500/25 p-5 hover:border-blue-400 space-y-4 shadow-sm"
-                glow
+      ) : filteredDecisions.length === 0 ? (
+        <Card className="p-12 text-center border-purple-500/20 glass-card space-y-4 rounded-3xl bg-slate-900/80">
+          <div className="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center mx-auto">
+            <History className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-black text-white">No Decisions Found</h3>
+          <p className="text-xs text-slate-400 font-medium max-w-sm mx-auto">
+            {query ? `No decision records match "${query}"` : 'Your decision history is currently empty. Run the AI Decision Engine to generate your first recommendation.'}
+          </p>
+          <Link to="/decisions/new">
+            <Button variant="primary" size="md" icon={PlusCircle} className="mt-2">
+              Create New Decision
+            </Button>
+          </Link>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredDecisions.map((dec, idx) => (
+            <div key={dec.id || dec._id || idx} className="relative group">
+              <DecisionCard decision={dec} />
+              
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(dec.id || dec._id);
+                }}
+                className="absolute top-4 right-4 p-2 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 opacity-0 group-hover:opacity-100 hover:bg-rose-500 hover:text-white transition-all cursor-pointer z-10"
+                title="Delete Decision Record"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-mono font-black text-blue-700">{id}</span>
-                    <Badge variant="primary" size="sm" icon={Car}>{transportMode}</Badge>
-                  </div>
-                  <button
-                    onClick={(e) => handleDelete(id, e)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                    title="Delete Trip"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div>
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700 mb-1">
-                    <Navigation className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                    <span className="truncate">{source}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-base font-black text-slate-900">
-                    <MapPin className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span className="truncate">{destination}</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 p-3 rounded-2xl bg-blue-50/70 border border-blue-500/20 text-xs font-bold">
-                  <div>
-                    <span className="text-[10px] text-blue-700 font-black uppercase block">Travel Time</span>
-                    <span className="font-black text-slate-900 text-sm">{travelTime}</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-blue-700 font-black uppercase block">Traffic Level</span>
-                    <Badge
-                      variant={
-                        String(trafficLevel).includes('Smooth') || String(trafficLevel).includes('Low')
-                          ? 'success'
-                          : String(trafficLevel).includes('Moderate')
-                          ? 'warning'
-                          : 'danger'
-                      }
-                      size="sm"
-                    >
-                      {trafficLevel}
-                    </Badge>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-xs text-slate-600 font-bold pt-1 border-t border-blue-500/20">
-                  <div className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-blue-600" />
-                    <span>{dateStr}</span>
-                  </div>
-                  <span className="text-[11px] font-black text-blue-700 uppercase">AI Verified</span>
-                </div>
-              </Card>
-            );
-          })}
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
         </div>
       )}
     </div>
