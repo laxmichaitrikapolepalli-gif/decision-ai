@@ -187,7 +187,7 @@ export const generatePdfReport = (reportData) => {
 
     // 7. Sanitize filename & trigger download
     const cleanFileName = reportTitle
-      .replace(/[^a-[#6C63FF]0-9]/gi, '_')
+      .replace(/[^a-z0-9]/gi, '_')
       .replace(/_+/g, '_')
       .substring(0, 50);
     
