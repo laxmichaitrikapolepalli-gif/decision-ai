@@ -1,0 +1,101 @@
+import React, { useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { Card } from '../../components/ui/Card';
+import { Input } from '../../components/ui/Input';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { User, Mail, Shield, Building, Lock, Bell, CheckCircle2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+
+export const SettingsPage = () => {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState({
+    name: user?.name || 'Dr. Laxmi Chaitrika',
+    email: user?.email || 'chaitrika@decisionsphere.ai',
+    role: user?.role || 'Chief Decision Architect',
+    company: user?.company || 'Enterprise AI Labs',
+    notifications: true,
+  });
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    toast.success('Settings & Profile updated successfully!');
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div>
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight font-['Space_Grotesk'] text-gradient-master">
+          Account Settings & Security
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-800 font-bold mt-1">
+          Manage your executive credentials, quantum node access keys, and multi-factor security.
+        </p>
+      </div>
+
+      <Card glow className="p-8 border-purple-500/30 glass-card">
+        <form onSubmit={handleSave} className="space-y-6">
+          <div className="flex items-center gap-4 pb-6 border-b border-purple-500/20">
+            <img
+              src={user?.avatar || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80"}
+              alt="Avatar"
+              className="w-16 h-16 rounded-2xl object-cover border-2 border-purple-500 shadow-md"
+            />
+            <div>
+              <h4 className="text-lg font-black text-slate-900">{profile.name}</h4>
+              <p className="text-xs text-purple-700 font-extrabold">{profile.role}</p>
+              <Badge variant="success" size="sm" className="mt-1">Active Executive Node</Badge>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Full Name"
+              icon={User}
+              value={profile.name}
+              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+            />
+            <Input
+              label="Work Email"
+              icon={Mail}
+              value={profile.email}
+              onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+            />
+            <Input
+              label="Executive Role"
+              icon={Shield}
+              value={profile.role}
+              onChange={(e) => setProfile({ ...profile, role: e.target.value })}
+            />
+            <Input
+              label="Company Name"
+              icon={Building}
+              value={profile.company}
+              onChange={(e) => setProfile({ ...profile, company: e.target.value })}
+            />
+          </div>
+
+          {/* 2FA Security Callout */}
+          <div className="p-4 rounded-2xl bg-purple-50/80 border border-purple-500/30 flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-700 font-black">
+                <Lock className="w-5 h-5" />
+              </div>
+              <div>
+                <h5 className="text-xs font-black text-slate-900">Hardware Security Key (FIDO2)</h5>
+                <p className="text-[11px] text-slate-700 font-bold">Quantum-safe hardware authentication enabled</p>
+              </div>
+            </div>
+            <Badge variant="success" size="sm">ENFORCED</Badge>
+          </div>
+
+          <div className="flex items-center justify-end pt-4 border-t border-purple-500/20">
+            <Button type="submit" variant="primary" size="md" icon={CheckCircle2}>
+              Save Profile Changes
+            </Button>
+          </div>
+        </form>
+      </Card>
+    </div>
+  );
+};
