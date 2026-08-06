@@ -5,7 +5,6 @@ import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { Mail, Lock, LogIn, Sparkles } from 'lucide-react';
-import { FaGoogle } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 export const LoginPage = () => {
@@ -24,14 +23,6 @@ export const LoginPage = () => {
     if (success) {
       navigate('/dashboard');
     }
-  };
-
-  const handleGoogleLogin = () => {
-    toast.success('Redirecting to Google SSO Enterprise OAuth...');
-    setTimeout(() => {
-      login('google_user@decisionsphere.ai', 'password123');
-      navigate('/dashboard');
-    }, 1200);
   };
 
   return (
@@ -90,18 +81,6 @@ export const LoginPage = () => {
           Sign In to DecisionSphere AI
         </Button>
       </form>
-
-      {/* Google SSO Login option */}
-      <div className="mt-6 pt-6 border-t border-slate-100 space-y-3">
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          className="w-full py-3 px-4 rounded-2xl bg-white border border-slate-200 hover:border-[#6C63FF]/40 text-[#0F172A] text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md cursor-pointer"
-        >
-          <FaGoogle className="w-4 h-4 text-red-500" />
-          <span>Continue with Google Workspace</span>
-        </button>
-      </div>
 
       <p className="text-center text-xs text-[#64748B] font-semibold mt-6">
         Don't have an account?{' '}
