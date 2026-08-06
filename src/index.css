@@ -103,24 +103,24 @@
   color: #0F172A !important;
 }
 
-/* Universal Clean Range Slider Track (Removes dark black background) */
+/* Universal Custom Range Slider Track (Supports Left Fill Color + Right White Track) */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  background: #E2E8F0 !important;
   border-radius: 9999px;
   height: 8px;
   outline: none;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
-  background: inherit;
+  -webkit-appearance: none;
+  background: transparent;
   border-radius: 9999px;
   height: 8px;
 }
 
 input[type="range"]::-moz-range-track {
-  background: inherit;
+  background: transparent;
   border-radius: 9999px;
   height: 8px;
 }
@@ -133,8 +133,9 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: currentColor;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.35);
   border: 2px solid #FFFFFF;
+  margin-top: -6px;
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -143,7 +144,7 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 50%;
   background: currentColor;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.35);
   border: 2px solid #FFFFFF;
 }
 

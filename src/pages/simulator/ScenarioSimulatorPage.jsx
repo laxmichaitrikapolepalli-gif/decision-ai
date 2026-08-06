@@ -116,8 +116,8 @@ export const ScenarioSimulatorPage = () => {
               value={sliders.budget}
               onChange={(e) => setSliders({ ...sliders, budget: Number(e.target.value) })}
               style={{
-                background: `linear-gradient(to right, #6C63FF ${getPct(sliders.budget, 500000, 10000000)}%, #E2E8F0 ${getPct(sliders.budget, 500000, 10000000)}%)`,
-                color: '#6C63FF'
+                background: `linear-gradient(to right, #10B981 ${getPct(sliders.budget, 500000, 10000000)}%, #E2E8F0 ${getPct(sliders.budget, 500000, 10000000)}%)`,
+                color: '#10B981'
               }}
               className="w-full h-2 rounded-lg cursor-pointer"
             />
@@ -289,7 +289,7 @@ export const ScenarioSimulatorPage = () => {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.6} />
-                  <XAxis dataKey="month" stroke="#64748b" fontSize={11} fontWeight={700} />
+                  <XAxis dataKey="week" stroke="#64748b" fontSize={11} fontWeight={700} />
                   <YAxis stroke="#64748b" fontSize={11} fontWeight={700} />
                   <Tooltip />
                   <Area type="monotone" dataKey="conservative" stroke="#f59e0b" strokeWidth={2.5} fill="transparent" name="Conservative ($)" />
