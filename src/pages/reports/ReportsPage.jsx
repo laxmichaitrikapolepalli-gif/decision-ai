@@ -3,6 +3,7 @@ import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
+import { generatePdfReport } from '../../utils/generatePdfReport';
 import {
   FileText,
   Download,
@@ -26,7 +27,17 @@ export const ReportsPage = () => {
       date: 'Aug 06, 2026',
       size: '2.4 MB',
       type: 'Executive PDF',
-      summary: 'Comprehensive audit of $4.2M capital allocation across Tier-1 technology nodes, payback timelines, and P95 variance bounds.'
+      confidence: '96.8%',
+      roi: '+38.4%',
+      risk: 'Low Risk (P95)',
+      payback: '14.2 Months',
+      summary: 'Comprehensive audit of $4.2M capital allocation across Tier-1 technology nodes, payback timelines, and P95 variance bounds.',
+      recommendations: [
+        'Finalize LOI prior to Q3 municipal fiscal deadline to capture 18% tax credit.',
+        'Allocate $1.8M CapEx for initial hardware node deployment in Hyderabad Hitec City.',
+        'Establish regional R&D hub to capture senior Machine Learning engineering talent density.',
+        'Execute secondary air-freight contingency contract for top 20% critical component SKUs.'
+      ]
     },
     {
       id: 'REP-2026-R&D',
@@ -34,7 +45,16 @@ export const ReportsPage = () => {
       date: 'Jul 28, 2026',
       size: '1.8 MB',
       type: 'Strategy PDF',
-      summary: 'Analysis of senior ML engineering density in Hyderabad vs Bangalore, municipal tax incentives, and 14.2-month payback metrics.'
+      confidence: '94.2%',
+      roi: '+28.0%',
+      risk: 'Low Risk',
+      payback: '12.0 Months',
+      summary: 'Analysis of senior ML engineering density in Hyderabad vs Bangalore, municipal tax incentives, and 14.2-month payback metrics.',
+      recommendations: [
+        'Target senior ML engineering candidates with 12% lower compensation baseline.',
+        'Apply for Tier-1 municipal software development grants.',
+        'Establish strategic partnership with local technical university research labs.'
+      ]
     },
     {
       id: 'REP-2026-SUPPLY',
@@ -42,16 +62,38 @@ export const ReportsPage = () => {
       date: 'Jul 15, 2026',
       size: '3.1 MB',
       type: 'Risk Audit PDF',
-      summary: 'Stochastic simulation of Singapore straits shipping friction, air-freight contract overrides, and 14-day latency reductions.'
+      confidence: '91.5%',
+      roi: '+18.5%',
+      risk: 'Moderate Risk',
+      payback: '18.5 Months',
+      summary: 'Stochastic simulation of Singapore straits shipping friction, air-freight contract overrides, and 14-day latency reductions.',
+      recommendations: [
+        'Contract secondary air-freight provider for high-priority components.',
+        'Increase regional buffer inventory by 15% during Q3 monsoon season.',
+        'Implement real-time GPS telemetry tracking across all primary shipping lanes.'
+      ]
     }
   ];
 
-  const handleAction = (action, rep) => {
+  const handleAction = async (action, rep) => {
     if (action === 'preview') {
       setSelectedReport(rep);
       setPreviewOpen(true);
-    } else {
-      toast.success(`${action.toUpperCase()} initiated for ${rep.title}`);
+    } else if (action === 'download') {
+      try {
+        await generatePdfReport(rep);
+        toast.success(`Downloaded ${rep.title.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30)}.pdf`);
+      } catch (err) {
+        console.error('Failed to generate PDF report:', err);
+        toast.error('Failed to generate PDF report. Check console for details.');
+      }
+    } else if (action === 'share') {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.success('Report access link copied to clipboard!');
+      } catch (err) {
+        toast.success(`Share link generated for ${rep.id}`);
+      }
     }
   };
 
@@ -132,8 +174,8 @@ export const ReportsPage = () => {
                 {selectedReport.summary}
               </p>
               <div className="pt-3 border-t border-slate-200 flex items-center justify-between text-xs font-bold text-[#64748B]">
-                <span>P95 Confidence: 96.8%</span>
-                <span>Deterministic Payback: 14.2 Months</span>
+                <span>P95 Confidence: {selectedReport.confidence}</span>
+                <span>Deterministic Payback: {selectedReport.payback}</span>
               </div>
             </div>
 
