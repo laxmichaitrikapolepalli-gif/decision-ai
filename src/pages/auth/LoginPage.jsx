@@ -4,15 +4,14 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { Mail, Lock, LogIn, Route } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const LoginPage = () => {
   const { login, loading } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(true);
+  const [email, setEmail] = useState('demo@smartroute.ai');
+  const [password, setPassword] = useState('password123');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,13 +26,16 @@ export const LoginPage = () => {
   };
 
   return (
-    <Card glow className="p-8 border-indigo-500/30 shadow-2xl">
+    <Card glow className="p-8 border-blue-500/30 shadow-2xl">
       <div className="text-center space-y-2 mb-6">
-        <h2 className="text-2xl font-extrabold text-white tracking-tight font-['Space_Grotesk']">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/30">
+          <Route className="w-6 h-6" />
+        </div>
+        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-['Space_Grotesk']">
           Welcome Back
         </h2>
-        <p className="text-xs text-slate-400">
-          Access your enterprise AI decision workspace
+        <p className="text-xs text-slate-700 font-bold">
+          Access your Smart Mobility Dashboard
         </p>
       </div>
 
@@ -44,7 +46,7 @@ export const LoginPage = () => {
           icon={Mail}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="name@company.com"
+          placeholder="sarah@smartroute.ai"
           required
         />
 
@@ -59,17 +61,12 @@ export const LoginPage = () => {
         />
 
         <div className="flex items-center justify-between text-xs pt-1">
-          <label className="flex items-center gap-2 cursor-pointer text-slate-300">
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              className="rounded bg-slate-900 border-slate-800 text-indigo-600 focus:ring-indigo-500"
-            />
-            <span>Remember me for 30 days</span>
+          <label className="flex items-center gap-2 text-slate-700 font-semibold cursor-pointer">
+            <input type="checkbox" defaultChecked className="rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+            Remember Device
           </label>
-          <Link to="/forgot-password" className="text-indigo-400 font-semibold hover:underline">
-            Forgot password?
+          <Link to="/forgot-password" className="text-blue-600 font-bold hover:underline">
+            Forgot Password?
           </Link>
         </div>
 
@@ -81,14 +78,14 @@ export const LoginPage = () => {
           icon={LogIn}
           className="w-full mt-2"
         >
-          Sign In to DecisionSphere
+          Sign In to SmartRoute AI
         </Button>
       </form>
 
-      <p className="text-center text-xs text-slate-400 mt-6">
-        Don't have an enterprise account?{' '}
-        <Link to="/signup" className="text-indigo-400 font-bold hover:underline">
-          Start Free Trial
+      <p className="text-center text-xs text-slate-700 font-bold mt-6">
+        Don't have an account?{' '}
+        <Link to="/signup" className="text-blue-600 font-black hover:underline">
+          Create Account
         </Link>
       </p>
     </Card>

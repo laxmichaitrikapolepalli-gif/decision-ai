@@ -11,7 +11,7 @@ import {
   LogOut,
   Settings,
   Bot,
-  Globe,
+  Route,
   ChevronDown,
   Menu,
   X
@@ -29,33 +29,32 @@ export const Navbar = ({ isDashboard = false }) => {
 
   const publicNavLinks = [
     { label: 'Platform', href: '#hero' },
-    { label: 'AI Workflow', href: '#workflow' },
-    { label: 'Global Map', href: '#map' },
+    { label: 'Live Traffic Map', href: '#map' },
     { label: 'Features', href: '#features' },
-    { label: 'Pricing', href: '#pricing' },
+    { label: 'Fleet Pricing', href: '#pricing' },
   ];
 
   return (
-    <nav className="sticky top-4 z-40 w-[95%] max-w-7xl mx-auto glass-panel rounded-3xl border border-purple-500/30 px-5 lg:px-8 py-3.5 transition-all duration-300 shadow-xl shadow-purple-500/10">
+    <nav className="sticky top-4 z-40 w-[95%] max-w-7xl mx-auto glass-panel rounded-3xl border border-blue-500/30 px-5 lg:px-8 py-3.5 transition-all duration-300 shadow-xl shadow-blue-500/10">
       <div className="flex items-center justify-between">
         
         {/* Brand Logo */}
         <Link to={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-3.5 group shrink-0">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-500 to-blue-500 p-0.5 shadow-lg shadow-purple-500/30 group-hover:shadow-purple-500/60 group-hover:scale-105 transition-all duration-300 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-emerald-500 p-0.5 shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/60 group-hover:scale-105 transition-all duration-300 flex items-center justify-center">
             <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
-              <Globe className="w-6 h-6 text-purple-600 group-hover:rotate-45 transition-transform duration-500" />
+              <Route className="w-6 h-6 text-blue-600 group-hover:rotate-12 transition-transform duration-300" />
             </div>
           </div>
           <div className="flex flex-col justify-center">
             <div className="flex items-center gap-1.5">
-              <span className="text-xl font-black tracking-tight font-['Space_Grotesk'] text-gradient-master">
-                DecisionSphere
+              <span className="text-xl font-black tracking-tight font-['Space_Grotesk'] text-slate-900">
+                SmartRoute
               </span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black shadow-sm">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-black shadow-sm">
                 AI
               </span>
             </div>
-            <p className="text-[10px] text-purple-700 font-extrabold hidden sm:block tracking-wider uppercase">Enterprise Intelligence</p>
+            <p className="text-[10px] text-blue-600 font-extrabold hidden sm:block tracking-wider uppercase">AI Smart Mobility Platform</p>
           </div>
         </Link>
 
@@ -64,13 +63,13 @@ export const Navbar = ({ isDashboard = false }) => {
           <div className="hidden md:flex items-center gap-3 flex-1 max-w-md mx-8">
             <button
               onClick={openCommandPalette}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-2xl bg-white/80 backdrop-blur-md border border-purple-500/30 text-slate-800 text-xs hover:border-purple-500 hover:bg-white transition-all shadow-sm"
+              className="w-full flex items-center justify-between px-4 py-2.5 rounded-2xl bg-white/90 backdrop-blur-md border border-blue-500/25 text-slate-800 text-xs hover:border-blue-500 hover:bg-white transition-all shadow-sm"
             >
               <div className="flex items-center gap-2">
-                <Search className="w-4 h-4 text-purple-600 shrink-0" />
-                <span className="text-slate-800 font-bold">Search decisions, simulators, or reports...</span>
+                <Search className="w-4 h-4 text-blue-600 shrink-0" />
+                <span className="text-slate-700 font-bold">Search routes, traffic updates, or trip history...</span>
               </div>
-              <kbd className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-mono text-purple-700 bg-purple-500/15 rounded-lg border border-purple-500/30 font-black">
+              <kbd className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-mono text-blue-700 bg-blue-500/15 rounded-lg border border-blue-500/30 font-black">
                 <Command className="w-3 h-3" /> K
               </kbd>
             </button>
@@ -79,15 +78,15 @@ export const Navbar = ({ isDashboard = false }) => {
 
         {/* Navigation Links for Public Landing Page */}
         {!isDashboard && (
-          <div className="hidden md:flex items-center gap-8 text-[16px] font-extrabold text-slate-900">
+          <div className="hidden md:flex items-center gap-8 text-[15px] font-extrabold text-slate-900">
             {publicNavLinks.map((link, idx) => (
               <a
                 key={idx}
                 href={link.href}
-                className="relative py-1.5 transition-colors hover:text-purple-600 group flex items-center"
+                className="relative py-1.5 transition-colors hover:text-blue-600 group flex items-center"
               >
                 <span>{link.label}</span>
-                <span className="absolute bottom-0 left-0 w-full h-[2.5px] rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="absolute bottom-0 left-0 w-full h-[2.5px] rounded-full bg-gradient-to-r from-blue-600 via-cyan-500 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </a>
             ))}
           </div>
@@ -97,29 +96,29 @@ export const Navbar = ({ isDashboard = false }) => {
         <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <>
-              {/* Floating AI Assistant Quick Trigger */}
+              {/* Floating Smart Mobility Assistant Quick Trigger */}
               <button
                 onClick={toggleAiDrawer}
-                className="relative p-2.5 rounded-2xl bg-gradient-to-r from-pink-500/15 via-purple-500/15 to-blue-500/15 border border-purple-500/40 text-purple-700 hover:text-white hover:bg-purple-600 hover:scale-105 transition-all duration-300 shadow-md shadow-purple-500/15 flex items-center justify-center"
-                title="AI Assistant"
+                className="relative p-2.5 rounded-2xl bg-gradient-to-r from-blue-600/15 via-cyan-500/15 to-emerald-500/15 border border-blue-500/40 text-blue-700 hover:text-white hover:bg-blue-600 hover:scale-105 transition-all duration-300 shadow-md shadow-blue-500/15 flex items-center justify-center cursor-pointer"
+                title="Smart Mobility Assistant"
               >
                 <Bot className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-pink-500 rounded-full animate-ping" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-pink-500 rounded-full border-2 border-white" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full animate-ping" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
               </button>
 
               {/* Profile Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
-                  className="flex items-center gap-2.5 p-1.5 rounded-2xl bg-white/80 backdrop-blur-md border border-purple-500/30 hover:border-purple-400 transition-colors shadow-sm"
+                  className="flex items-center gap-2.5 p-1.5 rounded-2xl bg-white/90 backdrop-blur-md border border-blue-500/30 hover:border-blue-400 transition-colors shadow-sm cursor-pointer"
                 >
                   <img
                     src={user?.avatar || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80"}
                     alt={user?.name}
-                    className="w-8 h-8 rounded-xl object-cover border-2 border-purple-400"
+                    className="w-8 h-8 rounded-xl object-cover border-2 border-blue-400"
                   />
-                  <span className="text-xs font-black text-slate-900 hidden lg:inline-block">{user?.name?.split(' ')[0]}</span>
+                  <span className="text-xs font-black text-slate-900 hidden lg:inline-block">{user?.name?.split(' ')[0] || 'User'}</span>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-600 hidden lg:inline-block" />
                 </button>
 
@@ -128,17 +127,17 @@ export const Navbar = ({ isDashboard = false }) => {
                     className="absolute right-0 mt-3 w-60 glass-dropdown rounded-3xl p-2.5 z-50 animate-in fade-in slide-in-from-top-2"
                     onMouseLeave={() => setProfileOpen(false)}
                   >
-                    <div className="px-3.5 py-2.5 border-b border-purple-500/15 mb-1.5">
-                      <p className="text-xs font-black text-slate-900">{user?.name}</p>
-                      <p className="text-[11px] text-purple-700 font-bold truncate">{user?.role}</p>
+                    <div className="px-3.5 py-2.5 border-b border-blue-500/15 mb-1.5">
+                      <p className="text-xs font-black text-slate-900">{user?.name || 'Smart Mobility User'}</p>
+                      <p className="text-[11px] text-blue-600 font-bold truncate">{user?.role || 'Fleet Operator'}</p>
                     </div>
                     <Link
                       to="/settings"
                       onClick={() => setProfileOpen(false)}
-                      className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-bold text-slate-800 hover:bg-purple-500/15 hover:text-purple-700 rounded-xl transition-colors"
+                      className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-bold text-slate-800 hover:bg-blue-500/15 hover:text-blue-700 rounded-xl transition-colors"
                     >
-                      <Settings className="w-4 h-4 text-purple-600" />
-                      Settings & Profile
+                      <Settings className="w-4 h-4 text-blue-600" />
+                      User Preferences
                     </Link>
                     <button
                       onClick={() => {
@@ -146,7 +145,7 @@ export const Navbar = ({ isDashboard = false }) => {
                         logout();
                         navigate('/login');
                       }}
-                      className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-500/15 rounded-xl transition-colors mt-1"
+                      className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-500/15 rounded-xl transition-colors mt-1 cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" />
                       Log Out
@@ -161,7 +160,7 @@ export const Navbar = ({ isDashboard = false }) => {
                 <Button variant="ghost" size="sm">Sign In</Button>
               </Link>
               <Link to="/dashboard">
-                <Button variant="primary" size="sm" icon={Sparkles}>Launch Demo</Button>
+                <Button variant="primary" size="sm" icon={Sparkles}>Launch Platform</Button>
               </Link>
             </div>
           )}
@@ -169,7 +168,7 @@ export const Navbar = ({ isDashboard = false }) => {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2.5 rounded-2xl bg-white/80 border border-purple-500/30 text-slate-800 flex items-center justify-center"
+            className="md:hidden p-2.5 rounded-2xl bg-white/80 border border-blue-500/30 text-slate-800 flex items-center justify-center cursor-pointer"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -179,9 +178,9 @@ export const Navbar = ({ isDashboard = false }) => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && !isDashboard && (
-        <div className="md:hidden mt-3 pt-3 border-t border-purple-500/20 flex flex-col gap-3 text-[16px] text-slate-900 font-extrabold">
+        <div className="md:hidden mt-3 pt-3 border-t border-blue-500/20 flex flex-col gap-3 text-[15px] text-slate-900 font-extrabold">
           {publicNavLinks.map((link, idx) => (
-            <a key={idx} href={link.href} onClick={() => setMobileMenuOpen(false)} className="hover:text-purple-600 transition-colors py-1">
+            <a key={idx} href={link.href} onClick={() => setMobileMenuOpen(false)} className="hover:text-blue-600 transition-colors py-1">
               {link.label}
             </a>
           ))}
@@ -190,7 +189,7 @@ export const Navbar = ({ isDashboard = false }) => {
               <Button variant="ghost" className="w-full">Sign In</Button>
             </Link>
             <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="primary" className="w-full">Start Free Trial</Button>
+              <Button variant="primary" className="w-full">Get Started</Button>
             </Link>
           </div>
         </div>

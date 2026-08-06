@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import { User, Mail, Lock, Building, Sparkles } from 'lucide-react';
+import { User, Mail, Lock, Building, Sparkles, Route } from 'lucide-react';
 
 export const SignupPage = () => {
   const { signup, loading } = useAuth();
@@ -24,13 +24,16 @@ export const SignupPage = () => {
   };
 
   return (
-    <Card glow className="p-8 border-indigo-500/30 shadow-2xl">
+    <Card glow className="p-8 border-blue-500/30 shadow-2xl">
       <div className="text-center space-y-2 mb-6">
-        <h2 className="text-2xl font-extrabold text-white tracking-tight font-['Space_Grotesk']">
-          Create Enterprise Account
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-500 text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/30">
+          <Route className="w-6 h-6" />
+        </div>
+        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight font-['Space_Grotesk']">
+          Create Your Account
         </h2>
-        <p className="text-xs text-slate-400">
-          Get 14-day full access to Monte Carlo AI decision engines
+        <p className="text-xs text-slate-700 font-bold">
+          Get started with SmartRoute AI Platform
         </p>
       </div>
 
@@ -41,7 +44,7 @@ export const SignupPage = () => {
           icon={User}
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="Dr. Sarah Vance"
+          placeholder="Sarah Vance"
           required
         />
 
@@ -51,17 +54,17 @@ export const SignupPage = () => {
           icon={Mail}
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          placeholder="sarah@company.com"
+          placeholder="sarah@smartroute.ai"
           required
         />
 
         <Input
-          label="Company Name"
+          label="Company / Fleet Name"
           type="text"
           icon={Building}
           value={formData.company}
           onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-          placeholder="AeroTech Dynamics"
+          placeholder="AeroMobility Logistics"
           required
         />
 
@@ -75,15 +78,15 @@ export const SignupPage = () => {
           required
         />
 
-        <div className="flex items-start gap-2 pt-1 text-xs text-slate-300">
+        <div className="flex items-start gap-2 pt-1 text-xs text-slate-700 font-semibold">
           <input
             type="checkbox"
             checked={formData.agreeTerms}
             onChange={(e) => setFormData({ ...formData, agreeTerms: e.target.checked })}
-            className="rounded bg-slate-900 border-slate-800 text-indigo-600 focus:ring-indigo-500 mt-0.5"
+            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 mt-0.5"
             required
           />
-          <span>I agree to the <a href="#" className="text-indigo-400 font-semibold hover:underline">Terms of Service</a> and <a href="#" className="text-indigo-400 font-semibold hover:underline">Privacy Policy</a></span>
+          <span>I agree to the <a href="#" className="text-blue-600 font-black hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 font-black hover:underline">Privacy Policy</a></span>
         </div>
 
         <Button
@@ -94,13 +97,13 @@ export const SignupPage = () => {
           icon={Sparkles}
           className="w-full mt-2"
         >
-          Initialize AI Account
+          Register for SmartRoute AI
         </Button>
       </form>
 
-      <p className="text-center text-xs text-slate-400 mt-6">
+      <p className="text-center text-xs text-slate-700 font-bold mt-6">
         Already have an account?{' '}
-        <Link to="/login" className="text-indigo-400 font-bold hover:underline">
+        <Link to="/login" className="text-blue-600 font-black hover:underline">
           Sign In
         </Link>
       </p>
