@@ -13,8 +13,10 @@ import {
   Mic,
   ArrowRight,
   ArrowLeft,
-  DollarSign,
+  Navigation,
+  MapPin,
   Clock,
+  Car,
   Paperclip
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -26,16 +28,16 @@ export const NewDecisionPage = () => {
   const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
-    title: 'Commercial Expansion: Hyderabad Flagship Node',
-    destination: 'Hyderabad Tech Hub',
-    description: 'Evaluating spatial-economic indicators, tech talent acquisition cost, real estate lease tax credits, and supply chain fulfillment latency.',
-    industry: 'Retail Tech & Enterprise Hardware',
+    title: 'Store Expansion & Logistics Route',
+    source: 'New York (JFK Hub)',
+    destination: 'Hyderabad Hitec City Phase II',
+    departureTime: '09:00 AM EST',
+    transportMode: 'Flight',
+    description: 'Evaluating spatial-economic indicators, logistics route friction, transit latency, and operational cost.',
     budget: '$2,500,000',
     timeline: '6 Months',
     riskTolerance: 'Medium',
-    expectedRoi: '+32%',
-    priority: 'High',
-    constraints: 'Requires municipal zoning approval within 30 days and green PPA energy compliance.',
+    constraints: 'Requires municipal zoning approval within 30 days and green energy compliance.',
     attachments: [
       { name: 'Hyderabad_RE_Lease_Audit.pdf', size: '2.4 MB' },
       { name: 'Competitor_Density_Map.png', size: '1.1 MB' }
@@ -70,21 +72,34 @@ export const NewDecisionPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Map exact backend expected fields: source, destination, departureTime, transportMode
+    const recommendationPayload = {
+      source: formData.source || 'New York',
+      destination: formData.destination || 'Hyderabad Hitec City',
+      departureTime: formData.departureTime || '09:00 AM',
+      transportMode: formData.transportMode || 'Flight',
+    };
+
     try {
       // Call POST /api/ai/recommend endpoint
-      const result = await requestRecommend(formData);
+      const result = await requestRecommend(recommendationPayload);
       const resData = result?.data || result || {};
       const decisionObj = {
         id: resData.id || resData._id || `DEC-${Date.now()}`,
         ...resData,
-        ...formData
+        ...formData,
+        source: recommendationPayload.source,
+        destination: recommendationPayload.destination,
+        departureTime: recommendationPayload.departureTime,
+        transportMode: recommendationPayload.transportMode,
       };
       await addNewDecision(decisionObj);
       setCurrentDecision(decisionObj);
       toast.success('AI Recommendation Generated!');
       navigate(`/decisions/result/${decisionObj.id}`);
     } catch (err) {
-      toast.error(err.response?.data?.error || err.message || 'Error running decision recommendation.');
+      toast.error(err.response?.data?.error || err.message || 'Error generating AI recommendation.');
     }
   };
 
@@ -98,7 +113,7 @@ export const NewDecisionPage = () => {
             <Badge variant="primary" size="sm">Step {step} of 4</Badge>
           </div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
-            New Strategic AI Decision / Trip Recommendation
+            New Strategic AI Decision & Travel Route
           </h1>
         </div>
       </div>
@@ -106,13 +121,14 @@ export const NewDecisionPage = () => {
       {/* Progress Steps Header */}
       <div className="grid grid-cols-4 gap-2 p-2 rounded-2xl bg-white/80 backdrop-blur-md border border-purple-500/25 shadow-sm">
         {[
-          { id: 1, label: '1. Overview' },
-          { id: 2, label: '2. Capital & Risk' },
+          { id: 1, label: '1. Route & Nodes' },
+          { id: 2, label: '2. Timing & Mode' },
           { id: 3, label: '3. Constraints' },
           { id: 4, label: '4. Attachments & Run' },
         ].map((s) => (
           <button
             key={s.id}
+            type="button"
             onClick={() => setStep(s.id)}
             className={`py-2.5 px-3 rounded-xl text-xs font-black transition-all text-center cursor-pointer ${
               step === s.id
@@ -133,19 +149,32 @@ export const NewDecisionPage = () => {
           {step === 1 && (
             <div className="space-y-4">
               <Input
-                label="Decision / Trip Destination Title"
+                label="Decision / Strategy Title"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="e.g. Store Launch: Hyderabad vs Bangalore"
+                placeholder="e.g. Store Launch & Supply Chain Route"
                 required
               />
 
-              <Input
-                label="Target Destination / Region"
-                value={formData.destination}
-                onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                placeholder="e.g. Hyderabad Hitec City"
-              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Input
+                  label="From Location (Source)"
+                  icon={Navigation}
+                  value={formData.source}
+                  onChange={(e) => setFormData({ ...formData, source: e.target.value })}
+                  placeholder="e.g. New York (JFK Hub)"
+                  required
+                />
+
+                <Input
+                  label="Destination"
+                  icon={MapPin}
+                  value={formData.destination}
+                  onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
+                  placeholder="e.g. Hyderabad Hitec City"
+                  required
+                />
+              </div>
 
               <div className="space-y-1.5">
                 <label className="text-xs font-black uppercase tracking-wider text-slate-800">
@@ -160,19 +189,6 @@ export const NewDecisionPage = () => {
                   required
                 />
               </div>
-
-              <Select
-                label="Target Industry Domain"
-                value={formData.industry}
-                onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                options={[
-                  { value: 'Retail Tech & Enterprise Hardware', label: 'Retail Tech & Enterprise Hardware' },
-                  { value: 'Financial Services & Fintech', label: 'Financial Services & Fintech' },
-                  { value: 'Supply Chain & Logistics', label: 'Supply Chain & Logistics' },
-                  { value: 'Healthcare & Biotech', label: 'Healthcare & Biotech' },
-                  { value: 'IT Infrastructure & Cloud', label: 'IT Infrastructure & Cloud' },
-                ]}
-              />
             </div>
           )}
 
@@ -180,23 +196,31 @@ export const NewDecisionPage = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
-                  label="Capital Budget / Estimated Allocation"
-                  icon={DollarSign}
-                  value={formData.budget}
-                  onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                  placeholder="$2,500,000"
+                  label="Departure Time"
+                  icon={Clock}
+                  value={formData.departureTime}
+                  onChange={(e) => setFormData({ ...formData, departureTime: e.target.value })}
+                  placeholder="09:00 AM EST"
+                  required
                 />
 
-                <Input
-                  label="Execution Timeline"
-                  icon={Clock}
-                  value={formData.timeline}
-                  onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                  placeholder="6 Months"
+                <Select
+                  label="Transport Mode"
+                  icon={Car}
+                  value={formData.transportMode}
+                  onChange={(e) => setFormData({ ...formData, transportMode: e.target.value })}
+                  options={[
+                    { value: 'Flight', label: 'Air Transit / Flight' },
+                    { value: 'Train', label: 'High Speed Rail / Train' },
+                    { value: 'Car', label: 'Car / Road Express' },
+                    { value: 'Bus', label: 'Bus / Shuttle Service' },
+                    { value: 'Ship', label: 'Maritime Ship / Freight' },
+                  ]}
+                  required
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Select
                   label="Risk Tolerance"
                   value={formData.riskTolerance}
@@ -209,22 +233,10 @@ export const NewDecisionPage = () => {
                 />
 
                 <Input
-                  label="Target ROI %"
-                  value={formData.expectedRoi}
-                  onChange={(e) => setFormData({ ...formData, expectedRoi: e.target.value })}
-                  placeholder="+32%"
-                />
-
-                <Select
-                  label="Priority Level"
-                  value={formData.priority}
-                  onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                  options={[
-                    { value: 'Low', label: 'Low Priority' },
-                    { value: 'Medium', label: 'Medium Priority' },
-                    { value: 'High', label: 'High Priority' },
-                    { value: 'Critical', label: 'Critical Executive Focus' },
-                  ]}
+                  label="Capital Budget Allocation"
+                  value={formData.budget}
+                  onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                  placeholder="$2,500,000"
                 />
               </div>
             </div>
@@ -234,7 +246,7 @@ export const NewDecisionPage = () => {
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-black uppercase tracking-wider text-slate-800">
-                  Regulatory & Operation Constraints
+                  Regulatory & Operational Constraints
                 </label>
                 <textarea
                   rows={4}
@@ -294,15 +306,18 @@ export const NewDecisionPage = () => {
                 </div>
               )}
 
-              {/* Final Summary Card */}
+              {/* Final Summary Card showing payload mapping */}
               <div className="p-4 rounded-2xl bg-purple-50/80 border border-purple-500/30 space-y-2 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-purple-800 uppercase">POST /api/ai/recommend Integration</span>
-                  <Badge variant="success" size="sm">Ready to Send</Badge>
+                  <span className="text-xs font-black text-purple-800 uppercase">Payload Mapping to POST /api/ai/recommend</span>
+                  <Badge variant="success" size="sm">Validated</Badge>
                 </div>
-                <p className="text-xs font-semibold text-slate-800">
-                  Submitting will send parameters to backend endpoint POST /api/ai/recommend.
-                </p>
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono font-bold text-slate-800 pt-1">
+                  <div>source: "{formData.source}"</div>
+                  <div>destination: "{formData.destination}"</div>
+                  <div>departureTime: "{formData.departureTime}"</div>
+                  <div>transportMode: "{formData.transportMode}"</div>
+                </div>
               </div>
             </div>
           )}

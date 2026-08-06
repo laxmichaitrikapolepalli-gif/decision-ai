@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
         try {
           const profile = await authService.getProfile();
           // Adjust profile object if nested under data or profile key
-          const userData = profile?.user || profile?.data || profile;
+          const userData = profile?.user || profile?.data?.user || profile?.data || profile;
           setUser(userData);
           setIsAuthenticated(true);
           localStorage.setItem('ds_user', JSON.stringify(userData));
@@ -43,8 +43,19 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await authService.login({ email, password });
-      const token = response?.token || response?.access_token || response?.data?.token;
-      const userData = response?.user || response?.data?.user || { email, name: email.split('@')[0] };
+      const token =
+        response?.data?.data?.token ||
+        response?.data?.token ||
+        response?.data?.access_token ||
+        response?.token ||
+        response?.access_token ||
+        response?.session?.access_token;
+
+      const userData =
+        response?.data?.data?.user ||
+        response?.data?.user ||
+        response?.user ||
+        { email, name: email.split('@')[0] };
 
       if (token) {
         localStorage.setItem('token', token);
@@ -54,7 +65,7 @@ export const AuthProvider = ({ children }) => {
 
       setUser(userData);
       setIsAuthenticated(true);
-      toast.success(`Welcome back, ${userData.name || 'User'}!`);
+      toast.success(`Welcome back, ${userData.name || userData.email || 'User'}!`);
       return true;
     } catch (err) {
       const msg = err.response?.data?.error || err.response?.data?.message || 'Invalid login credentials.';
@@ -69,8 +80,19 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await authService.register(userData);
-      const token = response?.token || response?.access_token || response?.data?.token;
-      const registeredUser = response?.user || response?.data?.user || userData;
+      const token =
+        response?.data?.data?.token ||
+        response?.data?.token ||
+        response?.data?.access_token ||
+        response?.token ||
+        response?.access_token ||
+        response?.session?.access_token;
+
+      const registeredUser =
+        response?.data?.data?.user ||
+        response?.data?.user ||
+        response?.user ||
+        userData;
 
       if (token) {
         localStorage.setItem('token', token);
