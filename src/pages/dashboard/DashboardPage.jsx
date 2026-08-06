@@ -2,30 +2,26 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDecision } from '../../contexts/DecisionContext';
+import { useCommand } from '../../contexts/CommandContext';
 import { Navbar } from '../../components/common/Navbar';
 import { Sidebar } from '../../components/common/Sidebar';
-import { DecisionCard } from '../../components/decision/DecisionCard';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import {
   Sparkles,
   PlusCircle,
+  Swords,
+  Zap,
+  ShieldCheck,
   TrendingUp,
-  Brain,
   Layers,
   Activity,
   ArrowRight,
-  ShieldCheck,
-  Zap,
-  Target,
-  BarChart2,
-  PieChart,
-  LineChart,
   Bot,
-  Sliders,
-  CheckCircle2,
-  Clock
+  Calendar,
+  Clock,
+  ArrowUpRight
 } from 'lucide-react';
 import {
   AreaChart,
@@ -39,7 +35,8 @@ import {
 
 export const DashboardPage = () => {
   const { user } = useAuth();
-  const { decisions, loading, fetchTrips, toggleAiDrawer } = useDecision();
+  const { decisions, fetchTrips, toggleAiDrawer, setCurrentDecision } = useDecision();
+  const { openCommandPalette } = useCommand();
 
   useEffect(() => {
     fetchTrips();
@@ -47,68 +44,116 @@ export const DashboardPage = () => {
 
   const kpis = [
     {
-      label: 'Total Decisions',
-      value: decisions.length > 0 ? `${decisions.length}` : '24',
-      change: '+14% this month',
-      icon: Target,
-      color: 'from-[#FF2DAA] to-[#6C63FF]',
-      borderColor: 'border-[#FF2DAA]/20'
-    },
-    {
-      label: 'AI Recommendations',
-      value: decisions.length > 0 ? `${decisions.length}` : '18',
-      change: '100% neural processed',
-      icon: Sparkles,
-      color: 'from-[#6C63FF] to-[#4F7DFF]',
-      borderColor: 'border-[#6C63FF]/20'
-    },
-    {
-      label: 'Decision Confidence',
-      value: '96.2%',
-      change: 'High-confidence threshold',
-      icon: ShieldCheck,
-      color: 'from-[#4F7DFF] to-[#8B5CF6]',
-      borderColor: 'border-[#4F7DFF]/20'
-    },
-    {
-      label: 'Prediction Accuracy',
-      value: '98.4%',
-      change: '+12.4% vs baseline',
-      icon: TrendingUp,
-      color: 'from-[#10B981] to-[#34D399]',
-      borderColor: 'border-[#10B981]/20'
-    },
-    {
-      label: 'Active Scenarios',
-      value: '12',
-      change: 'Monte Carlo models running',
+      label: 'TOTAL DECISIONS',
+      value: '1,248',
+      change: '+14% vs Q2',
+      sub: '10,000 Monte Carlo runs',
       icon: Layers,
-      color: 'from-[#F59E0B] to-[#FBBF24]',
-      borderColor: 'border-[#F59E0B]/20'
+      iconBg: 'bg-purple-100 text-purple-600',
     },
     {
-      label: 'Risk Level',
-      value: 'Low (P95)',
-      change: 'Optimal risk distribution',
+      label: 'MODEL ACCURACY',
+      value: '98.4%',
+      change: '+2.1%',
+      sub: 'High-fidelity confidence bound',
+      icon: ShieldCheck,
+      iconBg: 'bg-pink-100 text-pink-600',
+    },
+    {
+      label: 'RISK REDUCTION',
+      value: '35.2%',
+      change: 'P95 Variance',
+      sub: 'Sub-second threat mitigation',
       icon: Activity,
-      color: 'from-[#EC4899] to-[#FF2DAA]',
-      borderColor: 'border-[#EC4899]/20'
+      iconBg: 'bg-blue-100 text-blue-600',
+    },
+    {
+      label: 'CAPITAL SAVED',
+      value: '$4.2M',
+      change: 'YTD Benefit',
+      sub: 'Validated across 42 projects',
+      icon: TrendingUp,
+      iconBg: 'bg-amber-100 text-amber-600',
     }
   ];
 
   const chartData = [
-    { month: 'Jan', decisions: 12, accuracy: 94 },
-    { month: 'Feb', decisions: 15, accuracy: 95 },
-    { month: 'Mar', decisions: 18, accuracy: 96 },
-    { month: 'Apr', decisions: 22, accuracy: 97 },
-    { month: 'May', decisions: 24, accuracy: 98 },
+    { month: 'Mar', roi: 18, confidence: 91 },
+    { month: 'Apr', roi: 24, confidence: 93 },
+    { month: 'May', roi: 28, confidence: 95 },
+    { month: 'Jun', roi: 34, confidence: 96 },
+    { month: 'Jul', roi: 42, confidence: 98 },
   ];
 
-  const activityTimeline = [
-    { time: '10 mins ago', title: 'Hyderabad Flagship Expansion decision generated', status: 'Optimal' },
-    { time: '2 hours ago', title: 'Q4 Sensitivity Scenario Simulation updated', status: 'Completed' },
-    { time: '1 day ago', title: 'APAC Supply Chain Risk Alert evaluated', status: 'Actioned' },
+  const recentSimulations = [
+    {
+      id: 'DEC-2026-089',
+      tag: 'Market Growth',
+      title: 'Store Expansion: Hyderabad vs...',
+      confidence: '96%',
+      risk: 'Medium',
+      riskColor: 'bg-amber-100 text-amber-700 border-amber-200',
+      roi: '+28%',
+      date: '2026-08-04',
+      status: 'Approved',
+      statusColor: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    },
+    {
+      id: 'DEC-2026-088',
+      tag: 'IT Infrastructure',
+      title: 'Cloud Infrastructure Migration to...',
+      confidence: '98%',
+      risk: 'Low',
+      riskColor: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      roi: '+42%',
+      date: '2026-08-01',
+      status: 'Completed',
+      statusColor: 'bg-slate-100 text-slate-700 border-slate-200',
+    },
+    {
+      id: 'DEC-2026-087',
+      tag: 'Finance',
+      title: 'AI R&D Budget Allocation Q3-Q4',
+      confidence: '91%',
+      risk: 'High',
+      riskColor: 'bg-rose-100 text-rose-700 border-rose-200',
+      roi: '+35%',
+      date: '2026-07-28',
+      status: 'In Review',
+      statusColor: 'bg-slate-100 text-slate-700 border-slate-200',
+    },
+    {
+      id: 'DEC-2026-086',
+      tag: 'Operations',
+      title: 'Supply Chain Supplier Redundancy...',
+      confidence: '94%',
+      risk: 'Low',
+      riskColor: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      roi: '+18%',
+      date: '2026-07-22',
+      status: 'Executed',
+      statusColor: 'bg-slate-100 text-slate-700 border-slate-200',
+    }
   ];
+
+  const upcomingQueue = [
+    { title: 'Automated Factory Robotics Rollout', risk: 'High Risk', riskColor: 'bg-rose-100 text-rose-700 border-rose-200', due: 'Aug 12, 2026' },
+    { title: 'Direct-to-Consumer EU Licensing', risk: 'Medium', riskColor: 'bg-slate-100 text-slate-700 border-slate-200', due: 'Aug 18, 2026' },
+    { title: 'Generative Design Patent Acquisition', risk: 'Low Risk', riskColor: 'bg-slate-100 text-slate-700 border-slate-200', due: 'Aug 25, 2026' },
+  ];
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xl space-y-1 text-xs">
+          <p className="font-extrabold text-[#0F172A]">{label}</p>
+          <p className="text-[#64748B] font-semibold">Actualized ROI % : <span className="text-[#10B981] font-bold">{payload[0]?.value}</span></p>
+          <p className="text-[#64748B] font-semibold">Model Confidence % : <span className="text-[#6C63FF] font-bold">{payload[1]?.value}</span></p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="min-h-screen bg-[#F8F7FC] text-[#0F172A] selection:bg-[#FF2DAA] selection:text-white">
@@ -117,172 +162,274 @@ export const DashboardPage = () => {
       <div className="flex pt-4">
         <Sidebar />
 
-        <main className="flex-1 px-4 lg:px-8 pb-16 space-y-8 overflow-x-hidden max-w-7xl">
+        <main className="flex-1 px-4 lg:px-8 pb-16 space-y-6 overflow-x-hidden max-w-7xl">
           
-          {/* Executive Welcome Banner */}
-          <div className="p-8 rounded-3xl bg-gradient-to-r from-[#FF2DAA]/10 via-[#6C63FF]/10 to-[#4F7DFF]/10 border border-[#6C63FF]/20 backdrop-blur-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
+          {/* Welcome Banner exact matching screenshot 1 */}
+          <div className="p-7 rounded-3xl bg-white border border-slate-200/80 backdrop-blur-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-md">
             <div className="space-y-2 max-w-xl z-10">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-black text-[#6C63FF] uppercase tracking-widest">EXECUTIVE PLATFORM</span>
-                <Badge variant="primary" size="sm" className="bg-[#6C63FF]/15 text-[#6C63FF]">Active Session</Badge>
+                <span className="text-[10px] font-mono font-extrabold text-[#64748B] uppercase tracking-widest">AEROTECH DYNAMICS</span>
+                <span className="px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-600 text-[10px] font-bold border border-purple-200 flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" /> Quantum v4.2 Active
+                </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-black text-[#0F172A] tracking-tight font-['Space_Grotesk']">
-                Welcome back, {user?.name?.split(' ')[0] || 'Executive'}
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight font-['Space_Grotesk'] flex items-center gap-2">
+                Welcome back, Dr. <span className="text-[#6C63FF]">👋</span>
               </h1>
-              <p className="text-xs sm:text-sm text-[#64748B] font-semibold">
-                DecisionSphere AI model v4.2 is actively monitoring strategic parameters and scenario bounds.
+              <p className="text-xs text-[#64748B] font-medium leading-relaxed">
+                DecisionSphere engine evaluated 1,248 multi-variance scenarios this week. Average confidence rating is at an optimal 98.4%.
               </p>
             </div>
 
-            <div className="flex items-center gap-3 z-10">
+            <div className="flex items-center gap-3 shrink-0 z-10">
               <Link to="/decisions/new">
-                <Button variant="primary" size="lg" icon={PlusCircle} className="bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white border-none shadow-lg shadow-[#6C63FF]/25 font-bold">
-                  New AI Decision
+                <Button variant="primary" size="md" icon={PlusCircle} className="bg-gradient-to-r from-[#FF2DAA] to-[#4F7DFF] text-white border-none rounded-2xl font-bold shadow-md shadow-[#FF2DAA]/20 text-xs py-3 px-5">
+                  New Decision
                 </Button>
               </Link>
+              <Link to="/decisions/battle">
+                <Button variant="accent" size="md" icon={Swords} className="bg-gradient-to-r from-[#6C63FF] to-[#8B5CF6] text-white border-none rounded-2xl font-bold shadow-md text-xs py-3 px-5">
+                  Decision Battle
+                </Button>
+              </Link>
+              <Button onClick={openCommandPalette} variant="secondary" size="md" icon={Zap} className="bg-white border-slate-200 text-[#0F172A] rounded-2xl font-bold text-xs py-3 px-4 shadow-sm">
+                Cmd (Ctrl+K)
+              </Button>
             </div>
           </div>
 
-          {/* KPI Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {/* 4 KPI Cards exact matching screenshot 1 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {kpis.map((kpi, idx) => {
               const Icon = kpi.icon;
               return (
-                <Card key={idx} glow className={`p-6 ${kpi.borderColor} glass-card space-y-3 rounded-3xl bg-white/90`}>
+                <Card key={idx} glow className="p-5 border-slate-100 glass-card space-y-3 rounded-3xl bg-white shadow-md">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#64748B] font-bold uppercase tracking-wider">{kpi.label}</span>
-                    <div className={`p-2.5 rounded-2xl bg-gradient-to-r ${kpi.color} text-white shadow-md`}>
-                      <Icon className="w-5 h-5" />
+                    <span className="text-[10px] text-[#64748B] font-bold uppercase tracking-wider">{kpi.label}</span>
+                    <div className={`p-2 rounded-xl ${kpi.iconBg} shadow-sm`}>
+                      <Icon className="w-4 h-4" />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-3xl font-black text-[#0F172A] font-['Space_Grotesk']">{kpi.value}</h3>
-                    <p className="text-xs text-[#6C63FF] font-bold">{kpi.change}</p>
+                    <div className="flex items-baseline gap-2">
+                      <h3 className="text-3xl font-extrabold text-[#0F172A] font-['Space_Grotesk']">{kpi.value}</h3>
+                      <span className="text-xs font-bold text-[#FF2DAA]">{kpi.change}</span>
+                    </div>
+                    <p className="text-[11px] text-[#64748B] font-medium">{kpi.sub}</p>
                   </div>
                 </Card>
               );
             })}
           </div>
 
-          {/* Analytics Chart & Health Gauges & Assistant Teaser Grid */}
+          {/* Strategic Confidence Chart & Health Gauges Grid exact matching screenshots 1 & 2 */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            {/* Chart Box */}
-            <Card glow className="lg:col-span-2 p-6 border-[#6C63FF]/15 glass-card space-y-4 rounded-3xl bg-white/90">
+            {/* Recharts Area Chart */}
+            <Card glow className="lg:col-span-2 p-6 border-slate-100 glass-card space-y-4 rounded-3xl bg-white shadow-md">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-black text-[#0F172A]">Decision Velocity & Accuracy Trajectory</h3>
-                  <p className="text-xs text-[#64748B] font-semibold">Historical neural performance trends</p>
+                  <h3 className="text-lg font-extrabold text-[#0F172A]">Strategic Confidence & ROI Projection</h3>
+                  <p className="text-xs text-[#64748B] font-medium">Real-time neural feedback curves</p>
                 </div>
-                <Badge variant="success" size="sm">Real-time Stream</Badge>
+                <span className="px-3 py-1 rounded-full bg-purple-50 text-purple-600 text-[11px] font-bold border border-purple-200">
+                  P95 Horizon
+                </span>
               </div>
 
               <div className="h-64 w-full pt-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData}>
                     <defs>
-                      <linearGradient id="colorDec" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6C63FF" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#6C63FF" stopOpacity={0} />
+                      <linearGradient id="colorRoi" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="colorConf" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.6} />
                     <XAxis dataKey="month" stroke="#64748b" fontSize={11} fontWeight={700} />
                     <YAxis stroke="#64748b" fontSize={11} fontWeight={700} />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="decisions" stroke="#6C63FF" strokeWidth={2.5} fill="url(#colorDec)" name="Decisions Evaluated" />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Area type="monotone" dataKey="confidence" stroke="#8B5CF6" strokeWidth={2.5} fill="url(#colorConf)" name="Model Confidence %" />
+                    <Area type="monotone" dataKey="roi" stroke="#10B981" strokeWidth={2.5} fill="url(#colorRoi)" name="Actualized ROI %" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </Card>
 
-            {/* Health Gauge & AI Assistant Card */}
-            <Card glow className="p-6 border-[#FF2DAA]/20 glass-card space-y-4 rounded-3xl bg-white/90 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white flex items-center justify-center shadow-md">
-                    <Bot className="w-6 h-6" />
+            {/* Health Gauges Box exact matching screenshots 1 & 2 */}
+            <Card glow className="p-6 border-slate-100 glass-card space-y-5 rounded-3xl bg-white shadow-md flex flex-col justify-between">
+              <div className="space-y-4">
+                <h3 className="text-xs font-mono font-extrabold text-[#64748B] uppercase tracking-widest">HEALTH GAUGES</h3>
+
+                {/* Gauge 1 */}
+                <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 space-y-2">
+                  <div className="flex justify-between items-center text-xs font-bold">
+                    <span className="text-[#64748B] uppercase text-[10px]">PLATFORM RISK SCORE</span>
+                    <span className="text-emerald-700 font-extrabold">Low Risk</span>
                   </div>
-                  <Badge variant="primary" size="sm">AI Model Health 99.8%</Badge>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-extrabold text-[#0F172A] font-['Space_Grotesk']">24</span>
+                    <span className="text-xs font-medium text-[#64748B]">/100 Risk Index</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-emerald-100 overflow-hidden">
+                    <div className="h-full bg-emerald-500 rounded-full w-[24%]" />
+                  </div>
                 </div>
-                <h3 className="text-xl font-black text-[#0F172A]">Ask AI Strategy Copilot</h3>
-                <p className="text-xs text-[#64748B] leading-relaxed font-semibold">
-                  Query natural language AI models for instant scenario analysis, risk evaluations, and SWOT recommendations.
-                </p>
+
+                {/* Gauge 2 */}
+                <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200/80 space-y-2">
+                  <div className="flex justify-between items-center text-xs font-bold">
+                    <span className="text-[#64748B] uppercase text-[10px]">DECISION PRECISION</span>
+                    <span className="text-blue-700 font-extrabold">Highly Reliable</span>
+                  </div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-extrabold text-[#0F172A] font-['Space_Grotesk']">96%</span>
+                    <span className="text-xs font-medium text-[#64748B]">Model Precision</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-blue-100 overflow-hidden">
+                    <div className="h-full bg-blue-600 rounded-full w-[96%]" />
+                  </div>
+                </div>
               </div>
 
-              {/* Quick Health Gauge Bar */}
-              <div className="space-y-2 pt-2 border-t border-slate-100">
-                <div className="flex justify-between text-xs font-black text-[#0F172A]">
-                  <span>System Neural Capacity</span>
-                  <span className="text-[#10B981]">Optimal (0.4ms)</span>
-                </div>
-                <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-[#10B981] to-[#6C63FF] rounded-full w-[94%]" />
-                </div>
+              <div className="pt-2">
+                <Button onClick={toggleAiDrawer} variant="primary" size="md" icon={Bot} className="w-full bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white font-bold rounded-2xl border-none shadow-md">
+                  Ask AI Copilot
+                </Button>
               </div>
-
-              <Button onClick={toggleAiDrawer} variant="primary" size="md" icon={Sparkles} className="w-full bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white font-bold border-none shadow-md">
-                Launch AI Assistant
-              </Button>
             </Card>
 
           </div>
 
-          {/* Activity Timeline & Recent Decisions Grid */}
+          {/* Today's Executive AI Summary Bar exact matching screenshots 2 & 3 */}
+          <Card glow className="p-5 border-slate-100 glass-card bg-white rounded-3xl shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5 flex-1">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] text-white flex items-center justify-center shadow-md shrink-0">
+                <Bot className="w-5 h-5" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-extrabold text-[#0F172A]">Today's Executive AI Summary</h4>
+                  <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold border border-blue-200">
+                    Aug 5, 2026
+                  </span>
+                </div>
+                <p className="text-xs text-[#64748B] font-medium leading-relaxed italic">
+                  "Spatial expansion models show high readiness for Hyderabad Tech Corridor Phase II. Real estate tax subsidies offset initial infrastructure expenditure, offering an 8.4-month faster payback period than Bangalore."
+                </p>
+              </div>
+            </div>
+
+            <Button onClick={toggleAiDrawer} variant="primary" size="md" icon={Sparkles} className="shrink-0 bg-gradient-to-r from-[#FF2DAA] via-[#8B5CF6] to-[#4F7DFF] text-white font-bold rounded-2xl border-none shadow-md text-xs py-2.5 px-5">
+              Ask AI Assistant
+            </Button>
+          </Card>
+
+          {/* Recent Decisions & Simulations + Upcoming Queue Grid exact matching screenshot 3 */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            {/* Recent Decisions Section */}
+            {/* Recent Decisions 2x2 Grid */}
             <div className="lg:col-span-2 space-y-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-2xl font-black text-[#0F172A] font-['Space_Grotesk']">Recent AI Decisions</h3>
-                  <p className="text-xs text-[#64748B] font-semibold">Latest evaluated business choices and strategic recommendations</p>
-                </div>
-                <Link to="/decisions/history" className="text-xs font-black text-[#6C63FF] hover:underline flex items-center gap-1">
-                  View Decision History <ArrowRight className="w-3.5 h-3.5" />
+                <h3 className="text-lg font-extrabold text-[#0F172A] font-['Space_Grotesk']">Recent Decisions & Simulations</h3>
+                <Link to="/decisions/history" className="text-xs font-bold text-[#6C63FF] hover:underline flex items-center gap-1">
+                  View All History <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
 
-              {loading ? (
-                <div className="py-12 text-center text-xs font-bold text-[#64748B]">
-                  Loading decision records...
-                </div>
-              ) : decisions.length === 0 ? (
-                <Card className="p-8 text-center border-[#6C63FF]/15 glass-card space-y-3 rounded-3xl bg-white/90">
-                  <p className="text-sm font-black text-[#0F172A]">No AI Decisions Found</p>
-                  <p className="text-xs text-[#64748B] font-semibold">Click below to generate your first strategic recommendation.</p>
-                  <Link to="/decisions/new">
-                    <Button variant="primary" size="sm" icon={PlusCircle} className="mt-2 bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white font-bold">
-                      Create New Decision
-                    </Button>
-                  </Link>
-                </Card>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {decisions.slice(0, 2).map((dec, idx) => (
-                    <DecisionCard key={dec.id || dec._id || idx} decision={dec} />
-                  ))}
-                </div>
-              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {recentSimulations.map((dec) => (
+                  <Card
+                    key={dec.id}
+                    onClick={() => {
+                      setCurrentDecision({
+                        id: dec.id,
+                        title: dec.title,
+                        recommendation: dec.title,
+                        confidence: parseInt(dec.confidence),
+                        risk: dec.risk,
+                        roi: dec.roi,
+                        date: dec.date,
+                        status: dec.status,
+                      });
+                    }}
+                    className="p-5 border-slate-100 glass-card space-y-3 rounded-3xl bg-white shadow-md hover:shadow-xl transition-all cursor-pointer group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono font-bold text-slate-500">{dec.id}</span>
+                        <span className="px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-200">
+                          {dec.tag}
+                        </span>
+                      </div>
+                      <div className="p-1.5 rounded-xl bg-purple-50 text-purple-600 group-hover:bg-[#6C63FF] group-hover:text-white transition-all">
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+
+                    <h4 className="text-sm font-extrabold text-[#0F172A] group-hover:text-[#6C63FF] transition-colors truncate">
+                      {dec.title}
+                    </h4>
+
+                    <div className="grid grid-cols-3 gap-2 py-2 border-y border-slate-100 text-xs">
+                      <div>
+                        <span className="text-[9px] text-[#64748B] uppercase font-bold block">CONFIDENCE</span>
+                        <span className="font-extrabold text-[#0F172A]">{dec.confidence}</span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] text-[#64748B] uppercase font-bold block">RISK</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${dec.riskColor}`}>
+                          {dec.risk}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[9px] text-[#64748B] uppercase font-bold block">EST. ROI</span>
+                        <span className="font-extrabold text-[#0F172A]">{dec.roi}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs text-[#64748B] pt-1 font-semibold">
+                      <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-purple-500" /> {dec.date}</span>
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${dec.statusColor}`}>
+                        {dec.status}
+                      </span>
+                    </div>
+                  </Card>
+                ))}
+              </div>
             </div>
 
-            {/* Activity Timeline Panel */}
-            <Card glow className="p-6 border-[#6C63FF]/15 glass-card space-y-4 rounded-3xl bg-white/90">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-black text-[#0F172A]">Activity Timeline</h3>
-                <Badge variant="neutral" size="sm">Audit Log</Badge>
-              </div>
-              <div className="space-y-3">
-                {activityTimeline.map((item, idx) => (
-                  <div key={idx} className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                    <div className="flex items-center justify-between text-[10px] text-[#64748B] font-bold">
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-[#6C63FF]" /> {item.time}</span>
-                      <span className="text-[#10B981] font-black">{item.status}</span>
+            {/* Upcoming Queue Right Column Box exact matching screenshot 3 */}
+            <Card glow className="p-5 border-slate-100 glass-card space-y-4 rounded-3xl bg-white shadow-md flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <h3 className="text-sm font-extrabold text-[#0F172A]">Upcoming Queue</h3>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold border border-amber-200">
+                    3 Pending
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {upcomingQueue.map((item, idx) => (
+                    <div key={idx} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <h5 className="text-xs font-bold text-[#0F172A] truncate max-w-[180px]">{item.title}</h5>
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border ${item.riskColor}`}>
+                          {item.risk}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-[10px] font-medium text-[#64748B]">
+                        <Clock className="w-3 h-3 text-purple-500" />
+                        <span>Due: {item.due}</span>
+                      </div>
                     </div>
-                    <p className="text-xs font-bold text-[#0F172A]">{item.title}</p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </Card>
 

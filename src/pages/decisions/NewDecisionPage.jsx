@@ -14,12 +14,6 @@ import {
   ArrowRight,
   ArrowLeft,
   Building,
-  Target,
-  Clock,
-  Layers,
-  Paperclip,
-  CheckCircle2,
-  BrainCircuit,
   DollarSign,
   ShieldAlert,
   FileText,
@@ -35,12 +29,13 @@ export const NewDecisionPage = () => {
   const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
-    title: 'Hyderabad Hitec City Flagship Expansion',
+    title: 'Commercial Expansion: Hyderabad Flagship Node',
+    description: 'Evaluating spatial-economic indicators, tech talent acquisition cost, real estate lease tax credits, and supply chain fulfillment latency.',
+    domain: 'Retail Tech & Enterprise Hardware',
     source: 'Expand Store in Hyderabad Hitec City',
     destination: 'Expand Store in Bangalore Whitefield',
     departureTime: 'Q3 2026 Fiscal Target',
     transportMode: 'Capital Investment',
-    description: 'Evaluate strategic real estate arbitrage, talent density, tax subsidies, and CapEx payback timelines between Tier-1 tech hubs.',
     budget: '$2,500,000',
     timeline: '6 Months',
     riskTolerance: 'Low Risk (12%)',
@@ -54,25 +49,22 @@ export const NewDecisionPage = () => {
   const [isRecording, setIsRecording] = useState(false);
 
   const stepsList = [
-    { id: 1, name: 'Overview' },
-    { id: 2, name: 'Budget' },
-    { id: 3, name: 'Risk' },
-    { id: 4, name: 'Constraints' },
-    { id: 5, name: 'Documents' },
-    { id: 6, name: 'Review' },
-    { id: 7, name: 'Run Simulation' },
+    { id: 1, name: '1. Overview' },
+    { id: 2, name: '2. Capital & Risk' },
+    { id: 3, name: '3. Constraints' },
+    { id: 4, name: '4. Attachments & Run' },
   ];
 
   const handleVoiceRecord = () => {
     if (!isRecording) {
       setIsRecording(true);
-      toast.success('Voice memo recording started... Dictate strategic parameters.');
+      toast.success('Voice memo recording started...');
       setTimeout(() => {
         setIsRecording(false);
-        toast.success('Voice memo transcribed using AI NLP engine!');
+        toast.success('Voice memo transcribed!');
         setFormData(prev => ({
           ...prev,
-          constraints: prev.constraints + ' [Voice Memo Added: Prioritize municipal tax credits over short-term CapEx discounts]'
+          constraints: prev.constraints + ' [Voice Memo: Prioritize municipal tax credits]'
         }));
       }, 3000);
     }
@@ -90,7 +82,6 @@ export const NewDecisionPage = () => {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
 
-    // Map exact backend expected fields: source, destination, departureTime, transportMode
     const recommendationPayload = {
       source: formData.source || 'Hyderabad Option A',
       destination: formData.destination || 'Bangalore Option B',
@@ -113,7 +104,7 @@ export const NewDecisionPage = () => {
         travelCost: formData.budget || '$2,500,000',
         fuelEfficiency: '+38% Projected ROI',
         confidenceScore: 96,
-        reason: `DecisionSphere AI neural model identified ${formData.source} as the optimal strategic path, delivering superior payback velocity, municipal tax credits, and lower risk exposure compared to ${formData.destination}.`,
+        reason: `DecisionSphere AI neural model identified ${formData.source} as the optimal strategic path, delivering superior payback velocity, municipal tax credits, and lower risk exposure.`,
         tips: [
           'Finalize municipal tax exemption LOI prior to Q3 fiscal deadline',
           'Allocate $1.8M CapEx for initial hardware node deployment',
@@ -146,96 +137,101 @@ export const NewDecisionPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-black font-mono text-[#6C63FF] uppercase tracking-widest">7-STEP DECISION WIZARD</span>
-            <Badge variant="primary" size="sm" className="bg-[#6C63FF]/15 text-[#6C63FF]">Step {step} of 7</Badge>
-          </div>
-          <h1 className="text-3xl font-black text-[#0F172A] tracking-tight font-['Space_Grotesk'] mt-1 text-gradient-master">
-            AI Decision Engine Multi-Step Wizard
-          </h1>
-          <p className="text-xs font-semibold text-[#64748B] mt-1">
-            Input business parameters for neural analysis, risk modeling, and strategic recommendations
-          </p>
+      {/* Header exact matching screenshot 5 */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-mono font-extrabold text-[#64748B] uppercase tracking-widest">DECISION SIMULATOR ENGINE</span>
+          <span className="px-3 py-0.5 rounded-full bg-purple-50 text-purple-700 text-[10px] font-extrabold border border-purple-200">
+            Step {step} of 4
+          </span>
         </div>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-gradient-to-r from-[#FF2DAA] via-[#8B5CF6] to-[#4F7DFF] bg-clip-text font-['Space_Grotesk']">
+          New Strategic AI Decision
+        </h1>
       </div>
 
-      {/* 7-Step Progress Navigation Header */}
-      <div className="grid grid-cols-7 gap-1.5 p-2 rounded-2xl bg-white border border-[#6C63FF]/20 shadow-sm overflow-x-auto">
+      {/* 4-Step Navigation Bar exact matching screenshot 5 */}
+      <div className="grid grid-cols-4 gap-2 p-2 rounded-2xl bg-white border border-slate-200 shadow-sm">
         {stepsList.map((s) => (
           <button
             key={s.id}
             type="button"
             onClick={() => setStep(s.id)}
-            className={`py-2 px-1 rounded-xl text-[11px] font-bold transition-all text-center truncate cursor-pointer ${
+            className={`py-3 px-3 rounded-xl text-xs font-bold transition-all text-center truncate cursor-pointer ${
               step === s.id
-                ? 'bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white shadow-md font-black'
-                : step > s.id
-                ? 'bg-[#6C63FF]/10 text-[#6C63FF] border border-[#6C63FF]/20 font-black'
-                : 'text-[#64748B] hover:text-[#0F172A] hover:bg-slate-100'
+                ? 'bg-gradient-to-r from-[#FF2DAA] to-[#8B5CF6] text-white shadow-md font-extrabold'
+                : 'text-[#64748B] hover:text-[#0F172A] hover:bg-slate-50'
             }`}
           >
-            {s.id}. {s.name}
+            {s.name}
           </button>
         ))}
       </div>
 
-      {/* Form Card */}
-      <Card glow className="p-8 border-[#6C63FF]/20 glass-card bg-white/95 rounded-3xl">
+      {/* Form Card exact matching screenshot 5 */}
+      <Card glow className="p-8 border-slate-200 glass-card bg-white rounded-3xl shadow-lg">
         <form onSubmit={handleSubmit} className="space-y-6">
           
           {/* Step 1: Overview */}
           {step === 1 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-black text-[#0F172A] flex items-center gap-2">
-                <Building className="w-5 h-5 text-[#6C63FF]" /> Step 1: Decision Overview & Options
-              </h3>
+            <div className="space-y-5">
               <Input
-                label="Strategic Decision Title"
+                label="DECISION TITLE"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="e.g. Hyderabad Flagship R&D Expansion"
+                placeholder="Commercial Expansion: Hyderabad Flagship Node"
+                className="bg-white border-slate-200"
                 required
               />
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono font-extrabold uppercase tracking-widest text-[#0F172A]">
+                  COMPREHENSIVE DESCRIPTION
+                </label>
+                <textarea
+                  rows={4}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full rounded-2xl bg-white border border-slate-200 text-[#0F172A] p-4 text-xs font-medium focus:border-[#6C63FF] focus:outline-none shadow-sm"
+                  placeholder="Evaluating spatial-economic indicators, tech talent acquisition cost..."
+                  required
+                />
+              </div>
+
+              <Select
+                label="TARGET INDUSTRY DOMAIN"
+                value={formData.domain}
+                onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
+                options={[
+                  { value: 'Retail Tech & Enterprise Hardware', label: 'Retail Tech & Enterprise Hardware' },
+                  { value: 'Cloud Computing & IT Infrastructure', label: 'Cloud Computing & IT Infrastructure' },
+                  { value: 'Financial Services & Banking', label: 'Financial Services & Banking' },
+                  { value: 'Supply Chain & Logistics', label: 'Supply Chain & Logistics' },
+                ]}
+                className="bg-white border-slate-200"
+              />
+            </div>
+          )}
+
+          {/* Step 2: Capital & Risk */}
+          {step === 2 && (
+            <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
                   label="Option A (Primary Contender)"
                   value={formData.source}
                   onChange={(e) => setFormData({ ...formData, source: e.target.value })}
-                  placeholder="e.g. Expand Store in Hyderabad Hitec City"
+                  placeholder="Expand Store in Hyderabad Hitec City"
                   required
                 />
                 <Input
                   label="Option B (Challenger Option)"
                   value={formData.destination}
                   onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                  placeholder="e.g. Expand Store in Bangalore Whitefield"
+                  placeholder="Expand Store in Bangalore Whitefield"
                   required
                 />
               </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-black uppercase tracking-wider text-[#0F172A]">
-                  Business Description
-                </label>
-                <textarea
-                  rows={4}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full rounded-2xl bg-white border border-slate-200 text-[#0F172A] p-4 text-sm font-semibold focus:border-[#6C63FF] focus:outline-none shadow-sm"
-                  required
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Step 2: Budget */}
-          {step === 2 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-black text-[#0F172A] flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-[#10B981]" /> Step 2: CapEx & Budget Horizon
-              </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
                   label="CapEx Allocation"
@@ -245,24 +241,15 @@ export const NewDecisionPage = () => {
                   required
                 />
                 <Input
-                  label="Execution Timeline"
+                  label="Execution Horizon"
                   value={formData.timeline}
                   onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
                   placeholder="6 Months"
                   required
                 />
               </div>
-            </div>
-          )}
-
-          {/* Step 3: Risk */}
-          {step === 3 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-black text-[#0F172A] flex items-center gap-2">
-                <ShieldAlert className="w-5 h-5 text-[#F59E0B]" /> Step 3: Risk Bounds & Classification
-              </h3>
               <Select
-                label="Risk Tolerance Level"
+                label="Risk Classification"
                 value={formData.riskTolerance}
                 onChange={(e) => setFormData({ ...formData, riskTolerance: e.target.value })}
                 options={[
@@ -274,17 +261,17 @@ export const NewDecisionPage = () => {
             </div>
           )}
 
-          {/* Step 4: Constraints */}
-          {step === 4 && (
+          {/* Step 3: Constraints */}
+          {step === 3 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-black text-[#0F172A] flex items-center gap-2">
-                <Layers className="w-5 h-5 text-[#8B5CF6]" /> Step 4: Strategic Constraints & Voice Memo
-              </h3>
+              <label className="text-xs font-mono font-extrabold uppercase tracking-widest text-[#0F172A]">
+                STRATEGIC CONSTRAINTS & REQUIREMENTS
+              </label>
               <textarea
                 rows={4}
                 value={formData.constraints}
                 onChange={(e) => setFormData({ ...formData, constraints: e.target.value })}
-                className="w-full rounded-2xl bg-white border border-slate-200 text-[#0F172A] p-4 text-sm font-semibold focus:border-[#6C63FF] focus:outline-none shadow-sm"
+                className="w-full rounded-2xl bg-white border border-slate-200 text-[#0F172A] p-4 text-xs font-medium focus:border-[#6C63FF] focus:outline-none shadow-sm"
               />
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
@@ -292,59 +279,31 @@ export const NewDecisionPage = () => {
                     <Mic className="w-5 h-5" />
                   </div>
                   <div>
-                    <h5 className="text-sm font-black text-[#0F172A]">Dictate Voice Instructions</h5>
-                    <p className="text-xs font-semibold text-[#64748B]">Natural NLP parameter extraction</p>
+                    <h5 className="text-xs font-extrabold text-[#0F172A]">Dictate Voice Memo Instructions</h5>
+                    <p className="text-[11px] font-medium text-[#64748B]">Natural NLP parameter extraction</p>
                   </div>
                 </div>
-                <Button onClick={handleVoiceRecord} variant={isRecording ? 'danger' : 'accent'} size="sm">
+                <Button type="button" onClick={handleVoiceRecord} variant={isRecording ? 'danger' : 'accent'} size="sm">
                   {isRecording ? 'Recording...' : 'Start Dictation'}
                 </Button>
               </div>
             </div>
           )}
 
-          {/* Step 5: Documents */}
-          {step === 5 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-black text-[#0F172A] flex items-center gap-2">
-                <FileText className="w-5 h-5 text-[#EC4899]" /> Step 5: Document Attachments
-              </h3>
+          {/* Step 4: Attachments & Run */}
+          {step === 4 && (
+            <div className="space-y-6 text-center py-4">
               <div className="border-2 border-dashed border-[#6C63FF]/30 hover:border-[#6C63FF] rounded-2xl p-8 text-center bg-slate-50 relative">
                 <input type="file" multiple onChange={handleFileUpload} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
-                <Upload className="w-10 h-10 text-[#6C63FF] mx-auto mb-2" />
-                <h5 className="text-sm font-black text-[#0F172A]">Drag & drop executive reports or click to browse</h5>
+                <Upload className="w-8 h-8 text-[#6C63FF] mx-auto mb-2" />
+                <h5 className="text-xs font-extrabold text-[#0F172A]">Drag & drop executive reports or click to browse</h5>
               </div>
-            </div>
-          )}
 
-          {/* Step 6: Review */}
-          {step === 6 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-black text-[#0F172A] flex items-center gap-2">
-                <Eye className="w-5 h-5 text-[#10B981]" /> Step 6: Parameter Review
-              </h3>
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs font-semibold text-[#0F172A]">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-semibold text-[#0F172A] text-left space-y-1">
                 <p><strong>Title:</strong> {formData.title}</p>
+                <p><strong>Domain:</strong> {formData.domain}</p>
                 <p><strong>Option A:</strong> {formData.source}</p>
                 <p><strong>Option B:</strong> {formData.destination}</p>
-                <p><strong>Budget:</strong> {formData.budget}</p>
-                <p><strong>Timeline:</strong> {formData.timeline}</p>
-                <p><strong>Risk:</strong> {formData.riskTolerance}</p>
-              </div>
-            </div>
-          )}
-
-          {/* Step 7: Run Simulation */}
-          {step === 7 && (
-            <div className="space-y-6 text-center py-6">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] text-white flex items-center justify-center mx-auto shadow-xl shadow-[#6C63FF]/30 animate-pulse">
-                <Play className="w-8 h-8 text-white ml-1" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black text-[#0F172A] font-['Space_Grotesk']">Ready to Launch Neural Simulation</h3>
-                <p className="text-xs text-[#64748B] font-semibold max-w-md mx-auto">
-                  Click below to execute 10,000 Monte Carlo iterations and generate high-confidence strategic decision metrics.
-                </p>
               </div>
             </div>
           )}
@@ -357,13 +316,13 @@ export const NewDecisionPage = () => {
               </Button>
             ) : <div />}
 
-            {step < 7 ? (
-              <Button type="button" onClick={() => setStep(step + 1)} variant="primary" size="md" icon={ArrowRight} className="bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white font-bold shadow-md">
+            {step < 4 ? (
+              <Button type="button" onClick={() => setStep(step + 1)} variant="primary" size="md" icon={ArrowRight} className="bg-gradient-to-r from-[#FF2DAA] to-[#4F7DFF] text-white font-bold shadow-md rounded-2xl py-3 px-6 text-xs">
                 Continue to Step {step + 1}
               </Button>
             ) : (
-              <Button type="submit" variant="primary" size="lg" loading={recommendLoading} icon={Sparkles} className="w-full bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white font-bold shadow-xl">
-                Run AI Decision Engine Simulation
+              <Button type="submit" variant="primary" size="lg" loading={recommendLoading} icon={Sparkles} className="bg-gradient-to-r from-[#FF2DAA] via-[#8B5CF6] to-[#4F7DFF] text-white font-bold shadow-xl rounded-2xl py-3 px-8 text-xs">
+                Run AI Strategic Simulation
               </Button>
             )}
           </div>
