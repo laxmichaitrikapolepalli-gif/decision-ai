@@ -7,7 +7,6 @@ import {
   Sparkles,
   Command,
   Search,
-  Bell,
   User,
   LogOut,
   Settings,
@@ -107,12 +106,6 @@ export const Navbar = ({ isDashboard = false }) => {
                 <Bot className="w-5 h-5" />
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-pink-500 rounded-full animate-ping" />
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-pink-500 rounded-full border-2 border-white" />
-              </button>
-
-              {/* Notification Bell */}
-              <button className="relative p-2.5 rounded-2xl bg-white/80 backdrop-blur-md border border-purple-500/30 text-slate-800 hover:text-purple-600 hover:border-purple-400 transition-colors flex items-center justify-center">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-pink-500 rounded-full" />
               </button>
 
               {/* Profile Dropdown */}
