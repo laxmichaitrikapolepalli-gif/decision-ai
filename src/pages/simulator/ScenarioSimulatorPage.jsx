@@ -279,6 +279,10 @@ export const ScenarioSimulatorPage = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={simResults.chartData}>
                   <defs>
+                    <linearGradient id="colorCons" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                    </linearGradient>
                     <linearGradient id="colorExp" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#6C63FF" stopOpacity={0.4} />
                       <stop offset="95%" stopColor="#6C63FF" stopOpacity={0} />
@@ -289,10 +293,18 @@ export const ScenarioSimulatorPage = () => {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.6} />
-                  <XAxis dataKey="week" stroke="#64748b" fontSize={11} fontWeight={700} />
-                  <YAxis stroke="#64748b" fontSize={11} fontWeight={700} />
-                  <Tooltip />
-                  <Area type="monotone" dataKey="conservative" stroke="#f59e0b" strokeWidth={2.5} fill="transparent" name="Conservative ($)" />
+                  <XAxis dataKey="month" stroke="#64748b" fontSize={11} fontWeight={700} />
+                  <YAxis
+                    stroke="#64748b"
+                    fontSize={11}
+                    fontWeight={700}
+                    tickFormatter={(val) => `$${(val / 1000000).toFixed(1)}M`}
+                  />
+                  <Tooltip
+                    formatter={(val) => [`$${Number(val).toLocaleString()}`, '']}
+                    contentStyle={{ borderRadius: '16px', background: '#0F172A', color: '#fff', border: 'none', fontWeight: 700 }}
+                  />
+                  <Area type="monotone" dataKey="conservative" stroke="#f59e0b" strokeWidth={2.5} fill="url(#colorCons)" name="Conservative ($)" />
                   <Area type="monotone" dataKey="expected" stroke="#6C63FF" strokeWidth={2.5} fill="url(#colorExp)" name="Expected ($)" />
                   <Area type="monotone" dataKey="aggressive" stroke="#10B981" strokeWidth={2.5} fill="url(#colorAgg)" name="Aggressive ($)" />
                 </AreaChart>

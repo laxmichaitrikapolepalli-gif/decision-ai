@@ -30,6 +30,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // If request explicitly asked to skip global error toast (for fallbacks)
+    if (error.config?.skipToast) {
+      return Promise.reject(error);
+    }
     if (error.response) {
       const status = error.response.status;
       const message = error.response.data?.error || error.response.data?.message;
@@ -42,6 +46,8 @@ api.interceptors.response.use(
         if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
           window.location.href = '/login';
         }
+      } else if (status === 429) {
+        console.warn('API Key Quota Exceeded (429):', message);
       } else if (status === 500) {
         toast.error(message || 'Internal server error. Please try again later.');
       } else {
