@@ -10,8 +10,8 @@ import toast from 'react-hot-toast';
 export const LoginPage = () => {
   const { login, loading } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('demo@decisionsphere.ai');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('sathwik@gmail.com');
+  const [password, setPassword] = useState('sathwik123');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +46,7 @@ export const LoginPage = () => {
           icon={Mail}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="sarah@decisionsphere.ai"
+          placeholder="sathwik@gmail.com"
           required
         />
 
