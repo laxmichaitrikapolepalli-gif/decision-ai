@@ -58,11 +58,13 @@ export const DEFAULT_DECISIONS = [
   }
 ];
 
+const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
+
 const DecisionContext = createContext();
 
 export const DecisionProvider = ({ children }) => {
-  const [decisions, setDecisions] = useState(DEFAULT_DECISIONS);
-  const [currentDecision, setCurrentDecision] = useState(DEFAULT_DECISIONS[0]);
+  const [decisions, setDecisions] = useState(isDemoMode ? DEFAULT_DECISIONS : []);
+  const [currentDecision, setCurrentDecision] = useState(isDemoMode ? DEFAULT_DECISIONS[0] : null);
   const [loadingDecision, setLoadingDecision] = useState(false);
   const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
 
@@ -70,9 +72,14 @@ export const DecisionProvider = ({ children }) => {
   const fetchTrips = useCallback(async () => {
     const token = localStorage.getItem('token') || localStorage.getItem('ds_token');
     if (!token) {
-      setDecisions(DEFAULT_DECISIONS);
-      setCurrentDecision((prev) => prev || DEFAULT_DECISIONS[0]);
-      return DEFAULT_DECISIONS;
+      if (isDemoMode) {
+        setDecisions(DEFAULT_DECISIONS);
+        setCurrentDecision((prev) => prev || DEFAULT_DECISIONS[0]);
+        return DEFAULT_DECISIONS;
+      }
+      setDecisions([]);
+      setCurrentDecision(null);
+      return [];
     }
 
     try {
@@ -95,14 +102,21 @@ export const DecisionProvider = ({ children }) => {
         return dateB - dateA;
       });
 
-      const finalDecisions = sorted.length > 0 ? sorted : DEFAULT_DECISIONS;
-      setDecisions(finalDecisions);
-      setCurrentDecision((prev) => prev || finalDecisions[0]);
-      return finalDecisions;
+      if (sorted.length > 0) {
+        setDecisions(sorted);
+        setCurrentDecision((prev) => prev || sorted[0]);
+        return sorted;
+      } else {
+        const fallback = isDemoMode ? DEFAULT_DECISIONS : [];
+        setDecisions(fallback);
+        setCurrentDecision((prev) => prev || (fallback[0] || null));
+        return fallback;
+      }
     } catch (err) {
-      setDecisions(DEFAULT_DECISIONS);
-      setCurrentDecision((prev) => prev || DEFAULT_DECISIONS[0]);
-      return DEFAULT_DECISIONS;
+      const fallback = isDemoMode ? DEFAULT_DECISIONS : [];
+      setDecisions(fallback);
+      setCurrentDecision((prev) => prev || (fallback[0] || null));
+      return fallback;
     }
   }, []);
 
