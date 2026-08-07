@@ -19,7 +19,8 @@ import {
   FileText,
   Eye,
   Play,
-  X
+  X,
+  CheckCircle2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -56,6 +57,15 @@ export const NewDecisionPage = () => {
     { id: 4, name: '4. Attachments & Run' },
   ];
 
+  const formatFileSize = (size) => {
+    if (typeof size === 'number') {
+      if (size < 1024) return `${size} B`;
+      if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+      return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+    }
+    return size || '0 KB';
+  };
+
   const handleVoiceRecord = () => {
     if (!isRecording) {
       setIsRecording(true);
@@ -76,7 +86,7 @@ export const NewDecisionPage = () => {
     if (files && files.length > 0) {
       const newFiles = Array.from(files).map(f => ({
         name: f.name,
-        size: f.size > 1024 * 1024 ? `${(f.size / 1024 / 1024).toFixed(1)} MB` : `${(f.size / 1024).toFixed(0)} KB`
+        size: f.size
       }));
       setFormData(prev => ({ ...prev, attachments: [...prev.attachments, ...newFiles] }));
       toast.success(`Attached ${files.length} document(s)`);
@@ -329,17 +339,22 @@ export const NewDecisionPage = () => {
                           </div>
                           <div className="truncate">
                             <h6 className="text-xs font-bold text-[#0F172A] truncate">{file.name}</h6>
-                            <span className="text-[10px] font-semibold text-[#64748B]">{file.size}</span>
+                            <span className="text-[10px] font-semibold text-[#64748B]">{formatFileSize(file.size)}</span>
                           </div>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveAttachment(idx)}
-                          className="p-1.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all cursor-pointer shrink-0 ml-2"
-                          title="Remove Attachment"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="flex items-center gap-2 shrink-0 ml-2">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Attached
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveAttachment(idx)}
+                            className="p-1.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all cursor-pointer"
+                            title="Remove Attachment"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
