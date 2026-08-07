@@ -58,38 +58,38 @@ export const DEFAULT_DECISIONS = [
   }
 ];
 
+const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
+
 const DecisionContext = createContext();
 
 export const DecisionProvider = ({ children }) => {
-  const [decisions, setDecisions] = useState(DEFAULT_DECISIONS);
-  const [currentDecision, setCurrentDecision] = useState(DEFAULT_DECISIONS[0]);
+  const [decisions, setDecisions] = useState(isDemoMode ? DEFAULT_DECISIONS : []);
+  const [currentDecision, setCurrentDecision] = useState(isDemoMode ? DEFAULT_DECISIONS[0] : null);
   const [loadingDecision, setLoadingDecision] = useState(false);
   const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
 
-  // Fetch initial trips history from GET /api/trips
+  // Fetch initial trips history from GET /api/trips (Supabase DB)
   const fetchTrips = useCallback(async () => {
     try {
       const res = await tripService.getTrips();
       const tripsList = Array.isArray(res) ? res : res?.trips || res?.data || [];
       
-      // Combine API trips with default decisions, removing duplicates by id
-      const existingIds = new Set(tripsList.map(t => t.id || t._id));
-      const filteredDefaults = DEFAULT_DECISIONS.filter(d => !existingIds.has(d.id));
-      const combined = [...tripsList, ...filteredDefaults];
-
-      const sorted = combined.sort((a, b) => {
+      const sorted = [...tripsList].sort((a, b) => {
         const dateA = new Date(a.created_at || a.date || a.timestamp || 0).getTime();
         const dateB = new Date(b.created_at || b.date || b.timestamp || 0).getTime();
         return dateB - dateA;
       });
 
-      setDecisions(sorted);
       if (sorted.length > 0) {
+        setDecisions(sorted);
         setCurrentDecision(prev => prev || sorted[0]);
+      } else {
+        setDecisions(isDemoMode ? DEFAULT_DECISIONS : []);
       }
       return sorted;
     } catch (err) {
-      return DEFAULT_DECISIONS;
+      setDecisions(isDemoMode ? DEFAULT_DECISIONS : []);
+      return [];
     }
   }, []);
 
