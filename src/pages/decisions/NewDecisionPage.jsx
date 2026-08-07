@@ -17,9 +17,12 @@ import {
   DollarSign,
   ShieldAlert,
   FileText,
+  FileSpreadsheet,
+  Image,
   Eye,
   Play,
   X,
+  Trash2,
   CheckCircle2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -29,6 +32,7 @@ export const NewDecisionPage = () => {
   const { execute: requestRecommend, loading: recommendLoading } = useRecommendation();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const [formData, setFormData] = useState({
     title: 'Commercial Expansion: Hyderabad Flagship Node',
@@ -43,8 +47,8 @@ export const NewDecisionPage = () => {
     riskTolerance: 'Low Risk (12%)',
     constraints: 'CapEx payback must occur within 18 months; municipal tax subsidies required.',
     attachments: [
-      { name: 'Hyderabad_Lease_Subsidy_TermSheet.pdf', size: '1.4 MB' },
-      { name: 'APAC_Talent_Density_Model.xlsx', size: '820 KB' }
+      { name: 'Hyderabad_Lease_Subsidy_TermSheet.pdf', size: 1468006 },
+      { name: 'APAC_Talent_Density_Model.xlsx', size: 839680 }
     ]
   });
 
@@ -57,6 +61,19 @@ export const NewDecisionPage = () => {
     { id: 4, name: '4. Attachments & Run' },
   ];
 
+  // Clean up Object URLs on component unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (formData.attachments) {
+        formData.attachments.forEach(file => {
+          if (file?.url && file.url.startsWith('blob:')) {
+            try { URL.revokeObjectURL(file.url); } catch (e) {}
+          }
+        });
+      }
+    };
+  }, []);
+
   const formatFileSize = (size) => {
     if (typeof size === 'number') {
       if (size < 1024) return `${size} B`;
@@ -64,6 +81,15 @@ export const NewDecisionPage = () => {
       return `${(size / (1024 * 1024)).toFixed(1)} MB`;
     }
     return size || '0 KB';
+  };
+
+  const getFileIcon = (fileName) => {
+    const ext = String(fileName || '').split('.').pop().toLowerCase();
+    if (['xls', 'xlsx', 'csv'].includes(ext)) return <FileSpreadsheet className="w-4 h-4 text-emerald-600" />;
+    if (['png', 'jpg', 'jpeg', 'svg', 'webp'].includes(ext)) return <Image className="w-4 h-4 text-blue-600" />;
+    if (['pdf'].includes(ext)) return <FileText className="w-4 h-4 text-rose-600" />;
+    if (['doc', 'docx', 'txt'].includes(ext)) return <FileText className="w-4 h-4 text-indigo-600" />;
+    return <FileText className="w-4 h-4 text-[#6C63FF]" />;
   };
 
   const handleVoiceRecord = () => {
@@ -85,7 +111,7 @@ export const NewDecisionPage = () => {
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB limit
 
   const handleFileUpload = (e) => {
-    const files = e.target.files;
+    const files = e.target?.files || e.dataTransfer?.files;
     if (!files || files.length === 0) return;
 
     const validNewFiles = [];
@@ -117,9 +143,15 @@ export const NewDecisionPage = () => {
       };
 
       const isDuplicate = formData.attachments.some(
-        existing => existing.name === newFileObj.name && existing.size === newFileObj.size
+        existing =>
+          existing.name === newFileObj.name &&
+          existing.size === newFileObj.size &&
+          (existing.lastModified && newFileObj.lastModified ? existing.lastModified === newFileObj.lastModified : true)
       ) || validNewFiles.some(
-        added => added.name === newFileObj.name && added.size === newFileObj.size
+        added =>
+          added.name === newFileObj.name &&
+          added.size === newFileObj.size &&
+          (added.lastModified && newFileObj.lastModified ? added.lastModified === newFileObj.lastModified : true)
       );
 
       if (isDuplicate) {
@@ -130,7 +162,7 @@ export const NewDecisionPage = () => {
     });
 
     if (invalidTypeCount > 0) {
-      toast.error(`${invalidTypeCount} file(s) skipped: Unsupported format (allowed: PDF, DOCX, XLSX, PPTX, CSV, TXT, images).`);
+      toast.error(`${invalidTypeCount} file(s) skipped: Unsupported format.`);
     }
     if (oversizedCount > 0) {
       toast.error(`${oversizedCount} file(s) skipped: Exceeds 10 MB limit.`);
@@ -147,15 +179,29 @@ export const NewDecisionPage = () => {
       toast.success(`Successfully attached ${validNewFiles.length} document(s)`);
     }
 
-    e.target.value = '';
+    if (e.target) e.target.value = '';
   };
 
   const handleRemoveAttachment = (index) => {
+    const fileToRemove = formData.attachments[index];
+    if (fileToRemove?.url && fileToRemove.url.startsWith('blob:')) {
+      try { URL.revokeObjectURL(fileToRemove.url); } catch (e) {}
+    }
     setFormData(prev => ({
       ...prev,
       attachments: prev.attachments.filter((_, i) => i !== index)
     }));
     toast.success('Attachment removed');
+  };
+
+  const handleRemoveAllAttachments = () => {
+    formData.attachments.forEach(file => {
+      if (file?.url && file.url.startsWith('blob:')) {
+        try { URL.revokeObjectURL(file.url); } catch (e) {}
+      }
+    });
+    setFormData(prev => ({ ...prev, attachments: [] }));
+    toast.success('All attachments removed');
   };
 
   const handleSubmit = async (e) => {
@@ -372,35 +418,63 @@ export const NewDecisionPage = () => {
           {/* Step 4: Attachments & Run */}
           {step === 4 && (
             <div className="space-y-6 text-center py-4">
-              <div className="border-2 border-dashed border-[#6C63FF]/30 hover:border-[#6C63FF] rounded-2xl p-8 text-center bg-slate-50 relative">
+              <div
+                onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
+                onDragLeave={() => setIsDragOver(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragOver(false);
+                  if (e.dataTransfer.files?.length) {
+                    handleFileUpload({ target: { files: e.dataTransfer.files } });
+                  }
+                }}
+                className={`border-2 border-dashed rounded-2xl p-8 text-center relative transition-all ${
+                  isDragOver
+                    ? 'border-[#6C63FF] bg-[#6C63FF]/10 scale-[1.01]'
+                    : 'border-[#6C63FF]/30 hover:border-[#6C63FF] bg-slate-50'
+                }`}
+              >
                 <input type="file" multiple onChange={handleFileUpload} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
-                <Upload className="w-8 h-8 text-[#6C63FF] mx-auto mb-2" />
-                <h5 className="text-xs font-extrabold text-[#0F172A]">Drag & drop executive reports or click to browse</h5>
+                <Upload className={`w-8 h-8 mx-auto mb-2 transition-colors ${isDragOver ? 'text-[#FF2DAA]' : 'text-[#6C63FF]'}`} />
+                <h5 className="text-xs font-extrabold text-[#0F172A]">
+                  {isDragOver ? 'Drop files here to attach' : 'Drag & drop executive reports or click to browse'}
+                </h5>
+                <p className="text-[10px] text-[#64748B] font-semibold mt-1">Supported: PDF, DOCX, XLSX, PPTX, CSV, TXT (Max 10 MB per file)</p>
               </div>
 
               {/* Uploaded File Attachments List or Empty State */}
               {formData.attachments && formData.attachments.length > 0 ? (
                 <div className="space-y-2 text-left">
-                  <span className="text-xs font-mono font-extrabold uppercase tracking-widest text-[#0F172A]">
-                    ATTACHED DOCUMENTS ({formData.attachments.length})
-                  </span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-extrabold uppercase tracking-widest text-[#0F172A]">
+                      ATTACHED DOCUMENTS ({formData.attachments.length} files • {formatFileSize(formData.attachments.reduce((acc, curr) => acc + (typeof curr.size === 'number' ? curr.size : 0), 0))})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleRemoveAllAttachments}
+                      className="text-[11px] font-bold text-rose-600 hover:text-rose-700 hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <Trash2 className="w-3 h-3" /> Clear All
+                    </button>
+                  </div>
+
                   <div className="space-y-2">
                     {formData.attachments.map((file, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm hover:border-[#6C63FF]/30 transition-all"
+                        className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm hover:border-[#6C63FF]/30 transition-all group"
                       >
                         <div className="flex items-center gap-3 truncate">
-                          <div className="p-2 rounded-xl bg-purple-50 text-purple-600 shrink-0">
-                            <FileText className="w-4 h-4" />
+                          <div className="p-2 rounded-xl bg-purple-50 shrink-0">
+                            {getFileIcon(file.name)}
                           </div>
                           <div className="truncate">
                             {file.url ? (
                               <a
                                 href={file.url}
                                 target="_blank"
-                                rel="noreferrer"
-                                className="text-xs font-bold text-[#0F172A] hover:text-[#6C63FF] hover:underline truncate block"
+                                rel="noopener noreferrer"
+                                className="text-xs font-bold text-[#0F172A] hover:text-[#6C63FF] hover:underline cursor-pointer truncate block focus:outline-none focus:ring-2 focus:ring-[#6C63FF]/40 rounded-sm"
                                 title="Click to view/preview document"
                               >
                                 {file.name}
