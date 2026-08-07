@@ -81,16 +81,73 @@ export const NewDecisionPage = () => {
     }
   };
 
+  const ALLOWED_EXTENSIONS = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.csv', '.txt', '.png', '.jpg', '.jpeg'];
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB limit
+
   const handleFileUpload = (e) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
-      const newFiles = Array.from(files).map(f => ({
-        name: f.name,
-        size: f.size
-      }));
-      setFormData(prev => ({ ...prev, attachments: [...prev.attachments, ...newFiles] }));
-      toast.success(`Attached ${files.length} document(s)`);
+    if (!files || files.length === 0) return;
+
+    const validNewFiles = [];
+    let duplicateCount = 0;
+    let oversizedCount = 0;
+    let invalidTypeCount = 0;
+
+    Array.from(files).forEach((file) => {
+      const ext = '.' + file.name.split('.').pop().toLowerCase();
+      if (!ALLOWED_EXTENSIONS.includes(ext)) {
+        invalidTypeCount++;
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        oversizedCount++;
+        return;
+      }
+
+      let fileUrl = null;
+      try {
+        fileUrl = URL.createObjectURL(file);
+      } catch (err) {}
+
+      const newFileObj = {
+        name: file.name,
+        size: file.size,
+        url: fileUrl,
+        lastModified: file.lastModified
+      };
+
+      const isDuplicate = formData.attachments.some(
+        existing => existing.name === newFileObj.name && existing.size === newFileObj.size
+      ) || validNewFiles.some(
+        added => added.name === newFileObj.name && added.size === newFileObj.size
+      );
+
+      if (isDuplicate) {
+        duplicateCount++;
+      } else {
+        validNewFiles.push(newFileObj);
+      }
+    });
+
+    if (invalidTypeCount > 0) {
+      toast.error(`${invalidTypeCount} file(s) skipped: Unsupported format (allowed: PDF, DOCX, XLSX, PPTX, CSV, TXT, images).`);
     }
+    if (oversizedCount > 0) {
+      toast.error(`${oversizedCount} file(s) skipped: Exceeds 10 MB limit.`);
+    }
+    if (duplicateCount > 0) {
+      toast.error(`${duplicateCount} duplicate file(s) skipped.`);
+    }
+
+    if (validNewFiles.length > 0) {
+      setFormData(prev => ({
+        ...prev,
+        attachments: [...prev.attachments, ...validNewFiles]
+      }));
+      toast.success(`Successfully attached ${validNewFiles.length} document(s)`);
+    }
+
+    e.target.value = '';
   };
 
   const handleRemoveAttachment = (index) => {
@@ -321,8 +378,8 @@ export const NewDecisionPage = () => {
                 <h5 className="text-xs font-extrabold text-[#0F172A]">Drag & drop executive reports or click to browse</h5>
               </div>
 
-              {/* Uploaded File Attachments List */}
-              {formData.attachments && formData.attachments.length > 0 && (
+              {/* Uploaded File Attachments List or Empty State */}
+              {formData.attachments && formData.attachments.length > 0 ? (
                 <div className="space-y-2 text-left">
                   <span className="text-xs font-mono font-extrabold uppercase tracking-widest text-[#0F172A]">
                     ATTACHED DOCUMENTS ({formData.attachments.length})
@@ -331,14 +388,26 @@ export const NewDecisionPage = () => {
                     {formData.attachments.map((file, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm"
+                        className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm hover:border-[#6C63FF]/30 transition-all"
                       >
                         <div className="flex items-center gap-3 truncate">
                           <div className="p-2 rounded-xl bg-purple-50 text-purple-600 shrink-0">
                             <FileText className="w-4 h-4" />
                           </div>
                           <div className="truncate">
-                            <h6 className="text-xs font-bold text-[#0F172A] truncate">{file.name}</h6>
+                            {file.url ? (
+                              <a
+                                href={file.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-xs font-bold text-[#0F172A] hover:text-[#6C63FF] hover:underline truncate block"
+                                title="Click to view/preview document"
+                              >
+                                {file.name}
+                              </a>
+                            ) : (
+                              <h6 className="text-xs font-bold text-[#0F172A] truncate">{file.name}</h6>
+                            )}
                             <span className="text-[10px] font-semibold text-[#64748B]">{formatFileSize(file.size)}</span>
                           </div>
                         </div>
@@ -358,6 +427,10 @@ export const NewDecisionPage = () => {
                       </div>
                     ))}
                   </div>
+                </div>
+              ) : (
+                <div className="p-4 rounded-2xl bg-slate-50/50 border border-dashed border-slate-200 text-center">
+                  <p className="text-xs text-[#64748B] font-semibold">No documents attached yet. Drag files here or click to browse.</p>
                 </div>
               )}
 
