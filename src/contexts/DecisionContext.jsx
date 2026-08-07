@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { aiService } from '../services/aiService';
 import { tripService } from '../services/tripService';
 import toast from 'react-hot-toast';
@@ -12,7 +12,7 @@ export const DecisionProvider = ({ children }) => {
   const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
 
   // Fetch initial trips history from GET /api/trips
-  const fetchTrips = async () => {
+  const fetchTrips = useCallback(async () => {
     try {
       const res = await tripService.getTrips();
       const tripsList = Array.isArray(res) ? res : res?.trips || res?.data || [];
@@ -22,15 +22,15 @@ export const DecisionProvider = ({ children }) => {
         return dateB - dateA;
       });
       setDecisions(sorted);
-      if (sorted.length > 0 && !currentDecision) {
-        setCurrentDecision(sorted[0]);
+      if (sorted.length > 0) {
+        setCurrentDecision(prev => prev || sorted[0]);
       }
       return sorted;
     } catch (err) {
       // Handled gracefully in UI page components
       return [];
     }
-  };
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token') || localStorage.getItem('ds_token');

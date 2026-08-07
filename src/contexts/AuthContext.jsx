@@ -13,6 +13,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const restoreAuth = async () => {
       const token = localStorage.getItem('token') || localStorage.getItem('ds_token');
+      const savedUserStr = localStorage.getItem('ds_user');
+      let savedUser = null;
+      if (savedUserStr) {
+        try { savedUser = JSON.parse(savedUserStr); } catch (e) {}
+      }
+
       if (token) {
         try {
           const profile = await authService.getProfile();
@@ -22,7 +28,17 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(true);
           localStorage.setItem('ds_user', JSON.stringify(userData));
         } catch (err) {
-          // If token verification fails, clear storage
+          // If rate limit (429) occurs or network issue, preserve existing session instead of logging out
+          if (err.response?.status === 429 || !err.response) {
+            console.warn('[AuthContext] 429 Rate limit or network delay during restoreAuth. Preserving local user session.');
+            if (savedUser) {
+              setUser(savedUser);
+              setIsAuthenticated(true);
+              setLoading(false);
+              return;
+            }
+          }
+          // If token verification explicitly fails (401), clear storage
           localStorage.removeItem('token');
           localStorage.removeItem('ds_token');
           localStorage.removeItem('ds_user');
@@ -68,6 +84,11 @@ export const AuthProvider = ({ children }) => {
       toast.success(`Welcome back, ${userData.name || userData.email || 'User'}!`);
       return true;
     } catch (err) {
+      if (err.response?.status === 429) {
+        toast.error("Too many login attempts. Please wait a few minutes and try again.");
+        return false;
+      }
+
       const msg = err.response?.data?.error || err.response?.data?.message || 'Invalid login credentials.';
       toast.error(msg);
       return false;
