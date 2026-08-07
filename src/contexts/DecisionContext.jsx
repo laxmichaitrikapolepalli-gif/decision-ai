@@ -68,6 +68,13 @@ export const DecisionProvider = ({ children }) => {
 
   // Fetch initial trips history from GET /api/trips (Supabase DB)
   const fetchTrips = useCallback(async () => {
+    const token = localStorage.getItem('token') || localStorage.getItem('ds_token');
+    if (!token) {
+      setDecisions(DEFAULT_DECISIONS);
+      setCurrentDecision((prev) => prev || DEFAULT_DECISIONS[0]);
+      return DEFAULT_DECISIONS;
+    }
+
     try {
       const res = await tripService.getTrips();
       const tripsList = Array.isArray(res) ? res : res?.trips || res?.data || [];

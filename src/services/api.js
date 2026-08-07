@@ -42,8 +42,12 @@ api.interceptors.response.use(
         localStorage.removeItem('token');
         localStorage.removeItem('ds_token');
         localStorage.removeItem('ds_user');
-        toast.error(message || 'Session expired. Please log in again.');
-        if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
+
+        const publicPaths = ['/', '/login', '/signup', '/forgot-password', '/reset-password'];
+        const isPublicPath = publicPaths.includes(window.location.pathname);
+
+        if (!isPublicPath) {
+          toast.error(message || 'Session expired. Please log in again.');
           window.location.href = '/login';
         }
       } else if (status === 429) {
