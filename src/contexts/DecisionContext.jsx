@@ -94,11 +94,8 @@ export const DecisionProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem('token') || localStorage.getItem('ds_token');
-    if (token) {
-      fetchTrips();
-    }
-  }, []);
+    fetchTrips();
+  }, [fetchTrips]);
 
   // Submit AI Recommendation request via POST /api/ai/recommend
   const addNewDecision = async (payload) => {
@@ -107,11 +104,13 @@ export const DecisionProvider = ({ children }) => {
       const res = await aiService.recommendTrip(payload);
       const newRec = res?.data || res;
       setCurrentDecision(newRec);
+
+      // Optimistically update context decisions state instantly
       setDecisions((prev) => [newRec, ...prev]);
-      
-      // Re-sync with backend database GET /api/trips in background
-      fetchTrips().catch(() => {});
-      
+
+      // Re-sync with backend database GET /api/trips
+      await fetchTrips().catch(() => {});
+
       toast.success('AI Recommendation Complete!');
       return newRec;
     } catch (err) {
