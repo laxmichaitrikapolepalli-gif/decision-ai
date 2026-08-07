@@ -335,22 +335,11 @@ export const DashboardPage = () => {
             </Link>
           </div>
 
-          {decisions.length === 0 ? (
-            <Card className="p-8 text-center border-slate-100 glass-card bg-white rounded-3xl space-y-3">
-              <p className="text-xs text-[#64748B] font-semibold">No recent decisions found in Supabase database.</p>
-              <Link to="/decisions/new">
-                <Button variant="primary" size="sm" icon={PlusCircle} className="bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] text-white font-bold text-xs">
-                  Create First Decision
-                </Button>
-              </Link>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {decisions.slice(0, 4).map((dec) => (
-                <DecisionCard key={dec.id || dec._id} decision={dec} />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {decisions.slice(0, 4).map((dec) => (
+              <DecisionCard key={dec.id || dec._id} decision={dec} />
+            ))}
+          </div>
         </div>
 
         {/* Upcoming Queue Right Column Box exact matching screenshot 3 */}

@@ -58,13 +58,11 @@ export const DEFAULT_DECISIONS = [
   }
 ];
 
-const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
-
 const DecisionContext = createContext();
 
 export const DecisionProvider = ({ children }) => {
-  const [decisions, setDecisions] = useState(isDemoMode ? DEFAULT_DECISIONS : []);
-  const [currentDecision, setCurrentDecision] = useState(isDemoMode ? DEFAULT_DECISIONS[0] : null);
+  const [decisions, setDecisions] = useState(DEFAULT_DECISIONS);
+  const [currentDecision, setCurrentDecision] = useState(DEFAULT_DECISIONS[0]);
   const [loadingDecision, setLoadingDecision] = useState(false);
   const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
 
@@ -90,16 +88,14 @@ export const DecisionProvider = ({ children }) => {
         return dateB - dateA;
       });
 
-      if (sorted.length > 0) {
-        setDecisions(sorted);
-        setCurrentDecision(prev => prev || sorted[0]);
-      } else {
-        setDecisions(isDemoMode ? DEFAULT_DECISIONS : []);
-      }
-      return sorted;
+      const finalDecisions = sorted.length > 0 ? sorted : DEFAULT_DECISIONS;
+      setDecisions(finalDecisions);
+      setCurrentDecision((prev) => prev || finalDecisions[0]);
+      return finalDecisions;
     } catch (err) {
-      setDecisions(isDemoMode ? DEFAULT_DECISIONS : []);
-      return [];
+      setDecisions(DEFAULT_DECISIONS);
+      setCurrentDecision((prev) => prev || DEFAULT_DECISIONS[0]);
+      return DEFAULT_DECISIONS;
     }
   }, []);
 
