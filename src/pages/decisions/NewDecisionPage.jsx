@@ -18,7 +18,8 @@ import {
   ShieldAlert,
   FileText,
   Eye,
-  Play
+  Play,
+  X
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -73,10 +74,21 @@ export const NewDecisionPage = () => {
   const handleFileUpload = (e) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      const newFiles = Array.from(files).map(f => ({ name: f.name, size: `${(f.size / 1024 / 1024).toFixed(1)} MB` }));
+      const newFiles = Array.from(files).map(f => ({
+        name: f.name,
+        size: f.size > 1024 * 1024 ? `${(f.size / 1024 / 1024).toFixed(1)} MB` : `${(f.size / 1024).toFixed(0)} KB`
+      }));
       setFormData(prev => ({ ...prev, attachments: [...prev.attachments, ...newFiles] }));
       toast.success(`Attached ${files.length} document(s)`);
     }
+  };
+
+  const handleRemoveAttachment = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      attachments: prev.attachments.filter((_, i) => i !== index)
+    }));
+    toast.success('Attachment removed');
   };
 
   const handleSubmit = async (e) => {
@@ -298,6 +310,41 @@ export const NewDecisionPage = () => {
                 <Upload className="w-8 h-8 text-[#6C63FF] mx-auto mb-2" />
                 <h5 className="text-xs font-extrabold text-[#0F172A]">Drag & drop executive reports or click to browse</h5>
               </div>
+
+              {/* Uploaded File Attachments List */}
+              {formData.attachments && formData.attachments.length > 0 && (
+                <div className="space-y-2 text-left">
+                  <span className="text-xs font-mono font-extrabold uppercase tracking-widest text-[#0F172A]">
+                    ATTACHED DOCUMENTS ({formData.attachments.length})
+                  </span>
+                  <div className="space-y-2">
+                    {formData.attachments.map((file, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm"
+                      >
+                        <div className="flex items-center gap-3 truncate">
+                          <div className="p-2 rounded-xl bg-purple-50 text-purple-600 shrink-0">
+                            <FileText className="w-4 h-4" />
+                          </div>
+                          <div className="truncate">
+                            <h6 className="text-xs font-bold text-[#0F172A] truncate">{file.name}</h6>
+                            <span className="text-[10px] font-semibold text-[#64748B]">{file.size}</span>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveAttachment(idx)}
+                          className="p-1.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all cursor-pointer shrink-0 ml-2"
+                          title="Remove Attachment"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-semibold text-[#0F172A] text-left space-y-1">
                 <p><strong>Title:</strong> {formData.title}</p>
