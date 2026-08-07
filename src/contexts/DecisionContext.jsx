@@ -73,8 +73,18 @@ export const DecisionProvider = ({ children }) => {
     try {
       const res = await tripService.getTrips();
       const tripsList = Array.isArray(res) ? res : res?.trips || res?.data || [];
-      
-      const sorted = [...tripsList].sort((a, b) => {
+
+      // Deduplicate decision records by unique ID
+      const seenIds = new Set();
+      const uniqueTrips = tripsList.filter((item) => {
+        const idKey = item.id || item._id;
+        if (!idKey) return true;
+        if (seenIds.has(idKey)) return false;
+        seenIds.add(idKey);
+        return true;
+      });
+
+      const sorted = [...uniqueTrips].sort((a, b) => {
         const dateA = new Date(a.created_at || a.date || a.timestamp || 0).getTime();
         const dateB = new Date(b.created_at || b.date || b.timestamp || 0).getTime();
         return dateB - dateA;
@@ -105,8 +115,12 @@ export const DecisionProvider = ({ children }) => {
       const newRec = res?.data || res;
       setCurrentDecision(newRec);
 
-      // Optimistically update context decisions state instantly
-      setDecisions((prev) => [newRec, ...prev]);
+      // Optimistically update context decisions state by deduplicating by ID
+      setDecisions((prev) => {
+        const newId = newRec.id || newRec._id;
+        const filtered = prev.filter((d) => (d.id || d._id) !== newId);
+        return [newRec, ...filtered];
+      });
 
       // Re-sync with backend database GET /api/trips
       await fetchTrips().catch(() => {});
