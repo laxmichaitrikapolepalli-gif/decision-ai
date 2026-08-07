@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDecision } from '../../contexts/DecisionContext';
 import { useCommand } from '../../contexts/CommandContext';
+import { DecisionCard } from '../../components/decision/DecisionCard';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -335,63 +336,8 @@ export const DashboardPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {recentSimulations.map((dec) => (
-              <Card
-                key={dec.id}
-                onClick={() => {
-                  setCurrentDecision({
-                    id: dec.id,
-                    title: dec.title,
-                    recommendation: dec.title,
-                    confidence: parseInt(dec.confidence),
-                    risk: dec.risk,
-                    roi: dec.roi,
-                    date: dec.date,
-                    status: dec.status,
-                  });
-                }}
-                className="p-5 border-slate-100 glass-card space-y-3 rounded-3xl bg-white shadow-md hover:shadow-xl transition-all cursor-pointer group"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono font-bold text-slate-500">{dec.id}</span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-200">
-                      {dec.tag}
-                    </span>
-                  </div>
-                  <div className="p-1.5 rounded-xl bg-purple-50 text-purple-600 group-hover:bg-[#6C63FF] group-hover:text-white transition-all">
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </div>
-                </div>
-
-                <h4 className="text-sm font-extrabold text-[#0F172A] group-hover:text-[#6C63FF] transition-colors truncate">
-                  {dec.title}
-                </h4>
-
-                <div className="grid grid-cols-3 gap-2 py-2 border-y border-slate-100 text-xs">
-                  <div>
-                    <span className="text-[9px] text-[#64748B] uppercase font-bold block">CONFIDENCE</span>
-                    <span className="font-extrabold text-[#0F172A]">{dec.confidence}</span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] text-[#64748B] uppercase font-bold block">RISK</span>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${dec.riskColor}`}>
-                      {dec.risk}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] text-[#64748B] uppercase font-bold block">EST. ROI</span>
-                    <span className="font-extrabold text-[#0F172A]">{dec.roi}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-xs text-[#64748B] pt-1 font-semibold">
-                  <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-purple-500" /> {dec.date}</span>
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${dec.statusColor}`}>
-                    {dec.status}
-                  </span>
-                </div>
-              </Card>
+            {(decisions.length > 0 ? decisions : recentSimulations).slice(0, 4).map((dec) => (
+              <DecisionCard key={dec.id || dec._id} decision={dec} />
             ))}
           </div>
         </div>

@@ -35,12 +35,29 @@ export const DecisionHistoryPage = () => {
     }
   };
 
-  const filteredDecisions = decisions.filter((dec) => {
-    const title = dec.title || dec.bestRoute || dec.recommendation || '';
-    const matchQuery = title.toLowerCase().includes(query.toLowerCase());
-    const matchRisk = filterRisk === 'all' || (dec.risk || dec.trafficLevel || '').toLowerCase().includes(filterRisk.toLowerCase());
-    return matchQuery && matchRisk;
-  });
+  const filteredDecisions = (decisions || [])
+    .filter((dec) => {
+      const q = query.toLowerCase().trim();
+      const idStr = String(dec.id || dec._id || '').toLowerCase();
+      const titleStr = String(dec.title || '').toLowerCase();
+      const catStr = String(dec.tag || dec.domain || dec.category || '').toLowerCase();
+      const recStr = String(dec.recommendation || dec.bestRoute || '').toLowerCase();
+
+      const matchQuery = !q || idStr.includes(q) || titleStr.includes(q) || catStr.includes(q) || recStr.includes(q);
+
+      const riskStr = String(dec.risk || dec.trafficLevel || '').toLowerCase();
+      let matchRisk = true;
+      if (filterRisk === 'low') matchRisk = riskStr.includes('low') || riskStr.includes('optimal');
+      else if (filterRisk === 'medium') matchRisk = riskStr.includes('medium') || riskStr.includes('moderate');
+      else if (filterRisk === 'high') matchRisk = riskStr.includes('high');
+
+      return matchQuery && matchRisk;
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.created_at || a.date || 0).getTime();
+      const dateB = new Date(b.created_at || b.date || 0).getTime();
+      return dateB - dateA;
+    });
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
@@ -74,7 +91,7 @@ export const DecisionHistoryPage = () => {
               icon={Search}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search decision history by title or recommendation..."
+              placeholder="Search decision history by title, category, recommendation, or ID..."
               className="bg-white border-slate-200"
             />
           </div>
@@ -116,22 +133,9 @@ export const DecisionHistoryPage = () => {
           </Link>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
           {filteredDecisions.map((dec, idx) => (
-            <div key={dec.id || dec._id || idx} className="relative group">
-              <DecisionCard decision={dec} />
-              
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(dec.id || dec._id);
-                }}
-                className="absolute top-4 right-4 p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 opacity-0 group-hover:opacity-100 hover:bg-rose-500 hover:text-white transition-all cursor-pointer z-10"
-                title="Delete Decision Record"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            <DecisionCard key={dec.id || dec._id || idx} decision={dec} />
           ))}
         </div>
       )}
