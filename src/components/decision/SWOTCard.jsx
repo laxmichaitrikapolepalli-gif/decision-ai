@@ -4,7 +4,7 @@ import { ShieldCheck, AlertTriangle, Lightbulb, ShieldAlert } from 'lucide-react
 export const SWOTCard = ({ swot }) => {
   const defaultSwot = swot || {
     strengths: ['High ML talent density', '18% municipal tax credit subsidy', 'Rapid payback timeline (14.2 months)'],
-    weaknesses: ['Higher initial CapEx requirement ($1.8M)', 'Tight Q3 filing deadline'],
+    weaknesses: ['Higher initial CapEx requirement (₹1.8M)', 'Tight Q3 filing deadline'],
     opportunities: ['First-mover advantage in Tier-1 hardware R&D', 'Regional expansion synergy'],
     threats: ['Potential macro interest rate variance', 'APAC maritime shipping delay risk']
   };

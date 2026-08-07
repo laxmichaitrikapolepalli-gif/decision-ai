@@ -15,7 +15,7 @@ export const generatePdfReport = (reportData) => {
 
     const reportTitle = reportData?.title || 'Q3 Executive Capital Allocation & Risk Audit';
     const reportId = reportData?.id || 'REP-2026-Q3';
-    const generatedDate = reportData?.date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const generatedDate = reportData?.date || new Date().toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' });
     const confidenceScore = reportData?.confidence || '96.8%';
     const roi = reportData?.roi || '+38.4%';
     const riskLevel = reportData?.risk || 'Low Risk (P95)';
@@ -24,7 +24,7 @@ export const generatePdfReport = (reportData) => {
     
     const recommendations = reportData?.recommendations || [
       'Finalize LOI prior to Q3 municipal fiscal deadline to capture 18% tax credit.',
-      'Allocate $1.8M CapEx for initial hardware node deployment in Hyderabad Hitec City.',
+      'Allocate ₹1.8M CapEx for initial hardware node deployment in Hyderabad Hitec City.',
       'Establish regional R&D hub to capture senior Machine Learning engineering talent density.',
       'Execute secondary air-freight contingency contract for top 20% critical component SKUs.'
     ];

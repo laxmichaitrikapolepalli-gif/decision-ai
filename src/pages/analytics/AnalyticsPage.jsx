@@ -71,7 +71,7 @@ export const AnalyticsPage = () => {
         await generatePdfReport({
           id: 'REP-ANALYTICS-2026',
           title: 'Executive Decision Analytics & Telemetry Report',
-          date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+          date: new Date().toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' }),
           confidence: '98.4%',
           roi: '+38.2%',
           risk: 'Low Risk (P95)',
@@ -91,7 +91,7 @@ export const AnalyticsPage = () => {
     } else if (type === 'csv') {
       try {
         const csvRows = [
-          ['Category', 'Budget ($M)', 'Yield ($M)'],
+          ['Category', 'Budget (₹M)', 'Yield (₹M)'],
           ...barData.map(r => [r.category, r.budget, r.yield])
         ];
         const csvContent = 'data:text/csv;charset=utf-8,' + csvRows.map(e => e.join(',')).join('\n');
@@ -203,7 +203,7 @@ export const AnalyticsPage = () => {
         <Card className="p-6 border-[#6C63FF]/20 glass-card bg-white/95 space-y-4 rounded-3xl">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-black text-[#0F172A]">CapEx Budget vs Expected Yield Bar Chart</h3>
-            <Badge variant="primary" size="sm">$ Millions</Badge>
+            <Badge variant="primary" size="sm">₹ Millions</Badge>
           </div>
           <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
@@ -212,8 +212,8 @@ export const AnalyticsPage = () => {
                 <XAxis dataKey="category" stroke="#64748b" fontSize={11} fontWeight={700} />
                 <YAxis stroke="#64748b" fontSize={11} fontWeight={700} />
                 <Tooltip />
-                <Bar dataKey="budget" fill="#6C63FF" name="Budget ($M)" radius={[8, 8, 0, 0]} />
-                <Bar dataKey="yield" fill="#10B981" name="Yield ($M)" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="budget" fill="#6C63FF" name="Budget (₹M)" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="yield" fill="#10B981" name="Yield (₹M)" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

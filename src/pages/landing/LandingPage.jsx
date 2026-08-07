@@ -31,11 +31,13 @@ export const LandingPage = () => {
   const [billingCycle, setBillingCycle] = useState('annual');
   const [openFaq, setOpenFaq] = useState(null);
 
+  const billingLabel = billingCycle === 'monthly' ? '/ user / month' : '/ user / year';
+
   const stats = [
     { value: '98.4%', label: 'Decision Accuracy', sub: '+12% vs legacy BI', color: 'text-[#0F172A]' },
     { value: '10,000+', label: 'Simulated Decisions', sub: 'Across 42 Countries', color: 'text-[#0F172A]' },
     { value: '35.2%', label: 'Risk Variance Reduction', sub: 'P95 Monte Carlo', color: 'text-[#0F172A]' },
-    { value: '$4.2M+', label: 'Capital Saved', sub: 'Avg per Enterprise', color: 'text-[#0F172A]' },
+    { value: '₹4.2M+', label: 'Capital Saved', sub: 'Avg per Enterprise', color: 'text-[#0F172A]' },
   ];
 
   const features = [
@@ -67,7 +69,7 @@ export const LandingPage = () => {
 
   const testimonials = [
     {
-      quote: "DecisionSphere AI identified an 18% capital efficiency arbitrage that saved our expansion initiative $1.4M in year one.",
+      quote: "DecisionSphere AI identified an 18% capital efficiency arbitrage that saved our expansion initiative ₹1.4M in year one.",
       author: "Dr. Marcus Vance",
       role: "VP of Global Operations, AeroTech",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80"
@@ -108,6 +110,18 @@ export const LandingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
+            {/* Hero Brand Emblem Logo */}
+            <div className="flex justify-center mb-6">
+              <div className="relative group">
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-[#FF2DAA] via-[#8B5CF6] to-[#4F7DFF] rounded-3xl blur-lg opacity-70 group-hover:opacity-100 transition duration-500 animate-pulse" />
+                <img
+                  src="/logo.jpg"
+                  alt="DecisionSphere DS Logo"
+                  className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover shadow-2xl border-2 border-white/20 transform group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+            </div>
+
             {/* Top Pill Badge exact matching screenshot */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#6C63FF]/10 border border-[#6C63FF]/25 text-[#6C63FF] text-xs font-bold shadow-sm mb-6">
               <Sparkles className="w-4 h-4 text-[#6C63FF]" />
@@ -199,7 +213,7 @@ export const LandingPage = () => {
                 </div>
                 <h4 className="text-base font-bold text-[#0F172A]">Q4 Budget Sensitivity</h4>
                 <p className="text-xs text-[#64748B] font-medium leading-relaxed">
-                  $2.5M capital allocation yields +38% expected ROI under P95 risk bounds.
+                  ₹2.5M capital allocation yields +38% expected ROI under P95 risk bounds.
                 </p>
               </div>
             </Card>
@@ -348,9 +362,9 @@ export const LandingPage = () => {
               <p className="text-xs text-[#64748B] font-medium">Ideal for boutique advisory teams and startups.</p>
               <div className="flex items-baseline gap-1 pt-2">
                 <span className="text-4xl font-extrabold text-[#0F172A] font-['Space_Grotesk']">
-                  {billingCycle === 'annual' ? '$149' : '$189'}
+                  {billingCycle === 'annual' ? '₹12,499' : '₹15,999'}
                 </span>
-                <span className="text-xs text-[#64748B] font-medium">/ user / month</span>
+                <span className="text-xs text-[#64748B] font-medium">{billingLabel}</span>
               </div>
               <ul className="space-y-3 text-xs text-[#0F172A] pt-4 border-t border-slate-100 font-medium">
                 <li className="flex items-center gap-2.5"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Up to 50 Monte Carlo runs / mo</li>
@@ -375,9 +389,9 @@ export const LandingPage = () => {
               <p className="text-xs text-[#64748B] font-medium">Designed for Fortune 500 & scale-up leadership.</p>
               <div className="flex items-baseline gap-1 pt-2">
                 <span className="text-4xl font-extrabold bg-gradient-to-r from-[#FF2DAA] to-[#6C63FF] bg-clip-text text-transparent font-['Space_Grotesk']">
-                  {billingCycle === 'annual' ? '$399' : '$499'}
+                  {billingCycle === 'annual' ? '₹33,499' : '₹41,999'}
                 </span>
-                <span className="text-xs text-[#64748B] font-medium">/ user / month</span>
+                <span className="text-xs text-[#64748B] font-medium">{billingLabel}</span>
               </div>
               <ul className="space-y-3 text-xs text-[#0F172A] pt-4 border-t border-slate-100 font-medium">
                 <li className="flex items-center gap-2.5"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Unlimited Monte Carlo Runs</li>

@@ -31,10 +31,10 @@ export const ReportsPage = () => {
       roi: '+38.4%',
       risk: 'Low Risk (P95)',
       payback: '14.2 Months',
-      summary: 'Comprehensive audit of $4.2M capital allocation across Tier-1 technology nodes, payback timelines, and P95 variance bounds.',
+      summary: 'Comprehensive audit of ₹4.2M capital allocation across Tier-1 technology nodes, payback timelines, and P95 variance bounds.',
       recommendations: [
         'Finalize LOI prior to Q3 municipal fiscal deadline to capture 18% tax credit.',
-        'Allocate $1.8M CapEx for initial hardware node deployment in Hyderabad Hitec City.',
+        'Allocate ₹1.8M CapEx for initial hardware node deployment in Hyderabad Hitec City.',
         'Establish regional R&D hub to capture senior Machine Learning engineering talent density.',
         'Execute secondary air-freight contingency contract for top 20% critical component SKUs.'
       ]

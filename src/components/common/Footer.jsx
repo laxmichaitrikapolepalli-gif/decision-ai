@@ -10,10 +10,8 @@ export const Footer = () => {
         {/* Brand Col */}
         <div className="md:col-span-2 space-y-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] p-0.5 shadow-lg shadow-[#FF2DAA]/25">
-              <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-[#6C63FF]" />
-              </div>
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] p-0.5 shadow-lg shadow-[#FF2DAA]/25 overflow-hidden flex items-center justify-center">
+              <img src="/logo.jpg" alt="DecisionSphere AI Logo" className="w-full h-full rounded-[14px] object-cover" />
             </div>
             <span className="text-2xl font-black text-[#0F172A] font-['Space_Grotesk'] tracking-tight">
               DecisionSphere <span className="text-[#FF2DAA]">AI</span>

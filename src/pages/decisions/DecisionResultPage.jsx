@@ -54,7 +54,7 @@ export const DecisionResultPage = () => {
   ];
 
   const disadvantages = [
-    'Initial CapEx commitment of $1.8M required in Q3',
+    'Initial CapEx commitment of ₹1.8M required in Q3',
     'Regulatory filing deadline requires rapid LOI execution within 30 days'
   ];
 

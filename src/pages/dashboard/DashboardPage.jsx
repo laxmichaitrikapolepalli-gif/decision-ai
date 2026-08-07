@@ -67,7 +67,7 @@ export const DashboardPage = () => {
     },
     {
       label: 'CAPITAL SAVED',
-      value: '$4.2M',
+      value: '₹4.2M',
       change: 'YTD Benefit',
       sub: 'Validated across 42 projects',
       icon: TrendingUp,

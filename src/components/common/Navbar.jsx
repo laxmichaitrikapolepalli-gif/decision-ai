@@ -31,7 +31,6 @@ export const Navbar = ({ isDashboard = false }) => {
   const publicNavLinks = [
     { label: 'Platform', href: '#hero' },
     { label: 'Decision Engine', href: '#workflow' },
-    { label: 'Analytics', href: '#analytics' },
     { label: 'Features', href: '#features' },
     { label: 'Pricing', href: '#pricing' },
   ];
@@ -42,10 +41,8 @@ export const Navbar = ({ isDashboard = false }) => {
         
         {/* Brand Logo exact matching screenshot */}
         <Link to={isAuthenticated ? "/dashboard" : "/"} className="flex items-center gap-3 group shrink-0">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] p-0.5 shadow-md shadow-[#6C63FF]/20 group-hover:scale-105 transition-all duration-300 flex items-center justify-center">
-            <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
-              <Globe className="w-5 h-5 text-[#6C63FF]" />
-            </div>
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] p-0.5 shadow-md shadow-[#6C63FF]/20 group-hover:scale-105 transition-all duration-300 flex items-center justify-center overflow-hidden">
+            <img src="/logo.jpg" alt="DecisionSphere AI Logo" className="w-full h-full rounded-[14px] object-cover" />
           </div>
           <div className="flex flex-col justify-center">
             <div className="flex items-center gap-1.5">

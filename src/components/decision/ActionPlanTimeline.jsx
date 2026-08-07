@@ -5,7 +5,7 @@ import { Badge } from '../ui/Badge';
 export const ActionPlanTimeline = ({ plan }) => {
   const defaultPlan = (plan && plan.length > 0) ? plan : [
     { step: 1, title: 'Finalize Municipal Tax Exemption LOI', duration: '30 Days', status: 'In Progress' },
-    { step: 2, title: 'CapEx Funding Allocation ($1.8M)', duration: '60 Days', status: 'Pending' },
+    { step: 2, title: 'CapEx Funding Allocation (₹1.8M)', duration: '60 Days', status: 'Pending' },
     { step: 3, title: 'R&D Talent Acquisition Center Setup', duration: '90 Days', status: 'Pending' },
     { step: 4, title: 'Full Hardware Node Deployment & Launch', duration: '180 Days', status: 'Pending' },
   ];

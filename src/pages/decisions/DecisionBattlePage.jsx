@@ -332,16 +332,16 @@ export const DecisionBattlePage = () => {
                       stroke="#64748b"
                       fontSize={11}
                       fontWeight={700}
-                      tickFormatter={(val) => `$${(val / 1000000).toFixed(1)}M`}
+                      tickFormatter={(val) => `₹${(val / 1000000).toFixed(1)}M`}
                     />
                     <Tooltip
-                      formatter={(val) => [`$${Number(val).toLocaleString()}`, '']}
+                      formatter={(val) => [new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val), '']}
                       contentStyle={{ borderRadius: '16px', background: '#0F172A', color: '#fff', border: 'none', fontWeight: 700 }}
                     />
                     <Legend />
-                    <Area type="monotone" dataKey="conservative" stroke="#f59e0b" strokeWidth={2.5} fill="url(#colorConsB)" name="Conservative ($)" />
-                    <Area type="monotone" dataKey="expected" stroke="#6C63FF" strokeWidth={2.5} fill="url(#colorExpB)" name="Expected ($)" />
-                    <Area type="monotone" dataKey="aggressive" stroke="#10B981" strokeWidth={2.5} fill="url(#colorAggB)" name="Aggressive ($)" />
+                    <Area type="monotone" dataKey="conservative" stroke="#f59e0b" strokeWidth={2.5} fill="url(#colorConsB)" name="Conservative (₹)" />
+                    <Area type="monotone" dataKey="expected" stroke="#6C63FF" strokeWidth={2.5} fill="url(#colorExpB)" name="Expected (₹)" />
+                    <Area type="monotone" dataKey="aggressive" stroke="#10B981" strokeWidth={2.5} fill="url(#colorAggB)" name="Aggressive (₹)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>

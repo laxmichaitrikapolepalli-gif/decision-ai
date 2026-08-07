@@ -27,7 +27,7 @@ export const ScenarioSimulatorPage = () => {
     projectedRoi: '+38%',
     confidenceScore: '96%',
     riskLevel: 'Optimal Low Risk',
-    recommendation: 'Proceed with $2.5M allocation across Tier-1 tech hubs for maximum expected yield under P95 confidence limits.',
+    recommendation: 'Proceed with ₹2.5M allocation across Tier-1 tech hubs for maximum expected yield under P95 confidence limits.',
     chartData: [
       { month: 'Month 1', conservative: 250000, expected: 375000, aggressive: 500000 },
       { month: 'Month 2', conservative: 750000, expected: 1050000, aggressive: 1375000 },
@@ -51,7 +51,7 @@ export const ScenarioSimulatorPage = () => {
         projectedRoi: `+${Math.max(5, calculatedRoi)}%`,
         confidenceScore: `${Math.min(99, Math.max(60, calculatedConfidence))}%`,
         riskLevel: risk > 60 ? 'High Risk' : risk > 35 ? 'Moderate Risk' : 'Optimal Low Risk',
-        recommendation: `Recommended strategy: Allocate $${(budget/1000000).toFixed(1)}M over ${timeline} months with ${growth}% growth target to capture +${calculatedRoi}% ROI under ${risk}% risk variance.`,
+        recommendation: `Recommended strategy: Allocate ₹${(budget/1000000).toFixed(1)}M over ${timeline} months with ${growth}% growth target to capture +${calculatedRoi}% ROI under ${risk}% risk variance.`,
         chartData: [
           { month: 'Month 1', conservative: budget * 0.1, expected: budget * 0.15, aggressive: budget * 0.2 },
           { month: 'Month 2', conservative: budget * 0.3, expected: budget * 0.42, aggressive: budget * 0.55 },
@@ -106,7 +106,7 @@ export const ScenarioSimulatorPage = () => {
               <span className="text-[#0F172A] flex items-center gap-1.5">
                 <DollarSign className="w-3.5 h-3.5 text-[#10B981]" /> Budget Allocation
               </span>
-              <span className="text-[#10B981] font-mono font-black">${(sliders.budget / 1000000).toFixed(2)}M</span>
+              <span className="text-[#10B981] font-mono font-black">₹{(sliders.budget / 1000000).toFixed(2)}M</span>
             </div>
             <input
               type="range"
@@ -298,15 +298,15 @@ export const ScenarioSimulatorPage = () => {
                     stroke="#64748b"
                     fontSize={11}
                     fontWeight={700}
-                    tickFormatter={(val) => `$${(val / 1000000).toFixed(1)}M`}
+                    tickFormatter={(val) => `₹${(val / 1000000).toFixed(1)}M`}
                   />
                   <Tooltip
-                    formatter={(val) => [`$${Number(val).toLocaleString()}`, '']}
+                    formatter={(val) => [new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val), '']}
                     contentStyle={{ borderRadius: '16px', background: '#0F172A', color: '#fff', border: 'none', fontWeight: 700 }}
                   />
-                  <Area type="monotone" dataKey="conservative" stroke="#f59e0b" strokeWidth={2.5} fill="url(#colorCons)" name="Conservative ($)" />
-                  <Area type="monotone" dataKey="expected" stroke="#6C63FF" strokeWidth={2.5} fill="url(#colorExp)" name="Expected ($)" />
-                  <Area type="monotone" dataKey="aggressive" stroke="#10B981" strokeWidth={2.5} fill="url(#colorAgg)" name="Aggressive ($)" />
+                  <Area type="monotone" dataKey="conservative" stroke="#f59e0b" strokeWidth={2.5} fill="url(#colorCons)" name="Conservative (₹)" />
+                  <Area type="monotone" dataKey="expected" stroke="#6C63FF" strokeWidth={2.5} fill="url(#colorExp)" name="Expected (₹)" />
+                  <Area type="monotone" dataKey="aggressive" stroke="#10B981" strokeWidth={2.5} fill="url(#colorAgg)" name="Aggressive (₹)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

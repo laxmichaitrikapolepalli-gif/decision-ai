@@ -22,7 +22,7 @@ export const AIInsightsPage = () => {
       category: 'Real Estate Arbitrage',
       type: 'Opportunity',
       title: 'Hyderabad Tech Corridor Lease Rate Subsidy',
-      impactScore: '+$1.4M Capital Savings',
+      impactScore: '+₹1.4M Capital Savings',
       confidenceScore: 96,
       desc: 'Municipal tax credit policy for Tier-1 technology hardware nodes lowers 5-year lease overhead by 18% compared to Bangalore Whitefield.',
       action: 'Finalize LOI before Q3 municipal fiscal deadline to capture tax exemption.',

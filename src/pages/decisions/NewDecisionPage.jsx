@@ -36,7 +36,7 @@ export const NewDecisionPage = () => {
     destination: 'Expand Store in Bangalore Whitefield',
     departureTime: 'Q3 2026 Fiscal Target',
     transportMode: 'Capital Investment',
-    budget: '$2,500,000',
+    budget: '₹2,500,000',
     timeline: '6 Months',
     riskTolerance: 'Low Risk (12%)',
     constraints: 'CapEx payback must occur within 18 months; municipal tax subsidies required.',
@@ -101,13 +101,13 @@ export const NewDecisionPage = () => {
         estimatedTime: '14.2 Months Payback',
         trafficLevel: 'Low Risk (P95)',
         bestDepartureTime: formData.departureTime || 'Q3 2026 Target',
-        travelCost: formData.budget || '$2,500,000',
+        travelCost: formData.budget || '₹2,500,000',
         fuelEfficiency: '+38% Projected ROI',
         confidenceScore: 96,
         reason: `DecisionSphere AI neural model identified ${formData.source} as the optimal strategic path, delivering superior payback velocity, municipal tax credits, and lower risk exposure.`,
         tips: [
           'Finalize municipal tax exemption LOI prior to Q3 fiscal deadline',
-          'Allocate $1.8M CapEx for initial hardware node deployment',
+          'Allocate ₹1.8M CapEx for initial hardware node deployment',
           'Establish regional R&D hub to capture senior talent density'
         ]
       };
@@ -126,7 +126,7 @@ export const NewDecisionPage = () => {
       risk: resData.trafficLevel || 'Low Risk',
       roi: resData.fuelEfficiency || '+38% ROI',
       status: 'Approved',
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      date: new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })
     };
 
     await addNewDecision(decisionObj);
@@ -237,7 +237,7 @@ export const NewDecisionPage = () => {
                   label="CapEx Allocation"
                   value={formData.budget}
                   onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                  placeholder="$2,500,000"
+                  placeholder="₹2,500,000"
                   required
                 />
                 <Input

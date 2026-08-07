@@ -7,13 +7,13 @@ const getMockRecommend = (payload) => ({
   estimatedTime: '14.2 Months Payback',
   trafficLevel: 'Low Risk (P95)',
   bestDepartureTime: payload?.departureTime || 'Q3 2026 Target',
-  travelCost: payload?.budget || '$2,500,000',
+  travelCost: payload?.budget || '₹2,500,000',
   fuelEfficiency: '+38% Projected ROI',
   confidenceScore: 96,
   reason: `DecisionSphere AI neural model identified ${payload?.source || 'Hyderabad Option A'} as the optimal strategic path, delivering superior payback velocity, municipal tax credits, and lower risk exposure.`,
   tips: [
     'Finalize municipal tax exemption LOI prior to Q3 fiscal deadline',
-    'Allocate $1.8M CapEx for initial hardware node deployment',
+    'Allocate ₹1.8M CapEx for initial hardware node deployment',
     'Establish regional R&D hub to capture senior talent density'
   ]
 });

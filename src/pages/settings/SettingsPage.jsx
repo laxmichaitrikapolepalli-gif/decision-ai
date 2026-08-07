@@ -123,7 +123,7 @@ export const SettingsPage = () => {
               <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div>
                   <h4 className="text-sm font-black text-[#0F172A]">Enterprise AI Annual Plan</h4>
-                  <p className="text-xs text-[#64748B] font-semibold">$399 / user / month (20% Discount Active)</p>
+                  <p className="text-xs text-[#64748B] font-semibold">₹33,499 / user / month (20% Discount Active)</p>
                 </div>
                 <Badge variant="primary" size="md" className="bg-[#6C63FF]/15 text-[#6C63FF]">Active</Badge>
               </div>

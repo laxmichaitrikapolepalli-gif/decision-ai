@@ -14,10 +14,8 @@ export const AuthLayout = () => {
       {/* Header */}
       <header className="max-w-7xl mx-auto w-full flex items-center justify-between py-4 z-10">
         <Link to="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] p-0.5 shadow-lg shadow-[#6C63FF]/20">
-            <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-[#6C63FF]" />
-            </div>
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#FF2DAA] to-[#6C63FF] p-0.5 shadow-lg shadow-[#6C63FF]/20 overflow-hidden flex items-center justify-center">
+            <img src="/logo.jpg" alt="DecisionSphere AI Logo" className="w-full h-full rounded-[14px] object-cover" />
           </div>
           <div className="flex items-center gap-1.5">
             <span className="text-xl font-extrabold text-[#0F172A] font-['Space_Grotesk']">
